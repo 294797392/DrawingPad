@@ -27,6 +27,9 @@ namespace SciencePad.Scenes
 
         public VisualScene()
         {
+            this.UseLayoutRounding = true;
+            this.SnapsToDevicePixels = true;
+
             this.VisualList = new ObservableCollection<VisualGeometry>();
         }
 

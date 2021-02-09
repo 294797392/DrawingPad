@@ -5,20 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SciencePad"
         xmlns:scene="clr-namespace:SciencePad.Scenes"
+        xmlns:spuc="clr-namespace:SciencePad.UserControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-
-
-
-
-        <scene:SineScene/>
+        <ContentControl Margin="100">
+            <spuc:SineSceneUserControl/>
+        </ContentControl>
     </Grid>
 
 </Window>

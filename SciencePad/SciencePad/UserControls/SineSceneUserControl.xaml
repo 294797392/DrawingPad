@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="SciencePad.UserControls.SineSceneUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SciencePad.UserControls"
+             xmlns:scene="clr-namespace:SciencePad.Scenes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+
+        <Style x:Key="StyleButtonLocal" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+        </Style>
+
+        <Style x:Key="StyleTextBlockLocal" TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+
+        <Style x:Key="StyleSliderLocal" TargetType="{x:Type Slider}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Maximum" Value="5"/>
+            <Setter Property="Minimum" Value="-5"/>
+            <Setter Property="AutoToolTipPrecision" Value="2"/>
+            <Setter Property="TickFrequency" Value="0.01"/>
+            <Setter Property="DataContext" Value="{Binding ElementName=DataGridSineList, Path=SelectedItem}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <scene:SineScene Grid.Column="0" x:Name="SineScene" Width="900" Height="900"
+                         IsDrawGridLine="False"/>
+
+        <Grid Grid.Column="2" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="400"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button Content="新建正弦波" Click="ButtonCreate_Click" Style="{StaticResource ResourceKey=StyleButtonLocal}"/>
+                <Button Content="删除正弦波" Click="ButtonDelete_Click" Style="{StaticResource ResourceKey=StyleButtonLocal}"/>
+                <Button Content="合并正弦波" Style="{StaticResource ResourceKey=StyleButtonLocal}"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="1" x:Name="DataGridSineList" IsReadOnly="True" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="振幅（A）" Width="25*" CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Amplitude}" ToolTip="{Binding Path=Amplitude}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="频率" Width="25*" CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Frequency}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding Path=Frequency}" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="相位（Phase）" Width="25*" CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Phase}" ToolTip="{Binding Path=Phase}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="振幅：" Style="{StaticResource ResourceKey=StyleTextBlockLocal}"/>
+                <Slider Grid.Row="0" Grid.Column="1" ToolTip="{Binding Path=Amplitude}" Value="{Binding ElementName=DataGridSineList, Path=SelectedItem.Amplitude, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ValueChanged="Slider_ValueChanged" Style="{StaticResource ResourceKey=StyleSliderLocal}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="频率：" Style="{StaticResource ResourceKey=StyleTextBlockLocal}"/>
+                <Slider Grid.Row="1" Grid.Column="1" ToolTip="{Binding Path=Frequency}" Value="{Binding ElementName=DataGridSineList, Path=SelectedItem.Frequency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ValueChanged="Slider_ValueChanged" Style="{StaticResource ResourceKey=StyleSliderLocal}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="相位：" Style="{StaticResource ResourceKey=StyleTextBlockLocal}"/>
+                <Slider Grid.Row="2" Grid.Column="1" ToolTip="{Binding Path=Phase}" Value="{Binding ElementName=DataGridSineList, Path=SelectedItem.Phase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ValueChanged="Slider_ValueChanged" Style="{StaticResource ResourceKey=StyleSliderLocal}"/>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{98D51074-60A9-4657-B1BA-D6EA41A377D5}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>SciencePad</RootNamespace>
     <AssemblyName>SciencePad</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -55,10 +58,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IFunction.cs" />
+    <Compile Include="PadContext.cs" />
+    <Compile Include="PadMessage.cs" />
+    <Compile Include="Scenes\CoordinateScene.cs" />
     <Compile Include="Scenes\DrawingScene.cs" />
-    <Compile Include="Scenes\SineScene.cs" />
+    <Compile Include="Scenes\Sine\SineFunction.cs" />
+    <Compile Include="Scenes\Sine\SineScene.cs" />
+    <Compile Include="UserControls\SineSceneUserControl.xaml.cs">
+      <DependentUpon>SineSceneUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Visuals\VisualCircle.cs" />
-    <Compile Include="Visuals\VisualCoordinate.cs" />
     <Compile Include="Visuals\VisualTriangle.cs" />
     <Compile Include="Visuals\VisualGeometry.cs" />
     <Compile Include="Scenes\VisualScene.cs" />
@@ -74,6 +84,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\SineSceneUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pens.cs" />
@@ -102,5 +116,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
