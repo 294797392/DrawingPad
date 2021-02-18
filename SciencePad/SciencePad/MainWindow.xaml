@@ -11,7 +11,16 @@
         WindowState="Maximized">
 
     <Grid>
-        <ContentControl Margin="100">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox Grid.Column="0" x:Name="ListBoxFunctionList">
+
+        </ListBox>
+
+        <ContentControl Grid.Column="1" Margin="100">
             <spuc:SineSceneUserControl/>
         </ContentControl>
     </Grid>

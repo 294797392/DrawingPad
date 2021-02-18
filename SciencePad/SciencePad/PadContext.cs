@@ -14,7 +14,7 @@ namespace SciencePad
         /// 每个单位长度所对应的像素数量
         /// upp
         /// </summary>
-        public const int UnitPerPixel = 50;
+        //public const int UnitPerPixel = 50;
 
         #endregion
 

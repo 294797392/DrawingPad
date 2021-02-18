@@ -21,6 +21,12 @@ namespace SciencePad.UserControls
     /// </summary>
     public partial class SineSceneUserControl : UserControl
     {
+        #region 常量
+
+        private const int DefaultLineThickness = 2;
+
+        #endregion
+
         #region 实例变量
 
         #endregion
@@ -54,6 +60,7 @@ namespace SciencePad.UserControls
                 Amplitude = 1,
                 Frequency = 1,
                 Phase = 0,
+                LinePen = PadUtility.RandomColorPen(DefaultLineThickness)
             };
             SineScene.SineList.Add(sineFunc);
         }

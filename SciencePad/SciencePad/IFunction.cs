@@ -11,5 +11,11 @@ namespace SciencePad
     /// </summary>
     public interface IFunction
     {
+        /// <summary>
+        /// 计算函数值
+        /// </summary>
+        /// <param name="inputX">自变量X</param>
+        /// <returns></returns>
+        double Calculate(double inputX);
     }
 }

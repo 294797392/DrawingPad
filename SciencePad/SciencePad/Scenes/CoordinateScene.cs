@@ -29,6 +29,8 @@ namespace SciencePad.Scenes
 
         private const int DefaultFontSize = 12;
 
+        private const int DefaultUnitPerPixel = 30;
+
         #endregion
 
         #region 实例变量
@@ -63,12 +65,18 @@ namespace SciencePad.Scenes
         /// </summary>
         public bool IsDrawCoordinate { get; set; }
 
+        /// <summary>
+        /// 一个单位长度是多少像素
+        /// </summary>
+        public int UnitPerPixel { get; set; }
+
         #endregion
 
         #region 构造方法
 
         public CoordinateScene()
         {
+            this.UnitPerPixel = DefaultUnitPerPixel;
             this.fontFace = DefaultTypeFace;
             this.fontSize = DefaultFontSize;
             this.fontBrush = DefaultFontBrush;
@@ -91,12 +99,12 @@ namespace SciencePad.Scenes
 
             if (this.IsDrawCoordinate)
             {
-                this.DrawCoordinate(dc, PadContext.UnitPerPixel);
+                this.DrawCoordinate(dc, this.UnitPerPixel);
             }
 
             if (this.IsDrawGridLine)
             {
-                this.DrawGridLine(dc, PadContext.UnitPerPixel);
+                this.DrawGridLine(dc, this.UnitPerPixel);
             }
 
             if (this.IsDrawAxis)

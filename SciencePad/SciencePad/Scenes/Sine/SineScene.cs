@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace SciencePad.Scenes
 {
@@ -25,13 +26,10 @@ namespace SciencePad.Scenes
     {
         #region 常量
 
-        private static readonly Pen DefaultLinePen = new Pen(Brushes.Black, 1);
 
         #endregion
 
         #region 实例变量
-
-        private Pen linePen;
 
         #endregion
 
@@ -47,8 +45,6 @@ namespace SciencePad.Scenes
         {
             this.SineList = new ObservableCollection<SineFunction>();
             this.SineList.CollectionChanged += this.SineList_CollectionChanged;
-
-            this.linePen = DefaultLinePen;
         }
 
         #endregion
@@ -83,7 +79,7 @@ namespace SciencePad.Scenes
             figure.Segments.Add(sineSegement);
             figure.StartPoint = startPoint;
             sineGeometry.Figures.Add(figure);
-            dc.DrawGeometry(null, this.linePen, sineGeometry);
+            dc.DrawGeometry(null, sinFunc.LinePen, sineGeometry);
         }
 
         private PathSegment CreateSineSegement(SineFunction sinFunc, out Point firstPoint)
@@ -94,13 +90,9 @@ namespace SciencePad.Scenes
             {
                 double x = Math.PI / 180 * angle;   // 自变量X的值
 
-                x = x * sinFunc.Frequency;
+                double y = sinFunc.Calculate(x);
 
-                x += sinFunc.Phase;
-
-                double y = Math.Sin(x) * sinFunc.Amplitude;
-
-                y = this.OriginalPoint.Y + y * PadContext.UnitPerPixel;
+                y = this.OriginalPoint.Y + y * this.UnitPerPixel;
 
                 //QuadraticBezierSegment qb = new QuadraticBezierSegment();
                 //qb.Point1 = new Point(x, y);
@@ -126,3 +118,4 @@ namespace SciencePad.Scenes
         #endregion
     }
 }
+

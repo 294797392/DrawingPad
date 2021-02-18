@@ -61,13 +61,17 @@
     <Compile Include="IFunction.cs" />
     <Compile Include="PadContext.cs" />
     <Compile Include="PadMessage.cs" />
+    <Compile Include="PadUtility.cs" />
     <Compile Include="Scenes\CoordinateScene.cs" />
     <Compile Include="Scenes\DrawingScene.cs" />
+    <Compile Include="Scenes\FunctionScene.cs" />
     <Compile Include="Scenes\Sine\SineFunction.cs" />
     <Compile Include="Scenes\Sine\SineScene.cs" />
     <Compile Include="UserControls\SineSceneUserControl.xaml.cs">
       <DependentUpon>SineSceneUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\SineViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Visuals\VisualCircle.cs" />
     <Compile Include="Visuals\VisualTriangle.cs" />
     <Compile Include="Visuals\VisualGeometry.cs" />
