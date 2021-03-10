@@ -22,10 +22,9 @@ namespace SciencePad.Scenes
     ///              θ是相位偏移，表示正弦波形的偏移量（X轴的偏移量）
     /// 
     /// </summary>
-    public class SineScene : CoordinateScene
+    public class SineScene : FunctionScene
     {
         #region 常量
-
 
         #endregion
 
@@ -35,52 +34,17 @@ namespace SciencePad.Scenes
 
         #region 属性
 
-        public ObservableCollection<SineFunction> SineList { get; private set; }
-
         #endregion
 
         #region 构造方法
 
         public SineScene()
         {
-            this.SineList = new ObservableCollection<SineFunction>();
-            this.SineList.CollectionChanged += this.SineList_CollectionChanged;
-        }
-
-        #endregion
-
-        #region 公开接口
-
-        public void Redraw()
-        {
-            this.InvalidateVisual();
         }
 
         #endregion
 
         #region 实例方法
-
-        protected override void OnRender(DrawingContext dc)
-        {
-            base.OnRender(dc);
-
-            foreach (SineFunction sinFunc in this.SineList)
-            {
-                this.DrawWaves(sinFunc, dc);
-            }
-        }
-
-        private void DrawWaves(SineFunction sinFunc, DrawingContext dc)
-        {
-            Point startPoint;
-            PathGeometry sineGeometry = new PathGeometry();
-            PathFigure figure = new PathFigure();
-            PathSegment sineSegement = this.CreateSineSegement(sinFunc, out startPoint);
-            figure.Segments.Add(sineSegement);
-            figure.StartPoint = startPoint;
-            sineGeometry.Figures.Add(figure);
-            dc.DrawGeometry(null, sinFunc.LinePen, sineGeometry);
-        }
 
         private PathSegment CreateSineSegement(SineFunction sinFunc, out Point firstPoint)
         {
@@ -110,9 +74,18 @@ namespace SciencePad.Scenes
 
         #region 事件处理器
 
-        private void SineList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public override Geometry CreateFunctionGeometry(IFunction function)
         {
-            this.InvalidateVisual();
+            SineFunction sinFunc = function as SineFunction;
+
+            Point startPoint;
+            PathGeometry sineGeometry = new PathGeometry();
+            PathFigure figure = new PathFigure();
+            PathSegment sineSegement = this.CreateSineSegement(sinFunc, out startPoint);
+            figure.Segments.Add(sineSegement);
+            figure.StartPoint = startPoint;
+            sineGeometry.Figures.Add(figure);
+            return sineGeometry;
         }
 
         #endregion

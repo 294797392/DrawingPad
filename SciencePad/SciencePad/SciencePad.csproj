@@ -67,8 +67,8 @@
     <Compile Include="Scenes\FunctionScene.cs" />
     <Compile Include="Scenes\Sine\SineFunction.cs" />
     <Compile Include="Scenes\Sine\SineScene.cs" />
-    <Compile Include="UserControls\SineSceneUserControl.xaml.cs">
-      <DependentUpon>SineSceneUserControl.xaml</DependentUpon>
+    <Compile Include="UserControls\FunctionSceneUserControl.xaml.cs">
+      <DependentUpon>FunctionSceneUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SineViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
@@ -88,7 +88,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\SineSceneUserControl.xaml">
+    <Page Include="UserControls\FunctionSceneUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

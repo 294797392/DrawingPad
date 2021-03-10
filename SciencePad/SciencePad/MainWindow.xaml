@@ -21,7 +21,7 @@
         </ListBox>
 
         <ContentControl Grid.Column="1" Margin="100">
-            <spuc:SineSceneUserControl/>
+            <spuc:FunctionSceneUserControl/>
         </ContentControl>
     </Grid>
 

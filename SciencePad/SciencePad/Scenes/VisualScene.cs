@@ -43,5 +43,14 @@ namespace SciencePad.Scenes
         }
 
         #endregion
+
+        #region 公开接口
+
+        public void Redraw()
+        {
+            this.InvalidateVisual();
+        }
+
+        #endregion
     }
 }

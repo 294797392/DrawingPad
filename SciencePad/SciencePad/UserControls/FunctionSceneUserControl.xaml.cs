@@ -19,7 +19,7 @@ namespace SciencePad.UserControls
     /// <summary>
     /// SineSceneUserControl.xaml 的交互逻辑
     /// </summary>
-    public partial class SineSceneUserControl : UserControl
+    public partial class FunctionSceneUserControl : UserControl
     {
         #region 常量
 
@@ -33,7 +33,7 @@ namespace SciencePad.UserControls
 
         #region 构造方法
 
-        public SineSceneUserControl()
+        public FunctionSceneUserControl()
         {
             InitializeComponent();
 
@@ -46,7 +46,7 @@ namespace SciencePad.UserControls
 
         private void InitializeUserControl()
         {
-            DataGridSineList.ItemsSource = SineScene.SineList;
+            DataGridSineList.ItemsSource = SineScene.FunctionList;
         }
 
         #endregion
@@ -62,7 +62,7 @@ namespace SciencePad.UserControls
                 Phase = 0,
                 LinePen = PadUtility.RandomColorPen(DefaultLineThickness)
             };
-            SineScene.SineList.Add(sineFunc);
+            SineScene.FunctionList.Add(sineFunc);
         }
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
@@ -73,12 +73,12 @@ namespace SciencePad.UserControls
                 return;
             }
 
-            if (!PadMessage.Confirm("确定要删除选中的正弦波吗?"))
+            if (!PadMessage.Confirm("确定要删除选中的函数图像吗?"))
             {
                 return;
             }
 
-            SineScene.SineList.Remove(selectedFunc);
+            SineScene.FunctionList.Remove(selectedFunc);
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

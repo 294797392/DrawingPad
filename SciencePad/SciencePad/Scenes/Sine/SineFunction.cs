@@ -17,11 +17,6 @@ namespace SciencePad.Scenes.Sine
     public class SineFunction : IFunction
     {
         /// <summary>
-        /// 画图使用的颜色
-        /// </summary>
-        public Pen LinePen { get; set; }
-
-        /// <summary>
         /// 振幅
         /// </summary>
         public double Amplitude { get; set; }
@@ -47,7 +42,7 @@ namespace SciencePad.Scenes.Sine
         /// </summary>
         /// <param name="inputX">自变量X是弧度</param>
         /// <returns></returns>
-        public double Calculate(double inputX)
+        public override double Calculate(double inputX)
         {
             inputX = inputX * this.Frequency;
 
