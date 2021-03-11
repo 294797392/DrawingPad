@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace SciencePad.Visuals
+namespace DrawingPad.Drawable
 {
-    public class VisualCircle : VisualGeometry
+    public class VisualCircle : DrawableVisual
     {
         #region 常量
 

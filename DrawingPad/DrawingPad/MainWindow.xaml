@@ -3,16 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SciencePad"
-        xmlns:scene="clr-namespace:SciencePad.Scenes"
-        xmlns:spuc="clr-namespace:SciencePad.UserControls"
+        xmlns:layer="clr-namespace:DrawingPad.Layers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        WindowState="Maximized">
+        Title="MainWindow" Height="1080" Width="1920">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -20,9 +17,9 @@
 
         </ListBox>
 
-        <ContentControl Grid.Column="1" Margin="100">
-            <spuc:FunctionSceneUserControl/>
-        </ContentControl>
+        <Grid Grid.Column="1">
+            <layer:DrawableVisualLayer x:Name="DrawableLayer"/>
+        </Grid>
     </Grid>
 
 </Window>

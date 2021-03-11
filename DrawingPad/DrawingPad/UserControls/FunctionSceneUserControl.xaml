@@ -40,8 +40,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <scene:SineScene Grid.Column="0" x:Name="SineScene" Width="900" Height="900"
-                         IsDrawGridLine="False"/>
+        <!--<scene:SineScene Grid.Column="0" x:Name="SineScene" Width="900" Height="900"
+                         IsDrawGridLine="False"/>-->
 
         <Grid Grid.Column="2" VerticalAlignment="Top">
             <Grid.RowDefinitions>

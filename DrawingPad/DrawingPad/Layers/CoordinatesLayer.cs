@@ -6,13 +6,29 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace SciencePad.Scenes
+namespace DrawingPad.Layers
 {
+    /// <summary>
+    /// 坐标系原点位置
+    /// </summary>
+    public enum CoordinateOriginalPositions
+    {
+        /// <summary>
+        /// 界面中间位置
+        /// </summary>
+        Center,
+
+        /// <summary>
+        /// 左下角
+        /// </summary>
+        LeftBottom,
+    }
+
     /// <summary>
     /// 坐标系场景
     /// 画一个坐标系
     /// </summary>
-    public class CoordinateScene : VisualScene
+    public class CoordinatesLayer : BackgroundLayer
     {
         #region 常量
 
@@ -26,6 +42,8 @@ namespace SciencePad.Scenes
         private static readonly Pen DefaultGridLinePen = new Pen(new SolidColorBrush(Color.FromRgb(217, 217, 217)), DefaultThinkess);
 
         private static readonly Typeface DefaultTypeFace = new Typeface(SystemFonts.MessageFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+
+        private const CoordinateOriginalPositions DefaultOriginalPosition = CoordinateOriginalPositions.LeftBottom;
 
         private const int DefaultFontSize = 12;
 
@@ -44,6 +62,11 @@ namespace SciencePad.Scenes
         #endregion
 
         #region 属性
+
+        /// <summary>
+        /// 坐标轴原点位置
+        /// </summary>
+        public CoordinateOriginalPositions OriginalPosition { get; set; }
 
         /// <summary>
         /// 坐标轴原点
@@ -74,7 +97,7 @@ namespace SciencePad.Scenes
 
         #region 构造方法
 
-        public CoordinateScene()
+        public CoordinatesLayer()
         {
             this.UnitPerPixel = DefaultUnitPerPixel;
             this.fontFace = DefaultTypeFace;
@@ -82,11 +105,12 @@ namespace SciencePad.Scenes
             this.fontBrush = DefaultFontBrush;
             this.gridLinePen = DefaultGridLinePen;
 
-            this.pixelPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            //this.pixelPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
             this.IsDrawCoordinate = true;
             this.IsDrawAxis = true;
             this.IsDrawCoordinate = true;
+            this.OriginalPosition = DefaultOriginalPosition;
         }
 
         #endregion
@@ -99,7 +123,7 @@ namespace SciencePad.Scenes
 
             if (this.IsDrawCoordinate)
             {
-                this.DrawCoordinate(dc, this.UnitPerPixel);
+                this.DrawCoordinate(dc, this.UnitPerPixel, this.OriginalPosition);
             }
 
             if (this.IsDrawGridLine)
@@ -109,7 +133,7 @@ namespace SciencePad.Scenes
 
             if (this.IsDrawAxis)
             {
-                this.DrawAxis(dc);
+                this.DrawAxis(dc, this.OriginalPosition);
             }
         }
 
@@ -117,9 +141,39 @@ namespace SciencePad.Scenes
 
         #region 实例方法
 
+        private void GetAxisXYPoints(CoordinateOriginalPositions original, out Point startYPoint, out Point endYPoint, out Point startXPoint, out Point endXPoint, out Point originalPos)
+        {
+            switch (original)
+            {
+                case CoordinateOriginalPositions.Center:
+                    {
+                        // 画Y轴
+                        startYPoint = new Point(this.Width / 2, 0);
+                        endYPoint = new Point(this.Width / 2, this.Height);
+                        startXPoint = new Point(0, this.Height / 2);
+                        endXPoint = new Point(this.Width, this.Height / 2);
+                        originalPos = new Point(this.Width / 2, this.Height / 2);
+                        break;
+                    }
+
+                case CoordinateOriginalPositions.LeftBottom:
+                    {
+                        startYPoint = new Point(0, 0);
+                        endYPoint = new Point(0, this.Height);
+                        startXPoint = new Point(0, this.Height);
+                        endXPoint = new Point(this.Width, this.Height);
+                        originalPos = new Point(0, this.Height);
+                        break;
+                    }
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         private FormattedText CreateYAxisCoordinate(int valueY)
         {
-            return new FormattedText(valueY.ToString(), System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, this.fontFace, this.fontSize, this.fontBrush, this.pixelPerDip)
+            return new FormattedText(valueY.ToString(), System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, this.fontFace, this.fontSize, this.fontBrush)
             {
                 TextAlignment = TextAlignment.Right
             };
@@ -127,7 +181,7 @@ namespace SciencePad.Scenes
 
         private FormattedText CreateXAxisCoordinate(int valueX)
         {
-            return new FormattedText(valueX.ToString(), System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, this.fontFace, this.fontSize, this.fontBrush, this.pixelPerDip)
+            return new FormattedText(valueX.ToString(), System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, this.fontFace, this.fontSize, this.fontBrush)
             {
                 TextAlignment = TextAlignment.Center
             };
@@ -137,19 +191,18 @@ namespace SciencePad.Scenes
         /// 画XY轴
         /// </summary>
         /// <param name="dc"></param>
-        private void DrawAxis(DrawingContext dc)
+        private void DrawAxis(DrawingContext dc, CoordinateOriginalPositions original)
         {
+            Point startYPoint, endYPoint, startXPoint, endXPoint, originalPos;
+            this.GetAxisXYPoints(original, out startYPoint, out endYPoint, out startXPoint, out endXPoint, out originalPos);
+
             // 画Y轴
-            Point startYPoint = new Point(this.Width / 2, 0);
-            Point endYPoint = new Point(this.Width / 2, this.Height);
             dc.DrawLine(AxisPen, startYPoint, endYPoint);
 
             // 画X轴
-            Point startXPoint = new Point(0, this.Height / 2);
-            Point endXPoint = new Point(this.Width, this.Height / 2);
             dc.DrawLine(AxisPen, startXPoint, endXPoint);
 
-            this.OriginalPoint = new Point(this.Width / 2, this.Height / 2);
+            this.OriginalPoint = originalPos;
 
             // 画边框
             Rect borderRect = new Rect()
@@ -167,9 +220,30 @@ namespace SciencePad.Scenes
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="upp">unit per pixel，每个单位是多少像素</param>
-        private void DrawCoordinate(DrawingContext dc, int upp)
+        private void DrawCoordinate(DrawingContext dc, int upp, CoordinateOriginalPositions originalPos)
         {
             int unit = (int)Math.Ceiling(this.Width / upp); // 一共要画多少个单位
+
+            switch (originalPos)
+            {
+                #region 坐标轴原点在界面中间
+
+                case CoordinateOriginalPositions.Center:
+                    {
+                        break;
+                    }
+
+                    #endregion
+
+                #region 坐标轴原点在界面左下角
+
+                case CoordinateOriginalPositions.LeftBottom:
+                    {
+                        break;
+                    }
+
+                    #endregion
+            }
 
             int valueY = unit / 2; // Y轴的起始点坐标
             int valueX = -valueY; // X轴的起始点坐标
@@ -178,11 +252,11 @@ namespace SciencePad.Scenes
             {
                 double offset = upp * index;   // X和Y轴坐标的偏移量
 
-                Point axisYPoint = new Point(-this.fontSize, offset);
-                dc.DrawText(this.CreateYAxisCoordinate(valueY), axisYPoint);
+                Point valueYPoint = new Point(-this.fontSize, offset);
+                dc.DrawText(this.CreateYAxisCoordinate(valueY), valueYPoint);
 
-                Point axisXPoint = new Point(offset, this.Height + this.fontSize);
-                dc.DrawText(this.CreateXAxisCoordinate(valueX), axisXPoint);
+                Point valueXPoint = new Point(offset, this.Height + this.fontSize);
+                dc.DrawText(this.CreateXAxisCoordinate(valueX), valueXPoint);
 
                 valueY--;
                 valueX++;

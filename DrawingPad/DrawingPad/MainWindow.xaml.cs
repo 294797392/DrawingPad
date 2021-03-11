@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DrawingPad.Drawable;
+using DrawingPad.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +26,16 @@ namespace SciencePad
         public MainWindow()
         {
             InitializeComponent();
+
+            GraphicsRectangle graphicsRect = new GraphicsRectangle() 
+            {
+                Point1X = 100,
+                Point1Y = 100,
+                Width = 100,
+                Height = 100
+            };
+
+            DrawableLayer.DrawVisual(graphicsRect);
         }
     }
 }

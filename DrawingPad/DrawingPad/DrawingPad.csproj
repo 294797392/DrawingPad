@@ -6,14 +6,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{98D51074-60A9-4657-B1BA-D6EA41A377D5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SciencePad</RootNamespace>
-    <AssemblyName>SciencePad</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>DrawingPad</RootNamespace>
+    <AssemblyName>DrawingPad</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,24 +59,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Drawable\DrawableNull.cs" />
+    <Compile Include="Drawable\DrawableVisualFactory.cs" />
+    <Compile Include="Drawable\DrawableRectangle.cs" />
+    <Compile Include="Graphics\GraphicsBase.cs" />
+    <Compile Include="Graphics\GraphicsRectangle.cs" />
+    <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="IFunction.cs" />
+    <Compile Include="Layers\BackgroundLayer.cs" />
+    <Compile Include="Layers\CoordinatesLayer.cs" />
+    <Compile Include="Layers\CheckerboardLayer.cs" />
+    <Compile Include="Layers\DrawableVisualLayer.cs" />
+    <Compile Include="PadBrushes.cs" />
     <Compile Include="PadContext.cs" />
     <Compile Include="PadMessage.cs" />
     <Compile Include="PadUtility.cs" />
-    <Compile Include="Scenes\CoordinateScene.cs" />
-    <Compile Include="Scenes\DrawingScene.cs" />
-    <Compile Include="Scenes\FunctionScene.cs" />
-    <Compile Include="Scenes\Sine\SineFunction.cs" />
-    <Compile Include="Scenes\Sine\SineScene.cs" />
-    <Compile Include="UserControls\FunctionSceneUserControl.xaml.cs">
-      <DependentUpon>FunctionSceneUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\SineViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="Visuals\VisualCircle.cs" />
-    <Compile Include="Visuals\VisualTriangle.cs" />
-    <Compile Include="Visuals\VisualGeometry.cs" />
-    <Compile Include="Scenes\VisualScene.cs" />
+    <Compile Include="Drawable\DrawableVisual.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,10 +89,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\FunctionSceneUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pens.cs" />
@@ -120,6 +117,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UserControls\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
