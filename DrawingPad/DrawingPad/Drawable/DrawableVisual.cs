@@ -11,8 +11,6 @@ namespace DrawingPad.Drawable
 {
     public abstract class DrawableVisual : DrawingVisual
     {
-        public static readonly DrawableNull Null = new DrawableNull();
-
         #region 实例变量
 
         #endregion
@@ -34,6 +32,16 @@ namespace DrawingPad.Drawable
         /// </summary>
         public bool IsSelected { get; set; }
 
+        /// <summary>
+        /// 获取圆形连接点的数量
+        /// </summary>
+        public abstract int CircleHandles { get; protected set; }
+
+        /// <summary>
+        /// 获取矩形拖拽点的数量
+        /// </summary>
+        public abstract int RectangleHandles { get; protected set; }
+
         #endregion
 
         #region 构造方法
@@ -48,22 +56,14 @@ namespace DrawingPad.Drawable
         #region 抽象函数
 
         /// <summary>
-        /// 获取当前图形的所有的连接点
-        /// </summary>
-        /// <returns></returns>
-        public abstract PointCollection GetCircleTrackers();
-
-        /// <summary>
-        /// 获取拖拽点
-        /// </summary>
-        /// <returns></returns>
-        public abstract PointCollection GetRectangleTrackers();
-
-        /// <summary>
         /// 获取旋转点坐标
         /// </summary>
         /// <returns></returns>
-        public abstract Point GetRotationPoint();
+        public abstract Point GetRotationHandle();
+
+        public abstract Point GetCircleHandle(int num);
+
+        public abstract Point GetRectangleHandle(int num);
 
         protected abstract void RenderCore(DrawingContext dc);
 
@@ -79,32 +79,64 @@ namespace DrawingPad.Drawable
 
             if (this.IsMouseHover || this.IsSelected)
             {
-                PointCollection points = this.GetCircleTrackers();
-
-                foreach (Point center in points)
+                for (int i = 0; i < this.CircleHandles; i++)
                 {
-                    dc.DrawEllipse(PadContext.TrackerBackground, PadContext.TrackerPen, center, PadContext.TrackerSize, PadContext.TrackerSize);
+                    Point center = this.GetCircleHandle(i);
+
+                    dc.DrawEllipse(PadContext.TrackerBackground, PadContext.TrackerPen, center, PadContext.CircleTrackerRadius, PadContext.CircleTrackerRadius);
                 }
+            }
+            else
+            {
             }
 
             if (this.IsSelected)
             {
-                PointCollection points = this.GetRectangleTrackers();
-
-                foreach (Point center in points)
+                for (int i = 0; i < this.RectangleHandles; i++)
                 {
-                    Rect rect = new Rect()
-                    {
-                        Height = PadContext.RectangleTrackerSize,
-                        Width = PadContext.RectangleTrackerSize,
-                        Location = new Point(center.X - PadContext.RectangleTrackerSize / 2, center.Y - PadContext.RectangleTrackerSize / 2)
-                    };
+                    Rect rect = this.GetRectangleHandleBound(i);
 
                     dc.DrawRectangle(PadContext.TrackerBackground, PadContext.TrackerPen, rect);
                 }
             }
+            else
+            {
+            }
 
             dc.Close();
+        }
+
+        /// <summary>
+        /// 获取圆形连接点的边界框
+        /// </summary>
+        /// <returns></returns>
+        public Rect GetCircleHandleBound(int num)
+        {
+            Point center = this.GetCircleHandle(num);
+
+            return new Rect()
+            {
+                Height = PadContext.CircleTrackerRadius * 2,
+                Width = PadContext.CircleTrackerRadius * 2,
+                Location = new Point(center.X - PadContext.CircleTrackerRadius, center.Y - PadContext.CircleTrackerRadius)
+            };
+        }
+
+        /// <summary>
+        /// 获取矩形拖拽点的边界框
+        /// </summary>
+        /// <param name="numHandle"></param>
+        /// <returns></returns>
+        public Rect GetRectangleHandleBound(int num)
+        {
+            Point center = this.GetRectangleHandle(num);
+
+            return new Rect()
+            {
+                Height = PadContext.RectangleTrackerSize,
+                Width = PadContext.RectangleTrackerSize,
+                Location = new Point(center.X - PadContext.RectangleTrackerSize / 2, center.Y - PadContext.RectangleTrackerSize / 2)
+            };
         }
 
         #endregion

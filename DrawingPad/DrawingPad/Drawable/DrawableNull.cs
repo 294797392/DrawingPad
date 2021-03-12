@@ -20,17 +20,17 @@ namespace DrawingPad.Drawable
 
         }
 
-        public override PointCollection GetCircleTrackers()
+        public override PointCollection GetCircleHandles()
         {
             return TrackerPoints;
         }
 
-        public override PointCollection GetRectangleTrackers()
+        public override PointCollection GetRectangleHandles()
         {
             throw new NotImplementedException();
         }
 
-        public override Point GetRotationPoint()
+        public override Point GetRotationHandle()
         {
             throw new NotImplementedException();
         }

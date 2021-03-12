@@ -100,19 +100,19 @@ namespace DrawingPad.Layers
             return da;
         }
 
-        private void ProcessSelectedVisualChanged(DrawableVisual oldVisual, DrawableVisual selectedVisual)
+        private void ProcessSelectedVisualChanged(DrawableVisual previouseSelected, DrawableVisual selectedVisual)
         {
-            if (oldVisual == selectedVisual)
+            if (previouseSelected == selectedVisual)
             {
                 return;
             }
 
-            if (oldVisual != null)
+            if (previouseSelected != null)
             {
-                if (oldVisual != selectedVisual)
+                if (previouseSelected != selectedVisual)
                 {
-                    oldVisual.IsSelected = false;
-                    oldVisual.Render();
+                    previouseSelected.IsSelected = false;
+                    previouseSelected.Render();
 
                     selectedVisual.IsSelected = true;
                     selectedVisual.Render();
@@ -123,6 +123,31 @@ namespace DrawingPad.Layers
                 selectedVisual.IsSelected = true;
                 selectedVisual.Render();
             }
+        }
+
+        private void ProcessCursor(DrawableVisual visual, Point cursorPosition)
+        {
+            for (int i = 0; i < visual.CircleHandles; i++)
+            {
+                Rect boundary = visual.GetCircleHandleBound(i);
+                if (boundary.Contains(cursorPosition))
+                {
+                    this.Cursor = Cursors.Cross;
+                    return;
+                }
+            }
+
+            for (int i = 0; i < visual.RectangleHandles; i++)
+            {
+                Rect boundary = visual.GetRectangleHandleBound(i);
+                if (boundary.Contains(cursorPosition))
+                {
+                    this.Cursor = Cursors.Hand;
+                    return;
+                }
+            }
+
+            this.Cursor = Cursors.Arrow;
         }
 
         #endregion
@@ -174,6 +199,8 @@ namespace DrawingPad.Layers
             {
                 case DrawableState.Idle:
                     {
+                        #region 处理鼠标移动到图形上之后，图形显示连接点的逻辑
+
                         DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
                         if (visualHit != null)
                         {
@@ -189,6 +216,18 @@ namespace DrawingPad.Layers
                                 this.mouseHoveredVisual.Render();
                                 this.mouseHoveredVisual = null;
                             }
+                        }
+
+                        #endregion
+
+                        if (this.selectedVisual != null)
+                        {
+                            // 当存在选中的图形的时候，处理鼠标状态
+                            this.ProcessCursor(this.selectedVisual, cursorPosition);
+                        }
+                        else
+                        {
+                            this.Cursor = Cursors.Arrow;
                         }
                     }
                     break;

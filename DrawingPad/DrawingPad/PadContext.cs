@@ -13,7 +13,7 @@ namespace DrawingPad
 
         private const int DefaultWidth = 1;
 
-        public const int TrackerSize = 4;
+        public const int CircleTrackerRadius = 4;
 
         public const int RectangleTrackerSize = 8;
 

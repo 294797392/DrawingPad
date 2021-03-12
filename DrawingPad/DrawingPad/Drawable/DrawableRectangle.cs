@@ -28,12 +28,22 @@ namespace DrawingPad.Drawable
 
         #endregion
 
+        #region 属性
+
+        public override int CircleHandles { get; protected set; }
+
+        public override int RectangleHandles { get; protected set; }
+
+        #endregion
+
         #region 构造方法
 
         public DrawableRectangle(GraphicsBase graphics) :
             base(graphics)
         {
             this.graphicsRect = graphics as GraphicsRectangle;
+            this.CircleHandles = 4;
+            this.RectangleHandles = 4;
         }
 
         #endregion
@@ -43,31 +53,60 @@ namespace DrawingPad.Drawable
             dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
         }
 
-        public override PointCollection GetCircleTrackers()
-        {
-            Rect rect = this.graphicsRect.MakeRect();
-            PointCollection points = new PointCollection();
-            points.Add(new Point(rect.TopLeft.X, rect.TopLeft.Y + rect.Height / 2));            // 左边的点
-            points.Add(new Point(rect.TopRight.X, rect.TopRight.Y + rect.Height / 2));          // 右边的点
-            points.Add(new Point(rect.TopLeft.X + rect.Width / 2, rect.TopLeft.Y));             // 上边的点
-            points.Add(new Point(rect.TopLeft.X + rect.Width / 2, rect.TopLeft.Y + rect.Height));       // 下边的点
-            return points;
-        }
-
-        public override PointCollection GetRectangleTrackers()
-        {
-            Rect rect = this.graphicsRect.MakeRect();
-            PointCollection points = new PointCollection();
-            points.Add(rect.TopLeft);
-            points.Add(rect.TopRight);
-            points.Add(rect.BottomLeft);
-            points.Add(rect.BottomRight);
-            return points;
-        }
-
-        public override Point GetRotationPoint()
+        public override Point GetRotationHandle()
         {
             throw new NotImplementedException();
+        }
+
+        public override Point GetCircleHandle(int num)
+        {
+            if (num == 0)
+            {
+                // 左上角
+                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y);
+            }
+            else if (num == 1)
+            {
+                // 右上角
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y);
+            }
+            else if (num == 2)
+            {
+                // 左下角
+                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height);
+            }
+            else if (num == 3)
+            {
+                // 右下角
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height);
+            }
+
+            return new Point();
+        }
+
+        public override Point GetRectangleHandle(int num)
+        {
+            if (num == 0)
+            {
+                // 左
+                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
+            }
+            else if (num == 1)
+            {
+                // 上
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y);
+            }
+            else if (num == 2)
+            {
+                // 右
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
+            }
+            else if (num == 3)
+            {
+                // 下
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y + this.graphicsRect.Height);
+            }
+            return new Point();
         }
 
         #region 实例方法

@@ -15,9 +15,9 @@ namespace DrawingPad.Graphics
 
         public double Point1Y { get; set; }
 
-        public double Height { get; set; }
-
         public double Width { get; set; }
+
+        public double Height { get; set; }
 
         public Rect MakeRect()
         {

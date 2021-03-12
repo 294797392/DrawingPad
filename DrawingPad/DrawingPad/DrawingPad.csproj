@@ -59,7 +59,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Drawable\DrawableNull.cs" />
     <Compile Include="Drawable\DrawableVisualFactory.cs" />
     <Compile Include="Drawable\DrawableRectangle.cs" />
     <Compile Include="Drawable\DrawableState.cs" />
