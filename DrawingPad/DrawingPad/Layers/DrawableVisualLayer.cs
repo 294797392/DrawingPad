@@ -21,10 +21,12 @@ namespace DrawingPad.Layers
         private List<DependencyObject> visualHits;
 
         private Point startOffset;
-        private DrawableVisual visualHit;
         private Point startPosition;
-        private Point previousPosition;
-        private bool isDragging;
+
+        private DrawableVisual selectedVisual;
+        private DrawableVisual mouseHoveredVisual;
+
+        private DrawableState drawableState;
 
         #endregion
 
@@ -40,9 +42,14 @@ namespace DrawingPad.Layers
 
         public DrawableVisualLayer()
         {
+            this.UseLayoutRounding = true;
+            this.SnapsToDevicePixels = true;
+            this.Background = Brushes.White;
+
+            this.drawableState = DrawableState.Idle;
+
             this.visualHits = new List<DependencyObject>();
             this.VisualList = new ObservableCollection<DrawableVisual>();
-            this.Background = Brushes.White;
         }
 
         #endregion
@@ -53,7 +60,7 @@ namespace DrawingPad.Layers
         {
             DrawableVisual visual = DrawableVisualFactory.Create(graphics);
             this.VisualList.Add(visual);
-            
+
             this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
 
             visual.Render();
@@ -63,7 +70,7 @@ namespace DrawingPad.Layers
 
         #region 实例方法
 
-        private DrawableVisual ProcessVisualHit(Point hitPoint)
+        private DrawableVisual HitTestFirstVisual(Point hitPoint)
         {
             VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback, new PointHitTestParameters(hitPoint));
 
@@ -74,8 +81,6 @@ namespace DrawingPad.Layers
 
             // 被点击到的元素
             DrawableVisual visualHit = this.visualHits[0] as DrawableVisual;
-
-            Console.WriteLine(visualHit.Name);
 
             this.visualHits.Clear();
 
@@ -95,6 +100,31 @@ namespace DrawingPad.Layers
             return da;
         }
 
+        private void ProcessSelectedVisualChanged(DrawableVisual oldVisual, DrawableVisual selectedVisual)
+        {
+            if (oldVisual == selectedVisual)
+            {
+                return;
+            }
+
+            if (oldVisual != null)
+            {
+                if (oldVisual != selectedVisual)
+                {
+                    oldVisual.IsSelected = false;
+                    oldVisual.Render();
+
+                    selectedVisual.IsSelected = true;
+                    selectedVisual.Render();
+                }
+            }
+            else
+            {
+                selectedVisual.IsSelected = true;
+                selectedVisual.Render();
+            }
+        }
+
         #endregion
 
         #region 重写方法
@@ -109,28 +139,28 @@ namespace DrawingPad.Layers
             base.OnMouseLeftButtonDown(e);
 
             this.startPosition = e.GetPosition(this);
-            this.previousPosition = this.startPosition;
 
-            DrawableVisual visualHit = this.ProcessVisualHit(this.startPosition);
+            DrawableVisual visualHit = this.HitTestFirstVisual(this.startPosition);
             if (visualHit != null)
             {
-                this.visualHit = visualHit;
+                this.ProcessSelectedVisualChanged(this.selectedVisual, visualHit);
+                this.selectedVisual = visualHit;
 
-                if (this.visualHit.Transform == null)
+                if (this.selectedVisual.Transform == null)
                 {
                     TransformGroup transform = new TransformGroup();
                     transform.Children.Add(new TranslateTransform());
                     transform.Children.Add(new RotateTransform());
-                    this.visualHit.Transform = transform;
+                    this.selectedVisual.Transform = transform;
                     this.startOffset = new Point(0, 0);
                 }
                 else
                 {
-                    TranslateTransform transform = (this.visualHit.Transform as TransformGroup).Children[0] as TranslateTransform;
+                    TranslateTransform transform = (this.selectedVisual.Transform as TransformGroup).Children[0] as TranslateTransform;
                     this.startOffset = new Point(transform.X, transform.Y);
                 }
 
-                this.isDragging = true;
+                this.drawableState = DrawableState.DragDrop;
             }
         }
 
@@ -138,46 +168,53 @@ namespace DrawingPad.Layers
         {
             base.OnMouseMove(e);
 
-            if (!this.isDragging)
-            {
-                return;
-            }
-
             Point cursorPosition = e.GetPosition(this);
 
-            TranslateTransform translate = null;
-
-            if (this.visualHit.Transform == null)
+            switch (this.drawableState)
             {
-                TransformGroup transform = new TransformGroup();
-                translate = new TranslateTransform();
-                transform.Children.Add(translate);
-                transform.Children.Add(new RotateTransform());
-                this.visualHit.Transform = transform;
+                case DrawableState.Idle:
+                    {
+                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+                        if (visualHit != null)
+                        {
+                            visualHit.IsMouseHover = true;
+                            visualHit.Render();
+                            this.mouseHoveredVisual = visualHit;
+                        }
+                        else
+                        {
+                            if (this.mouseHoveredVisual != null)
+                            {
+                                this.mouseHoveredVisual.IsMouseHover = false;
+                                this.mouseHoveredVisual.Render();
+                                this.mouseHoveredVisual = null;
+                            }
+                        }
+                    }
+                    break;
+
+                case DrawableState.DragDrop:
+                    {
+                        TranslateTransform translate = (this.selectedVisual.Transform as TransformGroup).Children[0] as TranslateTransform;
+
+                        double x = cursorPosition.X - this.startPosition.X + this.startOffset.X;
+                        double y = cursorPosition.Y - this.startPosition.Y + this.startOffset.Y;
+
+                        translate.BeginAnimation(TranslateTransform.XProperty, this.CreateTranslateAnimation(x), HandoffBehavior.Compose);
+                        translate.BeginAnimation(TranslateTransform.YProperty, this.CreateTranslateAnimation(y), HandoffBehavior.Compose);
+                    }
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
-            else
-            {
-                TransformGroup transform = this.visualHit.Transform as TransformGroup;
-                translate = transform.Children[0] as TranslateTransform;
-            }
-
-            double x = cursorPosition.X - this.startPosition.X + this.startOffset.X;
-            double y = cursorPosition.Y - this.startPosition.Y + this.startOffset.Y;
-
-            Console.WriteLine("x = {0}, y = {1}", x, y);
-
-            translate.BeginAnimation(TranslateTransform.XProperty, this.CreateTranslateAnimation(x), HandoffBehavior.Compose);
-            translate.BeginAnimation(TranslateTransform.YProperty, this.CreateTranslateAnimation(y), HandoffBehavior.Compose);
-
-            this.previousPosition = cursorPosition;
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
 
-            this.isDragging = false;
-            this.visualHit = null;
+            this.drawableState = DrawableState.Idle;
         }
 
         #endregion

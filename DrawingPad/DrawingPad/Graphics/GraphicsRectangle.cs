@@ -23,8 +23,7 @@ namespace DrawingPad.Graphics
         {
             return new Rect()
             {
-                X = this.Point1X,
-                Y = this.Point1Y,
+                Location = new Point(this.Point1X, this.Point1Y),
                 Height = this.Height,
                 Width = this.Width
             };

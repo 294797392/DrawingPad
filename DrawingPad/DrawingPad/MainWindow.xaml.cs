@@ -36,6 +36,16 @@ namespace SciencePad
             };
 
             DrawableLayer.DrawVisual(graphicsRect);
+
+            GraphicsRectangle graphicsRect1 = new GraphicsRectangle()
+            {
+                Point1X = 300,
+                Point1Y = 300,
+                Width = 100,
+                Height = 100
+            };
+
+            DrawableLayer.DrawVisual(graphicsRect1);
         }
     }
 }

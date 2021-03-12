@@ -43,7 +43,29 @@ namespace DrawingPad.Drawable
             dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
         }
 
-        public override PointCollection GetConnectionPoints()
+        public override PointCollection GetCircleTrackers()
+        {
+            Rect rect = this.graphicsRect.MakeRect();
+            PointCollection points = new PointCollection();
+            points.Add(new Point(rect.TopLeft.X, rect.TopLeft.Y + rect.Height / 2));            // 左边的点
+            points.Add(new Point(rect.TopRight.X, rect.TopRight.Y + rect.Height / 2));          // 右边的点
+            points.Add(new Point(rect.TopLeft.X + rect.Width / 2, rect.TopLeft.Y));             // 上边的点
+            points.Add(new Point(rect.TopLeft.X + rect.Width / 2, rect.TopLeft.Y + rect.Height));       // 下边的点
+            return points;
+        }
+
+        public override PointCollection GetRectangleTrackers()
+        {
+            Rect rect = this.graphicsRect.MakeRect();
+            PointCollection points = new PointCollection();
+            points.Add(rect.TopLeft);
+            points.Add(rect.TopRight);
+            points.Add(rect.BottomLeft);
+            points.Add(rect.BottomRight);
+            return points;
+        }
+
+        public override Point GetRotationPoint()
         {
             throw new NotImplementedException();
         }

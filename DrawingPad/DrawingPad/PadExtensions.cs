@@ -1,17 +1,15 @@
-﻿using System;
+﻿using DrawingPad.Drawable;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace DrawingPad
 {
-    public static class Pens
+    public static class PadExtensions
     {
-        private const int DefaultWidth = 1;
-
-        public static readonly Pen Black = new Pen(Brushes.Black, DefaultWidth);
-
     }
 }
