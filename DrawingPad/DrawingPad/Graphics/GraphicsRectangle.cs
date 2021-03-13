@@ -19,6 +19,12 @@ namespace DrawingPad.Graphics
 
         public double Height { get; set; }
 
+        public override void UpdatePosition(double offsetX, double offsetY)
+        {
+            this.Point1X += offsetX;
+            this.Point1Y += offsetY;
+        }
+
         public Rect MakeRect()
         {
             return new Rect()

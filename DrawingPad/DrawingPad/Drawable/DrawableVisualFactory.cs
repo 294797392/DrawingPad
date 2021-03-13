@@ -18,6 +18,11 @@ namespace DrawingPad.Drawable
                         return new DrawableRectangle(graphics);
                     }
 
+                case GraphicsType.ConnectionLine:
+                    {
+                        return new DrawableLine(graphics);
+                    }
+
                 default:
                     throw new NotImplementedException();
             }

@@ -59,10 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Drawable\DrawableLine.cs" />
     <Compile Include="Drawable\DrawableVisualFactory.cs" />
     <Compile Include="Drawable\DrawableRectangle.cs" />
     <Compile Include="Drawable\DrawableState.cs" />
     <Compile Include="Graphics\GraphicsBase.cs" />
+    <Compile Include="Graphics\GraphicsLine.cs" />
     <Compile Include="Graphics\GraphicsRectangle.cs" />
     <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="IFunction.cs" />

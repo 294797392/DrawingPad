@@ -20,11 +20,11 @@ namespace DrawingPad.Layers
 
         private List<DependencyObject> visualHits;
 
-        private Point startOffset;
-        private Point startPosition;
+        private Point previousPosition;
 
         private DrawableVisual selectedVisual;
         private DrawableVisual mouseHoveredVisual;
+        private DrawableLine resizingLine;
 
         private DrawableState drawableState;
 
@@ -32,6 +32,9 @@ namespace DrawingPad.Layers
 
         #region 属性
 
+        /// <summary>
+        /// 所有图形集合
+        /// </summary>
         public ObservableCollection<DrawableVisual> VisualList { get; private set; }
 
         protected override int VisualChildrenCount => this.VisualList.Count;
@@ -56,7 +59,7 @@ namespace DrawingPad.Layers
 
         #region 构造方法
 
-        public void DrawVisual(GraphicsBase graphics)
+        public DrawableVisual DrawVisual(GraphicsBase graphics)
         {
             DrawableVisual visual = DrawableVisualFactory.Create(graphics);
             this.VisualList.Add(visual);
@@ -64,6 +67,8 @@ namespace DrawingPad.Layers
             this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
 
             visual.Render();
+
+            return visual;
         }
 
         #endregion
@@ -125,11 +130,17 @@ namespace DrawingPad.Layers
             }
         }
 
-        private void ProcessCursor(DrawableVisual visual, Point cursorPosition)
+        private void ProcessSelectedVisualCursor(DrawableVisual selectedVisual, Point cursorPosition)
         {
-            for (int i = 0; i < visual.CircleHandles; i++)
+            if (selectedVisual == null)
             {
-                Rect boundary = visual.GetCircleHandleBound(i);
+                this.Cursor = Cursors.Arrow;
+                return;
+            }
+
+            for (int i = 0; i < selectedVisual.CircleHandles; i++)
+            {
+                Rect boundary = selectedVisual.GetCircleHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
                 {
                     this.Cursor = Cursors.Cross;
@@ -137,9 +148,9 @@ namespace DrawingPad.Layers
                 }
             }
 
-            for (int i = 0; i < visual.RectangleHandles; i++)
+            for (int i = 0; i < selectedVisual.RectangleHandles; i++)
             {
-                Rect boundary = visual.GetRectangleHandleBound(i);
+                Rect boundary = selectedVisual.GetRectangleHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
                 {
                     this.Cursor = Cursors.Hand;
@@ -163,30 +174,34 @@ namespace DrawingPad.Layers
         {
             base.OnMouseLeftButtonDown(e);
 
-            this.startPosition = e.GetPosition(this);
+            Point cursorPosition = e.GetPosition(this);
 
-            DrawableVisual visualHit = this.HitTestFirstVisual(this.startPosition);
-            if (visualHit != null)
+            DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+            if (visualHit == null)
             {
-                this.ProcessSelectedVisualChanged(this.selectedVisual, visualHit);
-                this.selectedVisual = visualHit;
-
-                if (this.selectedVisual.Transform == null)
-                {
-                    TransformGroup transform = new TransformGroup();
-                    transform.Children.Add(new TranslateTransform());
-                    transform.Children.Add(new RotateTransform());
-                    this.selectedVisual.Transform = transform;
-                    this.startOffset = new Point(0, 0);
-                }
-                else
-                {
-                    TranslateTransform transform = (this.selectedVisual.Transform as TransformGroup).Children[0] as TranslateTransform;
-                    this.startOffset = new Point(transform.X, transform.Y);
-                }
-
-                this.drawableState = DrawableState.DragDrop;
+                return;
             }
+
+            this.ProcessSelectedVisualChanged(this.selectedVisual, visualHit);
+            this.selectedVisual = visualHit;
+            this.previousPosition = cursorPosition;
+
+            for (int i = 0; i < visualHit.CircleHandles; i++)
+            {
+                Rect bounds = visualHit.GetCircleHandleBounds(i);
+                if (bounds.Contains(cursorPosition))
+                {
+                    this.drawableState = DrawableState.Resize;
+                    GraphicsBase graphics = new GraphicsLine()
+                    {
+                        StartPoint = new Point(bounds.TopLeft.X + bounds.Width / 2, bounds.TopLeft.Y + bounds.Height / 2)
+                    };
+                    this.resizingLine = this.DrawVisual(graphics) as DrawableLine;
+                    return;
+                }
+            }
+
+            this.drawableState = DrawableState.DragDrop;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -220,29 +235,31 @@ namespace DrawingPad.Layers
 
                         #endregion
 
-                        if (this.selectedVisual != null)
-                        {
-                            // 当存在选中的图形的时候，处理鼠标状态
-                            this.ProcessCursor(this.selectedVisual, cursorPosition);
-                        }
-                        else
-                        {
-                            this.Cursor = Cursors.Arrow;
-                        }
+                        // 当存在选中的图形的时候，处理鼠标状态
+                        this.ProcessSelectedVisualCursor(this.selectedVisual, cursorPosition);
+
+                        break;
                     }
-                    break;
 
                 case DrawableState.DragDrop:
                     {
-                        TranslateTransform translate = (this.selectedVisual.Transform as TransformGroup).Children[0] as TranslateTransform;
+                        double x = cursorPosition.X - this.previousPosition.X;
+                        double y = cursorPosition.Y - this.previousPosition.Y;
 
-                        double x = cursorPosition.X - this.startPosition.X + this.startOffset.X;
-                        double y = cursorPosition.Y - this.startPosition.Y + this.startOffset.Y;
+                        this.selectedVisual.UpdatePosition(x, y);
+                        this.selectedVisual.Render();
 
-                        translate.BeginAnimation(TranslateTransform.XProperty, this.CreateTranslateAnimation(x), HandoffBehavior.Compose);
-                        translate.BeginAnimation(TranslateTransform.YProperty, this.CreateTranslateAnimation(y), HandoffBehavior.Compose);
+                        this.previousPosition = cursorPosition;
+
+                        break;
                     }
-                    break;
+
+                case DrawableState.Resize:
+                    {
+                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+                        this.resizingLine.Update(this.VisualList, this.selectedVisual, visualHit, cursorPosition);
+                        break;
+                    }
 
                 default:
                     throw new NotImplementedException();
@@ -252,6 +269,29 @@ namespace DrawingPad.Layers
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
+            Point cursorPosition = e.GetPosition(this);
+
+            switch (this.drawableState)
+            {
+                case DrawableState.DragDrop:
+                    {
+                        break;
+                    }
+
+                case DrawableState.Idle:
+                    {
+                        break;
+                    }
+
+                case DrawableState.Resize:
+                    {
+                        break;
+                    }
+
+                default:
+                    throw new NotImplementedException();
+            }
 
             this.drawableState = DrawableState.Idle;
         }

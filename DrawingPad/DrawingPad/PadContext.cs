@@ -12,16 +12,22 @@ namespace DrawingPad
         #region 常量定义
 
         private const int DefaultWidth = 1;
+        private const int LineWidth = 2;
 
         public const int CircleTrackerRadius = 4;
 
         public const int RectangleTrackerSize = 8;
+
+        public const int BoundaryPadding = 20;
 
         #endregion
 
         #region 画刷定义
 
         public static readonly Brush TrackerBackground = Brushes.White;
+
+        public static readonly Brush LineBrush = Brushes.Black;
+        public static readonly Pen LinePen = new Pen(Brushes.Black, LineWidth);
 
         #endregion
 

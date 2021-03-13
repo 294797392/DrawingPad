@@ -14,5 +14,7 @@ namespace DrawingPad.Graphics
         /// 角度
         /// </summary>
         public double Angle { get; set; }
+
+        public abstract void UpdatePosition(double offsetX, double offsetY);
     }
 }

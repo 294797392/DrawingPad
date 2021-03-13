@@ -14,6 +14,11 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 矩形
         /// </summary>
-        Rectangle
+        Rectangle,
+
+        /// <summary>
+        /// 连接线
+        /// </summary>
+        ConnectionLine
     }
 }

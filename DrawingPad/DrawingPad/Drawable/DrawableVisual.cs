@@ -17,6 +17,8 @@ namespace DrawingPad.Drawable
 
         #region 属性
 
+        public GraphicsBase Graphics { get; private set; }
+
         /// <summary>
         /// 图形的名字
         /// </summary>
@@ -49,6 +51,7 @@ namespace DrawingPad.Drawable
         public DrawableVisual(GraphicsBase graphics)
         {
             this.Name = Guid.NewGuid().ToString();
+            this.Graphics = graphics;
         }
 
         #endregion
@@ -94,7 +97,7 @@ namespace DrawingPad.Drawable
             {
                 for (int i = 0; i < this.RectangleHandles; i++)
                 {
-                    Rect rect = this.GetRectangleHandleBound(i);
+                    Rect rect = this.GetRectangleHandleBounds(i);
 
                     dc.DrawRectangle(PadContext.TrackerBackground, PadContext.TrackerPen, rect);
                 }
@@ -110,7 +113,7 @@ namespace DrawingPad.Drawable
         /// 获取圆形连接点的边界框
         /// </summary>
         /// <returns></returns>
-        public Rect GetCircleHandleBound(int num)
+        public Rect GetCircleHandleBounds(int num)
         {
             Point center = this.GetCircleHandle(num);
 
@@ -127,7 +130,7 @@ namespace DrawingPad.Drawable
         /// </summary>
         /// <param name="numHandle"></param>
         /// <returns></returns>
-        public Rect GetRectangleHandleBound(int num)
+        public Rect GetRectangleHandleBounds(int num)
         {
             Point center = this.GetRectangleHandle(num);
 
@@ -137,6 +140,11 @@ namespace DrawingPad.Drawable
                 Width = PadContext.RectangleTrackerSize,
                 Location = new Point(center.X - PadContext.RectangleTrackerSize / 2, center.Y - PadContext.RectangleTrackerSize / 2)
             };
+        }
+
+        public void UpdatePosition(double offsetX, double offsetY)
+        {
+            this.Graphics.UpdatePosition(offsetX, offsetY);
         }
 
         #endregion

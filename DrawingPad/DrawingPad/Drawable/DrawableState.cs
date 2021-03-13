@@ -19,6 +19,11 @@ namespace DrawingPad.Drawable
         /// <summary>
         /// 在做拖拽操作
         /// </summary>
-        DragDrop
+        DragDrop,
+
+        /// <summary>
+        /// 在做调整大小的操作
+        /// </summary>
+        Resize
     }
 }

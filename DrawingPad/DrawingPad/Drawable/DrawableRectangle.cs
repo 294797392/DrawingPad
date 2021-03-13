@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace DrawingPad.Drawable
@@ -62,6 +63,32 @@ namespace DrawingPad.Drawable
         {
             if (num == 0)
             {
+                // 左
+                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
+            }
+            else if (num == 1)
+            {
+                // 上
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y);
+            }
+            else if (num == 2)
+            {
+                // 右
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
+            }
+            else if (num == 3)
+            {
+                // 下
+                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y + this.graphicsRect.Height);
+            }
+
+            return new Point();
+        }
+
+        public override Point GetRectangleHandle(int num)
+        {
+            if (num == 0)
+            {
                 // 左上角
                 return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y);
             }
@@ -84,29 +111,10 @@ namespace DrawingPad.Drawable
             return new Point();
         }
 
-        public override Point GetRectangleHandle(int num)
+        public Cursor GetRectangleHandleCursor(int num)
         {
-            if (num == 0)
-            {
-                // 左
-                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
-            }
-            else if (num == 1)
-            {
-                // 上
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y);
-            }
-            else if (num == 2)
-            {
-                // 右
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
-            }
-            else if (num == 3)
-            {
-                // 下
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y + this.graphicsRect.Height);
-            }
-            return new Point();
+            throw new NotImplementedException();
+            //Point center = this.GetRectangleHandle(num);
         }
 
         #region 实例方法
