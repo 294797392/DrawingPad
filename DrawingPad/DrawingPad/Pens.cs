@@ -9,7 +9,7 @@ namespace DrawingPad
 {
     public static class Pens
     {
-        private const int DefaultWidth = 1;
+        private const int DefaultWidth = 2;
 
         public static readonly Pen Black = new Pen(Brushes.Black, DefaultWidth);
 

@@ -18,7 +18,10 @@ namespace DrawingPad
 
         public const int RectangleTrackerSize = 8;
 
-        public const int BoundaryPadding = 20;
+        /// <summary>
+        /// 连接线到图形的最小边距
+        /// </summary>
+        public const int MinimalMargin = 20;
 
         #endregion
 

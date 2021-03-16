@@ -22,8 +22,8 @@ namespace DrawingPad.Drawable
         DragDrop,
 
         /// <summary>
-        /// 在做调整大小的操作
+        /// 在做连接的操作
         /// </summary>
-        Resize
+        Connecting
     }
 }

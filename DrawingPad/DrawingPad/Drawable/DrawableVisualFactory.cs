@@ -20,7 +20,7 @@ namespace DrawingPad.Drawable
 
                 case GraphicsType.ConnectionLine:
                     {
-                        return new DrawableLine(graphics);
+                        return new DrawableConnectionLine(graphics);
                     }
 
                 default:

@@ -24,7 +24,7 @@ namespace DrawingPad.Layers
 
         private DrawableVisual selectedVisual;
         private DrawableVisual mouseHoveredVisual;
-        private DrawableLine resizingLine;
+        private DrawableConnectionLine connectionLine;
 
         private DrawableState drawableState;
 
@@ -186,22 +186,31 @@ namespace DrawingPad.Layers
             this.selectedVisual = visualHit;
             this.previousPosition = cursorPosition;
 
+            this.drawableState = DrawableState.DragDrop;
+
+            #region 判断是否点击了连接点
+
             for (int i = 0; i < visualHit.CircleHandles; i++)
             {
                 Rect bounds = visualHit.GetCircleHandleBounds(i);
                 if (bounds.Contains(cursorPosition))
                 {
-                    this.drawableState = DrawableState.Resize;
-                    GraphicsBase graphics = new GraphicsLine()
+                    Point center = bounds.GetCenter();
+                    PointPositions position = GraphicsUtility.GetPointPosition(visualHit, center);
+
+                    this.drawableState = DrawableState.Connecting;
+                    GraphicsBase graphics = new GraphicsConnectionLine()
                     {
-                        StartPoint = new Point(bounds.TopLeft.X + bounds.Width / 2, bounds.TopLeft.Y + bounds.Height / 2)
+                        StartPoint = center,
+                        StartPointPosition = position,
+                        StartVisual = visualHit
                     };
-                    this.resizingLine = this.DrawVisual(graphics) as DrawableLine;
+                    this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
                     return;
                 }
             }
 
-            this.drawableState = DrawableState.DragDrop;
+            #endregion
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -254,10 +263,10 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Resize:
+                case DrawableState.Connecting:
                     {
                         DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
-                        this.resizingLine.Update(this.VisualList, this.selectedVisual, visualHit, cursorPosition);
+                        this.connectionLine.Update(this.selectedVisual, visualHit, cursorPosition);
                         break;
                     }
 
@@ -284,7 +293,7 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Resize:
+                case DrawableState.Connecting:
                     {
                         break;
                     }

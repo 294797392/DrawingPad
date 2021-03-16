@@ -68,6 +68,19 @@ namespace DrawingPad.Drawable
 
         public abstract Point GetRectangleHandle(int num);
 
+        /// <summary>
+        /// 获取该图形的边界框
+        /// </summary>
+        /// <returns></returns>
+        public abstract Rect GetBounds();
+
+        /// <summary>
+        /// 图形是否包含一点
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public abstract bool Contains(Point p);
+
         protected abstract void RenderCore(DrawingContext dc);
 
         #endregion
@@ -145,6 +158,279 @@ namespace DrawingPad.Drawable
         public void UpdatePosition(double offsetX, double offsetY)
         {
             this.Graphics.UpdatePosition(offsetX, offsetY);
+        }
+
+        /// <summary>
+        /// 获取两点之间的连接点列表
+        /// </summary>
+        /// <param name="startPoint">起始连接点的位置</param>
+        /// <param name="pointPos">起始点相对于中点的位置</param>
+        /// <param name="targetPoint">目标点</param>
+        /// <returns></returns>
+        public virtual List<Point> GetConnectionPoints(Point startPoint, PointPositions startPointPos, Point targetPoint)
+        {
+            //double cursorX = targetPoint.X;
+            //double cursorY = targetPoint.Y;
+            //double startX = startPoint.X;
+            //double startY = startPoint.Y;
+
+            //if (startX == cursorX && startY == cursorY)
+            //{
+            //    return null;
+            //}
+
+            //Rect startVisualBounds = this.GetBounds(); startVisual.GetBounds();
+
+            //List<Point> pointList = new List<Point>();
+
+            //if (cursorX > startX && cursorY > startY)
+            //{
+            //    // 往右下方拖动
+            //    Console.WriteLine("往右下方拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                // 左边的点，往右下方拖动
+            //                pointList.Add(startPoint);
+            //                pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
+            //                if (startVisual.Contains(cursorPosition))
+            //                {
+            //                    // 鼠标在图形里面
+            //                    pointList.Add(new Point(startVisualBounds.BottomLeft.X - PadContext.MinimalMargin, startVisualBounds.BottomRight.Y + PadContext.MinimalMargin));
+            //                    pointList.Add(new Point(cursorX, startVisualBounds.BottomLeft.Y + PadContext.MinimalMargin));
+            //                }
+            //                else
+            //                {
+            //                    // 鼠标在图形外面
+            //                    pointList.Add(new Point(startVisualBounds.BottomLeft.X - PadContext.MinimalMargin, cursorY));
+            //                    pointList.Add(new Point(cursorX, cursorY));
+            //                }
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX > startX && cursorY < startY)
+            //{
+            //    // 往右上方拖动
+            //    Console.WriteLine("往右上方拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX < startX && cursorY > startY)
+            //{
+            //    // 往左下方拖动
+            //    Console.WriteLine("往左下方拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                // 左边的点，往左下方拖动
+            //                pointList.Add(startPoint);
+            //                pointList.Add(new Point(cursorX, startPoint.Y));
+            //                pointList.Add(cursorPosition);
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX < startX && cursorY < startY)
+            //{
+            //    // 往左上方拖动
+            //    Console.WriteLine("往左上方拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX > startX && cursorY == startY)
+            //{
+            //    // 往右拖动
+            //    Console.WriteLine("往右拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX < startX && cursorY == startY)
+            //{
+            //    // 往左拖动
+            //    Console.WriteLine("往左拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX == startX && cursorY > startY)
+            //{
+            //    // 往下拖动
+            //    Console.WriteLine("往下拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else if (cursorX == startX && cursorY < startY)
+            //{
+            //    // 往上拖动
+            //    Console.WriteLine("往上拖动");
+
+            //    switch (this.graphics.StartPointPosition)
+            //    {
+            //        case PointPositions.CenterLeft:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterTop:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterRight:
+            //            {
+            //                break;
+            //            }
+
+            //        case PointPositions.CenterBottom:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
+            //else
+            //{
+            //    throw new NotImplementedException();
+            //}
+            throw new NotImplementedException();
         }
 
         #endregion

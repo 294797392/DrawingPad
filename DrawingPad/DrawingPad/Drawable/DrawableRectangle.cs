@@ -111,6 +111,21 @@ namespace DrawingPad.Drawable
             return new Point();
         }
 
+        public override Rect GetBounds()
+        {
+            return new Rect()
+            {
+                Location = new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y),
+                Width = this.graphicsRect.Width,
+                Height = this.graphicsRect.Width
+            };
+        }
+
+        public override bool Contains(Point p)
+        {
+            return this.GetBounds().Contains(p);
+        }
+
         public Cursor GetRectangleHandleCursor(int num)
         {
             throw new NotImplementedException();
