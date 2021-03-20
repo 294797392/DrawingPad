@@ -67,16 +67,18 @@ namespace DrawingPad.Drawable
         #endregion
 
         /// <summary>
-        /// 
+        /// 获取两点之间的连接点列表
         /// </summary>
-        /// <param name="startVisual">连接线起始元素</param>
-        /// <param name="visualHit">当前被鼠标命中的元素，说明鼠标在某个图形里</param>
-        /// <param name="cursorPosition"></param>
-        public void Update(DrawableVisual startVisual, DrawableVisual visualHit, Point cursorPosition)
+        /// <param name="startPoint">起始连接点的位置</param>
+        /// <param name="pointPos">起始点相对于中点的位置</param>
+        /// <param name="cursorPos">目标点</param>
+        /// <returns></returns>
+        public void Update(DrawableVisual startVisual, DrawableVisual visualHit, Point cursorPos)
         {
-            Point startPoint = this.graphics.StartPoint;
-            double cursorX = cursorPosition.X;
-            double cursorY = cursorPosition.Y;
+            Point startPoint = this.graphics.ConnectionPoint;
+
+            double cursorX = cursorPos.X;
+            double cursorY = cursorPos.Y;
             double startX = startPoint.X;
             double startY = startPoint.Y;
 
@@ -84,6 +86,8 @@ namespace DrawingPad.Drawable
             {
                 return;
             }
+
+            PointPositions startPointPos = GraphicsUtility.GetPointPosition(startVisual, startPoint);
 
             Rect startVisualBounds = startVisual.GetBounds();
 
@@ -94,18 +98,74 @@ namespace DrawingPad.Drawable
                 // 往右下方拖动
                 Console.WriteLine("往右下方拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {
                             // 左边的点，往右下方拖动
                             pointList.Add(startPoint);
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
-                            if (startVisual.Contains(cursorPosition))
+                            if (startVisualBounds.Contains(cursorPos))
                             {
                                 // 鼠标在图形里面
-                                pointList.Add(new Point(startVisualBounds.BottomLeft.X - PadContext.MinimalMargin, startVisualBounds.BottomRight.Y + PadContext.MinimalMargin));
-                                pointList.Add(new Point(cursorX, startVisualBounds.BottomLeft.Y + PadContext.MinimalMargin));
+                                pointList.Add(new Point(startX - PadContext.MinimalMargin, startY + PadContext.MinimalMargin));
+                                pointList.Add(new Point(cursorX, startY + PadContext.MinimalMargin));
+                            }
+                            else
+                            {
+                                // 鼠标在图形外面
+                                pointList.Add(new Point(startVisualBounds.BottomLeft.X - PadContext.MinimalMargin, cursorY));
+                                pointList.Add(new Point(cursorX, cursorY));
+                            }
+                            break;
+                        }
+
+                    case PointPositions.CenterTop:
+                        {
+                            // 上边的点，往右下方拖动
+                            pointList.Add(startPoint);
+                            pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
+                            if (startVisualBounds.Contains(cursorPos))
+                            {
+                                // 鼠标在图形里面
+                                pointList.Add(new Point(cursorX, startY - PadContext.MinimalMargin));
+                                pointList.Add(cursorPos);
+                            }
+                            else
+                            {
+                                // 鼠标在图形外面
+                            }
+                            break;
+                        }
+
+                    case PointPositions.CenterRight:
+                        {
+                            break;
+                        }
+
+                    case PointPositions.CenterBottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (cursorX > startX && cursorY < startY)
+            {
+                // 往右上方拖动
+                Console.WriteLine("往右上方拖动");
+
+                switch (startPointPos)
+                {
+                    case PointPositions.CenterLeft:
+                        {
+                            // 左边的点，往右上方拖动
+                            pointList.Add(startPoint);
+                            pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
+                            if (startVisualBounds.Contains(cursorPos))
+                            {
+                                // 鼠标在图形里面
+                                pointList.Add(new Point(startX - PadContext.MinimalMargin, startY + PadContext.MinimalMargin));
+                                pointList.Add(new Point(cursorX, startY + PadContext.MinimalMargin));
                             }
                             else
                             {
@@ -132,47 +192,19 @@ namespace DrawingPad.Drawable
                         }
                 }
             }
-            else if (cursorX > startX && cursorY < startY)
-            {
-                // 往右上方拖动
-                Console.WriteLine("往右上方拖动");
-
-                switch (this.graphics.StartPointPosition)
-                {
-                    case PointPositions.CenterLeft:
-                        {
-                            break;
-                        }
-
-                    case PointPositions.CenterTop:
-                        {
-                            break;
-                        }
-
-                    case PointPositions.CenterRight:
-                        {
-                            break;
-                        }
-
-                    case PointPositions.CenterBottom:
-                        {
-                            break;
-                        }
-                }
-            }
             else if (cursorX < startX && cursorY > startY)
             {
                 // 往左下方拖动
                 Console.WriteLine("往左下方拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
-                        {                     
+                        {
                             // 左边的点，往左下方拖动
                             pointList.Add(startPoint);
                             pointList.Add(new Point(cursorX, startPoint.Y));
-                            pointList.Add(cursorPosition);
+                            pointList.Add(cursorPos);
                             break;
                         }
 
@@ -197,10 +229,14 @@ namespace DrawingPad.Drawable
                 // 往左上方拖动
                 Console.WriteLine("往左上方拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {
+                            // 左边的点，往左上方拖动
+                            pointList.Add(startPoint);
+                            pointList.Add(new Point(cursorX, startPoint.Y));
+                            pointList.Add(cursorPos);
                             break;
                         }
 
@@ -225,7 +261,7 @@ namespace DrawingPad.Drawable
                 // 往右拖动
                 Console.WriteLine("往右拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {
@@ -253,7 +289,7 @@ namespace DrawingPad.Drawable
                 // 往左拖动
                 Console.WriteLine("往左拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {
@@ -281,7 +317,7 @@ namespace DrawingPad.Drawable
                 // 往下拖动
                 Console.WriteLine("往下拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {
@@ -309,7 +345,7 @@ namespace DrawingPad.Drawable
                 // 往上拖动
                 Console.WriteLine("往上拖动");
 
-                switch (this.graphics.StartPointPosition)
+                switch (startPointPos)
                 {
                     case PointPositions.CenterLeft:
                         {

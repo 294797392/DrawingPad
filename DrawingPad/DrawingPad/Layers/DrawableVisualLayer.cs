@@ -201,7 +201,7 @@ namespace DrawingPad.Layers
                     this.drawableState = DrawableState.Connecting;
                     GraphicsBase graphics = new GraphicsConnectionLine()
                     {
-                        StartPoint = center,
+                        ConnectionPoint = center,
                         StartPointPosition = position,
                         StartVisual = visualHit
                     };

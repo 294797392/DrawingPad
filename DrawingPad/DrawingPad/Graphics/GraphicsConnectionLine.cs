@@ -13,9 +13,9 @@ namespace DrawingPad.Graphics
         public override GraphicsType Type { get { return GraphicsType.ConnectionLine; } }
 
         /// <summary>
-        /// 起始点
+        /// 连接点
         /// </summary>
-        public Point StartPoint { get; set; }
+        public Point ConnectionPoint { get; set; }
 
         /// <summary>
         /// 起始点的位置
