@@ -63,6 +63,7 @@
     <Compile Include="Drawable\DrawableVisualFactory.cs" />
     <Compile Include="Drawable\DrawableRectangle.cs" />
     <Compile Include="Drawable\DrawableState.cs" />
+    <Compile Include="Drawable\DrawableVisualUtility.cs" />
     <Compile Include="Graphics\GraphicsBase.cs" />
     <Compile Include="Graphics\GraphicsConnectionLine.cs" />
     <Compile Include="Graphics\GraphicsRectangle.cs" />

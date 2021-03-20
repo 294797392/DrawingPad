@@ -24,6 +24,8 @@ namespace DrawingPad.Layers
 
         private DrawableVisual selectedVisual;
         private DrawableVisual mouseHoveredVisual;
+
+        private Point firstConnector;                       // 第一个连接点
         private DrawableConnectionLine connectionLine;
 
         private DrawableState drawableState;
@@ -75,9 +77,9 @@ namespace DrawingPad.Layers
 
         #region 实例方法
 
-        private DrawableVisual HitTestFirstVisual(Point hitPoint)
+        private DrawableVisual HitTestFirstVisual(Point hitTestPos)
         {
-            VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback, new PointHitTestParameters(hitPoint));
+            VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback, new PointHitTestParameters(hitTestPos));
 
             if (this.visualHits.Count == 0)
             {
@@ -206,6 +208,7 @@ namespace DrawingPad.Layers
                         StartVisual = visualHit
                     };
                     this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
+                    this.firstConnector = center;
                     return;
                 }
             }
@@ -266,7 +269,12 @@ namespace DrawingPad.Layers
                 case DrawableState.Connecting:
                     {
                         DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
-                        this.connectionLine.Update(this.selectedVisual, visualHit, cursorPosition);
+                        List<Point> pointList = DrawableVisualUtility.GetConnectionPoints(this.selectedVisual, this.firstConnector, visualHit, cursorPosition);
+                        if (pointList == null)
+                        {
+                            return;
+                        }
+                        this.connectionLine.Update(pointList);
                         break;
                     }
 
