@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace DrawingPad.Graphics
 {
     /// <summary>
-    /// 描述一个连接点在矩形边上的位置
+    /// 描述一个图形中的顶点的位置
     /// </summary>
-    public enum PointPositions
+    public enum GraphicsVertexPosition
     {
         CenterTop,
 

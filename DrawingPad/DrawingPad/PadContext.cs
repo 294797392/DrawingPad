@@ -23,6 +23,11 @@ namespace DrawingPad
         /// </summary>
         public const int MinimalMargin = 20;
 
+        /// <summary>
+        /// 缩放图形的时候，图形最小的大小
+        /// </summary>
+        public const int MinimalVisualSize = 30;
+
         #endregion
 
         #region 画刷定义

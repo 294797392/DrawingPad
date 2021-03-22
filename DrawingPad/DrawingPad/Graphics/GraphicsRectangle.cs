@@ -11,18 +11,139 @@ namespace DrawingPad.Graphics
     {
         public override GraphicsType Type { get { return GraphicsType.Rectangle; } }
 
+        /// <summary>
+        /// 左上角顶点的X
+        /// </summary>
         public double Point1X { get; set; }
 
+        /// <summary>
+        /// 左上角顶点的Y
+        /// </summary>
         public double Point1Y { get; set; }
 
+        /// <summary>
+        /// 矩形宽度
+        /// </summary>
         public double Width { get; set; }
 
+        /// <summary>
+        /// 矩形高度
+        /// </summary>
         public double Height { get; set; }
 
         public override void UpdatePosition(double offsetX, double offsetY)
         {
             this.Point1X += offsetX;
             this.Point1Y += offsetY;
+        }
+
+        public override void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        {
+            switch (vertex)
+            {
+                case GraphicsVertexPosition.LeftTop:
+                    {
+                        double targetWidth = this.Width - (newPos.X - this.Point1X);
+                        double targetHeight = this.Height - (newPos.Y - this.Point1Y);
+
+                        if (targetWidth < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Width = targetWidth;
+                            this.Point1X = newPos.X;
+                        }
+
+                        if (targetHeight < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Height = targetHeight;
+                            this.Point1Y = newPos.Y;
+                        }
+
+                        break;
+                    }
+
+                case GraphicsVertexPosition.RightTop:
+                    {
+                        double targetWidth = newPos.X - this.Point1X;
+                        double targetHeight = this.Height - (newPos.Y - this.Point1Y);
+
+                        if (targetWidth < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Width = targetWidth;
+                        }
+
+                        if (targetHeight < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Height = targetHeight;
+                            this.Point1Y = newPos.Y;
+                        }
+
+                        break;
+                    }
+
+                case GraphicsVertexPosition.LeftBottom:
+                    {
+                        double targetWidth = this.Width - (newPos.X - this.Point1X);
+                        double targetHeight = newPos.Y - this.Point1Y;
+
+                        if (targetWidth < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Width = targetWidth;
+                            this.Point1X = newPos.X;
+                        }
+
+                        if (targetHeight < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Height = targetHeight;
+                        }
+
+                        break;
+                    }
+
+                case GraphicsVertexPosition.RightBottom:
+                    {
+                        double targetWidth = newPos.X - this.Point1X;
+                        double targetHeight = newPos.Y - this.Point1Y;
+
+                        if (targetWidth < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Width = targetWidth;
+                        }
+
+                        if (targetHeight < PadContext.MinimalVisualSize)
+                        {
+                        }
+                        else
+                        {
+                            this.Height = targetHeight;
+                        }
+
+                        break;
+                    }
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public Rect MakeRect()

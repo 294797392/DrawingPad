@@ -69,7 +69,7 @@
     <Compile Include="Graphics\GraphicsRectangle.cs" />
     <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="Graphics\GraphicsUtility.cs" />
-    <Compile Include="Graphics\PointPositions.cs" />
+    <Compile Include="Graphics\GraphicsVertexPosition.cs" />
     <Compile Include="IFunction.cs" />
     <Compile Include="Layers\BackgroundLayer.cs" />
     <Compile Include="Layers\CoordinatesLayer.cs" />

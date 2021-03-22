@@ -28,6 +28,10 @@ namespace DrawingPad.Layers
         private Point firstConnector;                       // 第一个连接点
         private DrawableConnectionLine connectionLine;
 
+        private GraphicsVertexPosition vertexPos;               // 起始缩放点的位置
+        private DrawableVisual resizeVisual;                    // 当前正在调整大小的图形
+        private Point vertexCenter;                             // 调整大小的顶点的中心坐标
+
         private DrawableState drawableState;
 
         #endregion
@@ -198,7 +202,7 @@ namespace DrawingPad.Layers
                 if (bounds.Contains(cursorPosition))
                 {
                     Point center = bounds.GetCenter();
-                    PointPositions position = GraphicsUtility.GetPointPosition(visualHit, center);
+                    GraphicsVertexPosition position = GraphicsUtility.GetVertex(visualHit, center);
 
                     this.drawableState = DrawableState.Connecting;
                     GraphicsBase graphics = new GraphicsConnectionLine()
@@ -209,6 +213,23 @@ namespace DrawingPad.Layers
                     };
                     this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
                     this.firstConnector = center;
+                    return;
+                }
+            }
+
+            #endregion
+
+            #region 判断是否点击了Reisze点
+
+            for (int i = 0; i < visualHit.RectangleHandles; i++)
+            {
+                Rect bounds = visualHit.GetRectangleHandleBounds(i);
+                if (bounds.Contains(cursorPosition))
+                {
+                    this.vertexCenter = bounds.GetCenter();
+                    this.vertexPos = GraphicsUtility.GetVertex(visualHit, this.vertexCenter);
+                    this.drawableState = DrawableState.Resizing;
+                    this.resizeVisual = visualHit;
                     return;
                 }
             }
@@ -268,13 +289,25 @@ namespace DrawingPad.Layers
 
                 case DrawableState.Connecting:
                     {
-                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
-                        List<Point> pointList = DrawableVisualUtility.GetConnectionPoints(this.selectedVisual, this.firstConnector, visualHit, cursorPosition);
+                        List<Point> pointList = DrawableVisualUtility.GetConnectionPoints(this.selectedVisual, this.firstConnector, cursorPosition);
                         if (pointList == null)
                         {
                             return;
                         }
                         this.connectionLine.Update(pointList);
+
+                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+                        if (visualHit != null)
+                        {
+                            Console.WriteLine(visualHit.Name);
+                        }
+
+                        break;
+                    }
+
+                case DrawableState.Resizing:
+                    {
+                        this.resizeVisual.Resize(this.vertexPos, this.vertexCenter, cursorPosition);
                         break;
                     }
 
@@ -302,6 +335,11 @@ namespace DrawingPad.Layers
                     }
 
                 case DrawableState.Connecting:
+                    {
+                        break;
+                    }
+
+                case DrawableState.Resizing:
                     {
                         break;
                     }

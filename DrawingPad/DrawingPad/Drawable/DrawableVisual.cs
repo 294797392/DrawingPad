@@ -81,6 +81,16 @@ namespace DrawingPad.Drawable
         /// <returns></returns>
         public abstract bool Contains(Point p);
 
+        /// <summary>
+        /// 对图形做缩放操作
+        /// </summary>
+        /// <param name="vertex">调整大小的顶点位置</param>
+        public virtual void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        {
+            this.Graphics.Resize(vertex, oldPos, newPos);
+            this.Render();
+        }
+
         protected abstract void RenderCore(DrawingContext dc);
 
         #endregion
@@ -106,7 +116,7 @@ namespace DrawingPad.Drawable
             {
             }
 
-            if (this.IsSelected)
+            if (this.IsMouseHover || this.IsSelected)
             {
                 for (int i = 0; i < this.RectangleHandles; i++)
                 {

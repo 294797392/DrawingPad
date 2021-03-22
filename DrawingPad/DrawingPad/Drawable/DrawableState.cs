@@ -24,6 +24,11 @@ namespace DrawingPad.Drawable
         /// <summary>
         /// 在做连接的操作
         /// </summary>
-        Connecting
+        Connecting,
+
+        /// <summary>
+        /// 在做调整大小的操作
+        /// </summary>
+        Resizing
     }
 }

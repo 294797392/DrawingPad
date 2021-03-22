@@ -10,7 +10,7 @@ namespace DrawingPad.Drawable
 {
     public static class DrawableVisualUtility
     {
-        public static List<Point> GetConnectionPoints(DrawableVisual startVisual, Point startPoint, DrawableVisual visualHit, Point cursorPos)
+        public static List<Point> GetConnectionPoints(DrawableVisual startVisual, Point startPoint, Point cursorPos)
         {
             double cursorX = cursorPos.X;
             double cursorY = cursorPos.Y;
@@ -22,7 +22,7 @@ namespace DrawingPad.Drawable
                 return null;
             }
 
-            PointPositions startPointPos = GraphicsUtility.GetPointPosition(startVisual, startPoint);
+            GraphicsVertexPosition vertex = GraphicsUtility.GetVertex(startVisual, startPoint);
 
             Rect startVisualBounds = startVisual.GetBounds();
 
@@ -35,9 +35,9 @@ namespace DrawingPad.Drawable
                 // 往右下方拖动
                 Console.WriteLine("往右下方拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             // 左边的点，往右下方拖动
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
@@ -45,7 +45,7 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             // 上边的点，往右下方拖动
                             pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
@@ -53,14 +53,14 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             // 右边的点，往右下方拖动
                             pointList.Add(new Point(cursorX, startY));
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             // 下边的点，往右下方拖动
                             pointList.Add(new Point(startX, cursorY));
@@ -73,9 +73,9 @@ namespace DrawingPad.Drawable
                 // 往右上方拖动
                 Console.WriteLine("往右上方拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             // 左边的点，往右上方拖动
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
@@ -83,21 +83,21 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             // 上边的点，往右上方拖动
                             pointList.Add(new Point(startX, cursorY));
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             // 右边的点，往右上方拖动
                             pointList.Add(new Point(cursorX, startY));
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             // 下边的点，往右上方拖动
                             pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
@@ -111,16 +111,16 @@ namespace DrawingPad.Drawable
                 // 往左下方拖动
                 Console.WriteLine("往左下方拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             // 左边的点，往左下方拖动
                             pointList.Add(new Point(cursorX, startPoint.Y));
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             // 上边的点，往左下方拖动
                             pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
@@ -128,7 +128,7 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             // 右边的点，往左下方拖动
                             pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
@@ -136,7 +136,7 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             // 下边的点，往左下方拖动
                             pointList.Add(new Point(startX, cursorY));
@@ -149,23 +149,23 @@ namespace DrawingPad.Drawable
                 // 往左上方拖动
                 Console.WriteLine("往左上方拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             // 左边的点，往左上方拖动
                             pointList.Add(new Point(cursorX, startPoint.Y));
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             // 上边的点，往左上方拖动
                             pointList.Add(new Point(startX, cursorY));
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             // 右边的点，往左上方拖动
                             pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
@@ -173,7 +173,7 @@ namespace DrawingPad.Drawable
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             // 下边的点，往左上方拖动
                             pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
@@ -187,24 +187,24 @@ namespace DrawingPad.Drawable
                 // 往右拖动
                 Console.WriteLine("往右拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             break;
                         }
@@ -215,24 +215,24 @@ namespace DrawingPad.Drawable
                 // 往左拖动
                 Console.WriteLine("往左拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             break;
                         }
@@ -243,24 +243,24 @@ namespace DrawingPad.Drawable
                 // 往下拖动
                 Console.WriteLine("往下拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             break;
                         }
@@ -271,24 +271,24 @@ namespace DrawingPad.Drawable
                 // 往上拖动
                 Console.WriteLine("往上拖动");
 
-                switch (startPointPos)
+                switch (vertex)
                 {
-                    case PointPositions.CenterLeft:
+                    case GraphicsVertexPosition.CenterLeft:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterTop:
+                    case GraphicsVertexPosition.CenterTop:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterRight:
+                    case GraphicsVertexPosition.CenterRight:
                         {
                             break;
                         }
 
-                    case PointPositions.CenterBottom:
+                    case GraphicsVertexPosition.CenterBottom:
                         {
                             break;
                         }

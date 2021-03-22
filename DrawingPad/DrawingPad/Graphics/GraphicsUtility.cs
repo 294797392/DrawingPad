@@ -16,7 +16,13 @@ namespace DrawingPad.Graphics
             return new Point(rect.Location.X + rect.Width / 2, rect.Location.Y + rect.Height / 2);
         }
 
-        public static PointPositions GetPointPosition(DrawableVisual visual, Point p)
+        /// <summary>
+        /// 获取点p相对于visual的顶点位置
+        /// </summary>
+        /// <param name="visual"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static GraphicsVertexPosition GetVertex(DrawableVisual visual, Point p)
         {
             Rect bounds = visual.GetBounds();
 
@@ -24,19 +30,35 @@ namespace DrawingPad.Graphics
 
             if (p.X == leftTop.X && p.Y == leftTop.Y + bounds.Height / 2)
             {
-                return PointPositions.CenterLeft;
+                return GraphicsVertexPosition.CenterLeft;
             }
             else if (p.X == leftTop.X + bounds.Width / 2 && p.Y == leftTop.Y)
             {
-                return PointPositions.CenterTop;
+                return GraphicsVertexPosition.CenterTop;
             }
             else if (p.X == leftTop.X + bounds.Width / 2 && p.Y == leftTop.Y + bounds.Height)
             {
-                return PointPositions.CenterBottom;
+                return GraphicsVertexPosition.CenterBottom;
             }
             else if (p.X == leftTop.X + bounds.Width && p.Y == leftTop.Y + bounds.Height / 2)
             {
-                return PointPositions.CenterRight;
+                return GraphicsVertexPosition.CenterRight;
+            }
+            else if (p.X == leftTop.X && p.Y == leftTop.Y)
+            {
+                return GraphicsVertexPosition.LeftTop;
+            }
+            else if (p.X == bounds.TopRight.X && p.Y == bounds.TopRight.Y)
+            {
+                return GraphicsVertexPosition.RightTop;
+            }
+            else if (p.X == bounds.BottomLeft.X && p.Y == bounds.BottomLeft.Y)
+            {
+                return GraphicsVertexPosition.LeftBottom;
+            }
+            else if (p.X == bounds.BottomRight.X && p.Y == bounds.BottomRight.Y)
+            {
+                return GraphicsVertexPosition.RightBottom;
             }
 
             throw new NotImplementedException();
