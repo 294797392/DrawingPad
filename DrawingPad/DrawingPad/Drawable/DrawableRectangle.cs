@@ -54,70 +54,13 @@ namespace DrawingPad.Drawable
             dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
         }
 
-        public override Point GetRotationHandle()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Point GetCircleHandle(int num)
-        {
-            if (num == 0)
-            {
-                // 左
-                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
-            }
-            else if (num == 1)
-            {
-                // 上
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y);
-            }
-            else if (num == 2)
-            {
-                // 右
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height / 2);
-            }
-            else if (num == 3)
-            {
-                // 下
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width / 2, this.graphicsRect.Point1Y + this.graphicsRect.Height);
-            }
-
-            return new Point();
-        }
-
-        public override Point GetRectangleHandle(int num)
-        {
-            if (num == 0)
-            {
-                // 左上角
-                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y);
-            }
-            else if (num == 1)
-            {
-                // 右上角
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y);
-            }
-            else if (num == 2)
-            {
-                // 左下角
-                return new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y + this.graphicsRect.Height);
-            }
-            else if (num == 3)
-            {
-                // 右下角
-                return new Point(this.graphicsRect.Point1X + this.graphicsRect.Width, this.graphicsRect.Point1Y + this.graphicsRect.Height);
-            }
-
-            return new Point();
-        }
-
         public override Rect GetBounds()
         {
             return new Rect()
             {
                 Location = new Point(this.graphicsRect.Point1X, this.graphicsRect.Point1Y),
                 Width = this.graphicsRect.Width,
-                Height = this.graphicsRect.Width
+                Height = this.graphicsRect.Height
             };
         }
 
@@ -129,7 +72,6 @@ namespace DrawingPad.Drawable
         public Cursor GetRectangleHandleCursor(int num)
         {
             throw new NotImplementedException();
-            //Point center = this.GetRectangleHandle(num);
         }
 
         #region 实例方法

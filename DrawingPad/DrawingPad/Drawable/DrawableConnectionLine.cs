@@ -35,21 +35,6 @@ namespace DrawingPad.Drawable
 
         #region DrawableVisual
 
-        public override Point GetCircleHandle(int num)
-        {
-            return new Point();
-        }
-
-        public override Point GetRectangleHandle(int num)
-        {
-            return new Point();
-        }
-
-        public override Point GetRotationHandle()
-        {
-            return new Point();
-        }
-
         protected override void RenderCore(DrawingContext dc)
         {
         }

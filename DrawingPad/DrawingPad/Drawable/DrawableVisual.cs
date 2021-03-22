@@ -59,16 +59,6 @@ namespace DrawingPad.Drawable
         #region 抽象函数
 
         /// <summary>
-        /// 获取旋转点坐标
-        /// </summary>
-        /// <returns></returns>
-        public abstract Point GetRotationHandle();
-
-        public abstract Point GetCircleHandle(int num);
-
-        public abstract Point GetRectangleHandle(int num);
-
-        /// <summary>
         /// 获取该图形的边界框
         /// </summary>
         /// <returns></returns>
@@ -80,16 +70,6 @@ namespace DrawingPad.Drawable
         /// <param name="p"></param>
         /// <returns></returns>
         public abstract bool Contains(Point p);
-
-        /// <summary>
-        /// 对图形做缩放操作
-        /// </summary>
-        /// <param name="vertex">调整大小的顶点位置</param>
-        public virtual void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
-        {
-            this.Graphics.Resize(vertex, oldPos, newPos);
-            this.Render();
-        }
 
         protected abstract void RenderCore(DrawingContext dc);
 
@@ -107,7 +87,7 @@ namespace DrawingPad.Drawable
             {
                 for (int i = 0; i < this.CircleHandles; i++)
                 {
-                    Point center = this.GetCircleHandle(i);
+                    Point center = this.GetConnectionHandle(i);
 
                     dc.DrawEllipse(PadContext.TrackerBackground, PadContext.TrackerPen, center, PadContext.CircleTrackerRadius, PadContext.CircleTrackerRadius);
                 }
@@ -120,7 +100,7 @@ namespace DrawingPad.Drawable
             {
                 for (int i = 0; i < this.RectangleHandles; i++)
                 {
-                    Rect rect = this.GetRectangleHandleBounds(i);
+                    Rect rect = this.GetResizeHandleBounds(i);
 
                     dc.DrawRectangle(PadContext.TrackerBackground, PadContext.TrackerPen, rect);
                 }
@@ -136,9 +116,9 @@ namespace DrawingPad.Drawable
         /// 获取圆形连接点的边界框
         /// </summary>
         /// <returns></returns>
-        public Rect GetCircleHandleBounds(int num)
+        public Rect GetConnectionHandleBounds(int num)
         {
-            Point center = this.GetCircleHandle(num);
+            Point center = this.GetConnectionHandle(num);
 
             return new Rect()
             {
@@ -153,9 +133,9 @@ namespace DrawingPad.Drawable
         /// </summary>
         /// <param name="numHandle"></param>
         /// <returns></returns>
-        public Rect GetRectangleHandleBounds(int num)
+        public Rect GetResizeHandleBounds(int num)
         {
-            Point center = this.GetRectangleHandle(num);
+            Point center = this.GetResizeHandle(num);
 
             return new Rect()
             {
@@ -168,6 +148,35 @@ namespace DrawingPad.Drawable
         public void UpdatePosition(double offsetX, double offsetY)
         {
             this.Graphics.UpdatePosition(offsetX, offsetY);
+        }
+
+        /// <summary>
+        /// 对图形做缩放操作
+        /// </summary>
+        /// <param name="vertex">调整大小的顶点位置</param>
+        public virtual void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        {
+            this.Graphics.Resize(vertex, oldPos, newPos);
+            this.Render();
+        }
+
+        /// <summary>
+        /// 获取旋转点坐标
+        /// </summary>
+        /// <returns></returns>
+        public virtual Point GetRotationHandle()
+        {
+            return this.Graphics.GetRotationHandle();
+        }
+
+        public virtual Point GetConnectionHandle(int index)
+        {
+            return this.Graphics.GetConnectionHandle(index);
+        }
+
+        public virtual Point GetResizeHandle(int index)
+        {
+            return this.Graphics.GetResizeHandle(index);
         }
 
         #endregion

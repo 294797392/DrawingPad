@@ -146,7 +146,7 @@ namespace DrawingPad.Layers
 
             for (int i = 0; i < selectedVisual.CircleHandles; i++)
             {
-                Rect boundary = selectedVisual.GetCircleHandleBounds(i);
+                Rect boundary = selectedVisual.GetConnectionHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
                 {
                     this.Cursor = Cursors.Cross;
@@ -156,7 +156,7 @@ namespace DrawingPad.Layers
 
             for (int i = 0; i < selectedVisual.RectangleHandles; i++)
             {
-                Rect boundary = selectedVisual.GetRectangleHandleBounds(i);
+                Rect boundary = selectedVisual.GetResizeHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
                 {
                     this.Cursor = Cursors.Hand;
@@ -198,7 +198,7 @@ namespace DrawingPad.Layers
 
             for (int i = 0; i < visualHit.CircleHandles; i++)
             {
-                Rect bounds = visualHit.GetCircleHandleBounds(i);
+                Rect bounds = visualHit.GetConnectionHandleBounds(i);
                 if (bounds.Contains(cursorPosition))
                 {
                     Point center = bounds.GetCenter();
@@ -223,7 +223,7 @@ namespace DrawingPad.Layers
 
             for (int i = 0; i < visualHit.RectangleHandles; i++)
             {
-                Rect bounds = visualHit.GetRectangleHandleBounds(i);
+                Rect bounds = visualHit.GetResizeHandleBounds(i);
                 if (bounds.Contains(cursorPosition))
                 {
                     this.vertexCenter = bounds.GetCenter();

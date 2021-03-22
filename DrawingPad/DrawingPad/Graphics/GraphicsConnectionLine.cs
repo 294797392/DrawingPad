@@ -35,5 +35,20 @@ namespace DrawingPad.Graphics
         {
             throw new NotImplementedException();
         }
+
+        public override Point GetResizeHandle(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Point GetConnectionHandle(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Point GetRotationHandle()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

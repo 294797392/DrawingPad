@@ -146,6 +146,63 @@ namespace DrawingPad.Graphics
             }
         }
 
+        public override Point GetConnectionHandle(int index)
+        {
+            if (index == 0)
+            {
+                // 左
+                return new Point(this.Point1X, this.Point1Y + this.Height / 2);
+            }
+            else if (index == 1)
+            {
+                // 上
+                return new Point(this.Point1X + this.Width / 2, this.Point1Y);
+            }
+            else if (index == 2)
+            {
+                // 右
+                return new Point(this.Point1X + this.Width, this.Point1Y + this.Height / 2);
+            }
+            else if (index == 3)
+            {
+                // 下
+                return new Point(this.Point1X + this.Width / 2, this.Point1Y + this.Height);
+            }
+
+            return new Point();
+        }
+
+        public override Point GetResizeHandle(int index)
+        {
+            if (index == 0)
+            {
+                // 左上角
+                return new Point(this.Point1X, this.Point1Y);
+            }
+            else if (index == 1)
+            {
+                // 右上角
+                return new Point(this.Point1X + this.Width, this.Point1Y);
+            }
+            else if (index == 2)
+            {
+                // 左下角
+                return new Point(this.Point1X, this.Point1Y + this.Height);
+            }
+            else if (index == 3)
+            {
+                // 右下角
+                return new Point(this.Point1X + this.Width, this.Point1Y + this.Height);
+            }
+
+            return new Point();
+        }
+
+        public override Point GetRotationHandle()
+        {
+            throw new NotImplementedException();
+        }
+
         public Rect MakeRect()
         {
             return new Rect()

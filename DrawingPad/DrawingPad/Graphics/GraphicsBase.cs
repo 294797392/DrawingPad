@@ -24,5 +24,11 @@ namespace DrawingPad.Graphics
         /// <param name="vertexPos">被调整大小的顶点位置</param>
         /// <param name="vertexPoint">顶点的新位置</param>
         public abstract void Resize(GraphicsVertexPosition vertexPos, Point oldPos, Point newPos);
+
+        public abstract Point GetResizeHandle(int index);
+
+        public abstract Point GetConnectionHandle(int index);
+
+        public abstract Point GetRotationHandle();
     }
 }
