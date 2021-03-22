@@ -145,9 +145,9 @@ namespace DrawingPad.Drawable
             };
         }
 
-        public void UpdatePosition(double offsetX, double offsetY)
+        public void Translate(double offsetX, double offsetY)
         {
-            this.Graphics.UpdatePosition(offsetX, offsetY);
+            this.Graphics.Translate(offsetX, offsetY);
         }
 
         /// <summary>

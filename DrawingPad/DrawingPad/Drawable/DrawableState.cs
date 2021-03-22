@@ -17,14 +17,14 @@ namespace DrawingPad.Drawable
         Idle,
 
         /// <summary>
-        /// 在做拖拽操作
+        /// 在做平移操作
         /// </summary>
-        DragDrop,
+        Translate,
 
         /// <summary>
-        /// 在做连接的操作
+        /// 在画连接线
         /// </summary>
-        Connecting,
+        DrawConnectionLine,
 
         /// <summary>
         /// 在做调整大小的操作

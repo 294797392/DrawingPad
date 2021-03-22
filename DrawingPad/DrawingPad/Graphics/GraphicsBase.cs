@@ -16,7 +16,12 @@ namespace DrawingPad.Graphics
         /// </summary>
         public double Angle { get; set; }
 
-        public abstract void UpdatePosition(double offsetX, double offsetY);
+        /// <summary>
+        /// 对图形进行平移操作
+        /// </summary>
+        /// <param name="offsetX">x偏移量</param>
+        /// <param name="offsetY">y偏移量</param>
+        public abstract void Translate(double offsetX, double offsetY);
 
         /// <summary>
         /// 对图形进行调整大小的操作

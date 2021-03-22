@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DrawingPad.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,8 +57,23 @@ namespace DrawingPad
 
         #endregion
 
+        #region 单例
+
         private static PadContext context = new PadContext();
 
         public static PadContext Context { get { return context; } }
+
+        #endregion
+
+        #region 属性
+
+        public ObservableCollection<ToolboxGroupVM> GroupList { get; private set; }
+
+        #endregion
+
+        private PadContext()
+        {
+            this.GroupList = new ObservableCollection<ToolboxGroupVM>();
+        }
     }
 }

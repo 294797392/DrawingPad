@@ -26,7 +26,7 @@ namespace DrawingPad.Graphics
 
         public DrawableVisual TargetVisual { get; set; }
 
-        public override void UpdatePosition(double offsetX, double offsetY)
+        public override void Translate(double offsetX, double offsetY)
         {
             throw new NotImplementedException();
         }

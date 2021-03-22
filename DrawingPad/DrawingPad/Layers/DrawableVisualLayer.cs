@@ -192,7 +192,7 @@ namespace DrawingPad.Layers
             this.selectedVisual = visualHit;
             this.previousPosition = cursorPosition;
 
-            this.drawableState = DrawableState.DragDrop;
+            this.drawableState = DrawableState.Translate;
 
             #region 判断是否点击了连接点
 
@@ -204,7 +204,7 @@ namespace DrawingPad.Layers
                     Point center = bounds.GetCenter();
                     GraphicsVertexPosition position = GraphicsUtility.GetVertex(visualHit, center);
 
-                    this.drawableState = DrawableState.Connecting;
+                    this.drawableState = DrawableState.DrawConnectionLine;
                     GraphicsBase graphics = new GraphicsConnectionLine()
                     {
                         ConnectionPoint = center,
@@ -274,12 +274,12 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.DragDrop:
+                case DrawableState.Translate:
                     {
                         double x = cursorPosition.X - this.previousPosition.X;
                         double y = cursorPosition.Y - this.previousPosition.Y;
 
-                        this.selectedVisual.UpdatePosition(x, y);
+                        this.selectedVisual.Translate(x, y);
                         this.selectedVisual.Render();
 
                         this.previousPosition = cursorPosition;
@@ -287,7 +287,7 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Connecting:
+                case DrawableState.DrawConnectionLine:
                     {
                         List<Point> pointList = DrawableVisualUtility.GetConnectionPoints(this.selectedVisual, this.firstConnector, cursorPosition);
                         if (pointList == null)
@@ -324,7 +324,7 @@ namespace DrawingPad.Layers
 
             switch (this.drawableState)
             {
-                case DrawableState.DragDrop:
+                case DrawableState.Translate:
                     {
                         break;
                     }
@@ -334,7 +334,7 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Connecting:
+                case DrawableState.DrawConnectionLine:
                     {
                         break;
                     }

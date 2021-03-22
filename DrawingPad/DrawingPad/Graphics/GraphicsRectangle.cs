@@ -31,7 +31,7 @@ namespace DrawingPad.Graphics
         /// </summary>
         public double Height { get; set; }
 
-        public override void UpdatePosition(double offsetX, double offsetY)
+        public override void Translate(double offsetX, double offsetY)
         {
             this.Point1X += offsetX;
             this.Point1Y += offsetY;
