@@ -148,6 +148,7 @@ namespace DrawingPad.Drawable
         public void Translate(double offsetX, double offsetY)
         {
             this.Graphics.Translate(offsetX, offsetY);
+            this.Render();
         }
 
         /// <summary>

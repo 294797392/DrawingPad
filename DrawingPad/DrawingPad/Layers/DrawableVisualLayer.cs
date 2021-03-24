@@ -280,7 +280,6 @@ namespace DrawingPad.Layers
                         double y = cursorPosition.Y - this.previousPosition.Y;
 
                         this.selectedVisual.Translate(x, y);
-                        this.selectedVisual.Render();
 
                         this.previousPosition = cursorPosition;
 

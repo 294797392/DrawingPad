@@ -4,16 +4,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPFToolkit.MVVM;
 
 namespace DrawingPad.ViewModels
 {
-    public class ToolboxGroupVM : ViewModelBase
+    public class ToolboxGroupVM : ItemsViewModel<ToolboxItemVM>
     {
-        public ObservableCollection<ToolboxItemVM> ToolboxItems { get; private set; }
-
         public ToolboxGroupVM()
         {
-            this.ToolboxItems = new ObservableCollection<ToolboxItemVM>();
         }
     }
 }

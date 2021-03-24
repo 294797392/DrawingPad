@@ -1,4 +1,6 @@
-﻿using DrawingPad.ViewModels;
+﻿using DotNEToolkit;
+using DrawingPad.DataModels;
+using DrawingPad.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,11 +51,7 @@ namespace DrawingPad
 
         #region 常量定义
 
-        /// <summary>
-        /// 每个单位长度所对应的像素数量
-        /// upp
-        /// </summary>
-        //public const int UnitPerPixel = 50;
+        public static readonly string ToolboxJsonPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "toolbox.json");
 
         #endregion
 
@@ -73,7 +71,43 @@ namespace DrawingPad
 
         private PadContext()
         {
-            this.GroupList = new ObservableCollection<ToolboxGroupVM>();
         }
+
+        #region 公开接口
+
+        public void Initialize()
+        {
+            this.GroupList = new ObservableCollection<ToolboxGroupVM>();
+
+            List<ToolboxGroup> groups;
+            if (!JSONHelper.TryParseFile<List<ToolboxGroup>>(ToolboxJsonPath, out groups))
+            {
+                return;
+            }
+
+            foreach (ToolboxGroup group in groups)
+            {
+                ToolboxGroupVM groupVM = new ToolboxGroupVM()
+                {
+                    ID = group.ID,
+                    Name = group.Name,
+                };
+
+                foreach (ToolboxItem toolboxItem in group.Items)
+                {
+                    ToolboxItemVM itemVM = new ToolboxItemVM()
+                    {
+                        ID = toolboxItem.ID,
+                        Name = toolboxItem.Name,
+                    };
+
+                    groupVM.Items.Add(itemVM);
+                }
+
+                this.GroupList.Add(groupVM);
+            }
+        }
+
+        #endregion
     }
 }

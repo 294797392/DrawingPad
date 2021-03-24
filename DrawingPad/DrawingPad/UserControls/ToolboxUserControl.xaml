@@ -4,9 +4,46 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DrawingPad.UserControls"
-             mc:Ignorable="d" 
+             xmlns:pad="clr-namespace:DrawingPad"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="DataTemplateToolboxItem">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="1" Text="{Binding Path=Name}"/>
+
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataTemplateToolboxGroup">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ToggleButton Content="{Binding Path=Name}"/>
+
+                <ListBox Grid.Row="1" Style="{StaticResource ResourceKey=StyleListBox}"
+                         ItemsSource="{Binding Path=Items}" ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxItem}"/>
+
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid>
-        
+
+        <ListBox ItemsSource="{Binding Source={x:Static pad:PadContext.Context}, Path=GroupList}"
+                 ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxGroup}"
+                 Style="{StaticResource ResourceKey=StyleListBox}"/>
+
     </Grid>
+
 </UserControl>

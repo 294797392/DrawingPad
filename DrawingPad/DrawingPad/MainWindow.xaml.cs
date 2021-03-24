@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SciencePad
+namespace DrawingPad
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -27,7 +27,7 @@ namespace SciencePad
         {
             InitializeComponent();
 
-            GraphicsRectangle graphicsRect = new GraphicsRectangle() 
+            GraphicsRectangle graphicsRect = new GraphicsRectangle()
             {
                 Point1X = 100,
                 Point1Y = 100,
