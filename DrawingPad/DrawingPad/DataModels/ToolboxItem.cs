@@ -15,6 +15,9 @@ namespace DrawingPad.DataModels
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("Icon")]
+        public string Icon { get; set; }
+
         [JsonProperty("graphics")]
         public string Graphics { get; set; }
 

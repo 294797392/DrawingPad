@@ -99,6 +99,7 @@ namespace DrawingPad
                     {
                         ID = toolboxItem.ID,
                         Name = toolboxItem.Name,
+                        IconURI = toolboxItem.Icon
                     };
 
                     groupVM.Items.Add(itemVM);
