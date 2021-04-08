@@ -10,14 +10,15 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="230"/>
+            <ColumnDefinition Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <uc:ToolboxUserControl Grid.Column="0"/>
 
         <Grid Grid.Column="1">
-            <layer:DrawableVisualLayer x:Name="DrawableLayer" Visibility="Collapsed"/>
+            <layer:DrawableVisualLayer x:Name="DrawableLayer"/>
+            <!--<layer:ContainerLayer x:Name="DrawableLayer" />-->
         </Grid>
     </Grid>
 

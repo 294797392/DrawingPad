@@ -85,9 +85,11 @@
     <Compile Include="Graphics\GraphicsVertexPosition.cs" />
     <Compile Include="IFunction.cs" />
     <Compile Include="Layers\BackgroundLayer.cs" />
+    <Compile Include="Layers\ContainerLayer.cs" />
     <Compile Include="Layers\CoordinatesLayer.cs" />
     <Compile Include="Layers\CheckerboardLayer.cs" />
     <Compile Include="Layers\DrawableVisualLayer.cs" />
+    <Compile Include="Layers\UIElementLayer.cs" />
     <Compile Include="PadBrushes.cs" />
     <Compile Include="PadContext.cs" />
     <Compile Include="PadExtensions.cs" />

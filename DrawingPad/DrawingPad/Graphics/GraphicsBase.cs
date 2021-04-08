@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,31 @@ namespace DrawingPad.Graphics
 {
     public abstract class GraphicsBase
     {
+        #region 公开属性
+
         public abstract GraphicsType Type { get; }
+
+        /// <summary>
+        /// 图形的ID
+        /// </summary>
+        [JsonProperty("ID")]
+        public string ID { get; set; }
 
         /// <summary>
         /// 角度
         /// </summary>
+        [JsonProperty("Angle")]
         public double Angle { get; set; }
+
+        /// <summary>
+        /// 图形上显示的文本
+        /// </summary>
+        [JsonProperty("Text")]
+        public string Text { get; set; }
+
+        #endregion
+
+        #region 抽象方法
 
         /// <summary>
         /// 对图形进行平移操作
@@ -35,5 +55,7 @@ namespace DrawingPad.Graphics
         public abstract Point GetConnectionHandle(int index);
 
         public abstract Point GetRotationHandle();
+
+        #endregion
     }
 }
