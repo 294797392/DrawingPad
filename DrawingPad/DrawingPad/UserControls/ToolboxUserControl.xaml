@@ -25,16 +25,12 @@
         </DataTemplate>
 
         <DataTemplate x:Key="DataTemplateToolboxGroup">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <ToggleButton Content="{Binding Path=Name}"/>
-
-                <ListBox Grid.Row="1" Style="{StaticResource ResourceKey=StyleListBox}"
-                         ItemsSource="{Binding Path=Items}" ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxItem}"/>
+            <Grid Background="Yellow" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding Path=Name}"/>
+                <Expander Header="{Binding Path=Name}" Background="Green" HorizontalAlignment="Stretch" Visibility="Collapsed">
+                    <ListBox Grid.Row="1" Style="{StaticResource ResourceKey=StyleListBox}" Visibility="Collapsed"
+                             ItemsSource="{Binding Path=Items}" ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxItem}"/>
+                </Expander>
 
             </Grid>
         </DataTemplate>
@@ -44,7 +40,8 @@
 
         <ListBox ItemsSource="{Binding Source={x:Static pad:PadContext.Context}, Path=GroupList}"
                  ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxGroup}"
-                 Style="{StaticResource ResourceKey=StyleListBox}"/>
+                 Background="Red">
+        </ListBox>
 
     </Grid>
 

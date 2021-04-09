@@ -106,6 +106,10 @@
     <Compile Include="ViewModels\ToolboxGroupVM.cs" />
     <Compile Include="ViewModels\ToolboxItemVM.cs" />
     <Compile Include="Drawable\DrawableVisual.cs" />
+    <Page Include="ControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

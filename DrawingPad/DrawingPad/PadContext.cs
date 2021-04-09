@@ -13,6 +13,12 @@ namespace DrawingPad
 {
     public class PadContext
     {
+        #region 类变量
+
+        private static log4net.ILog logger = log4net.LogManager.GetLogger("PadContext");
+
+        #endregion
+
         #region 常量定义
 
         private const int DefaultWidth = 1;
@@ -82,6 +88,7 @@ namespace DrawingPad
             List<ToolboxGroup> groups;
             if (!JSONHelper.TryParseFile<List<ToolboxGroup>>(ToolboxJsonPath, out groups))
             {
+                logger.Error("加载工具箱分组失败");
                 return;
             }
 
