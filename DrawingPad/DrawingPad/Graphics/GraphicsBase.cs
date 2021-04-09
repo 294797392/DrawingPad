@@ -12,6 +12,9 @@ namespace DrawingPad.Graphics
     {
         #region 公开属性
 
+        /// <summary>
+        /// 图形类型
+        /// </summary>
         public abstract GraphicsType Type { get; }
 
         /// <summary>
@@ -27,12 +30,17 @@ namespace DrawingPad.Graphics
         public double Angle { get; set; }
 
         /// <summary>
-        /// 图形上显示的文本
+        /// 保存文本属性信息
         /// </summary>
-        [JsonProperty("Text")]
-        public string Text { get; set; }
+        [JsonProperty("TextProperties")]
+        public TextProperties TextProperties { get; set; }
 
         #endregion
+
+        public GraphicsBase()
+        {
+            this.TextProperties = new TextProperties();
+        }
 
         #region 抽象方法
 
@@ -55,6 +63,8 @@ namespace DrawingPad.Graphics
         public abstract Point GetConnectionHandle(int index);
 
         public abstract Point GetRotationHandle();
+
+        public abstract Rect GetBounds();
 
         #endregion
     }

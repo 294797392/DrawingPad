@@ -203,6 +203,16 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
+        public override Rect GetBounds()
+        {
+            return new Rect()
+            {
+                Location = new Point(this.Point1X, this.Point1Y),
+                Width = this.Width,
+                Height = this.Height
+            };
+        }
+
         public Rect MakeRect()
         {
             return new Rect()

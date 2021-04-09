@@ -39,11 +39,6 @@ namespace DrawingPad.Drawable
         {
         }
 
-        public override Rect GetBounds()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool Contains(Point p)
         {
             return false;

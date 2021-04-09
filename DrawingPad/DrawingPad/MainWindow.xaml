@@ -20,7 +20,7 @@
         <Grid Grid.Column="1">
             <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}"/>
             <Canvas>
-                <TextBox x:Name="TextBoxEditor" Visibility="Collapsed"/>
+                <TextBox x:Name="TextBoxEditor" Visibility="Collapsed" TextWrapping="Wrap" />
             </Canvas>
         </Grid>
     </Grid>

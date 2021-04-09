@@ -50,5 +50,10 @@ namespace DrawingPad.Graphics
         {
             throw new NotImplementedException();
         }
+
+        public override Rect GetBounds()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

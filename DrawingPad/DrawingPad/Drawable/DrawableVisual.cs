@@ -13,6 +13,8 @@ namespace DrawingPad.Drawable
     {
         #region 实例变量
 
+        private Typeface typeface;
+
         #endregion
 
         #region 属性
@@ -62,12 +64,6 @@ namespace DrawingPad.Drawable
         #region 抽象函数
 
         /// <summary>
-        /// 获取该图形的边界框
-        /// </summary>
-        /// <returns></returns>
-        public abstract Rect GetBounds();
-
-        /// <summary>
         /// 图形是否包含一点
         /// </summary>
         /// <param name="p"></param>
@@ -108,10 +104,48 @@ namespace DrawingPad.Drawable
             }
             else
             {
-                
+
+            }
+
+            // 如果文本不为空,那么渲染文本
+            if (!string.IsNullOrEmpty(this.Graphics.TextProperties.Text))
+            {
+                TextProperties textProperty = this.Graphics.TextProperties;
+
+                if (this.typeface == null)
+                {
+                    this.typeface = new Typeface(new FontFamily("宋体"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                }
+
+                Rect bounds = this.GetTextBounds();
+
+                FormattedText text = new FormattedText(textProperty.Text, System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, this.typeface, 12, Brushes.Black);
+                text.MaxTextWidth = bounds.Width;
+                text.MaxTextHeight = bounds.Height;
+                dc.DrawText(text, bounds.Location);
             }
 
             dc.Close();
+        }
+
+        /// <summary>
+        /// 获取文本边界框
+        /// </summary>
+        /// <returns></returns>
+        public Rect GetTextBounds()
+        {
+            Rect bounds = this.GetBounds();
+            bounds.Inflate(-10, -10);
+            return bounds;
+        }
+
+        /// <summary>
+        /// 获取该图形的边界框
+        /// </summary>
+        /// <returns></returns>
+        public Rect GetBounds()
+        {
+            return this.Graphics.GetBounds(); 
         }
 
         /// <summary>

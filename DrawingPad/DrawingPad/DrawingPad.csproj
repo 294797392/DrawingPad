@@ -44,6 +44,10 @@
     <Reference Include="DotNEToolkit">
       <HintPath>..\..\Dependence\DotNEToolkit.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependence\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\Dependence\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -83,7 +87,7 @@
     <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="Graphics\GraphicsUtility.cs" />
     <Compile Include="Graphics\GraphicsVertexPosition.cs" />
-    <Compile Include="IFunction.cs" />
+    <Compile Include="Graphics\TextProperties.cs" />
     <Compile Include="Layers\BackgroundLayer.cs" />
     <Compile Include="Layers\ContainerLayer.cs" />
     <Compile Include="Layers\CoordinatesLayer.cs" />

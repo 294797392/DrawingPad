@@ -16,6 +16,12 @@ namespace DrawingPad.Layers
 {
     public class DrawableVisualLayer : DrawingLayer
     {
+        #region 类变量
+
+        private static log4net.ILog logger = log4net.LogManager.GetLogger("DrawableVisualLayer");
+
+        #endregion
+
         #region 实例变量
 
         private List<DependencyObject> visualHits;
@@ -23,6 +29,7 @@ namespace DrawingPad.Layers
         private Point previousPosition;
 
         private DrawableVisual selectedVisual;
+        private DrawableVisual previouseSelectedVisual;         // 上一个选中的图形
         private DrawableVisual previouseHoveredVisual;
 
         private Point firstConnector;                       // 第一个连接点
@@ -179,6 +186,49 @@ namespace DrawingPad.Layers
             this.Cursor = Cursors.Arrow;
         }
 
+        /// <summary>
+        /// 保存图形里输入的文本
+        /// </summary>
+        private void StopVisualInputState(DrawableVisual visual)
+        {
+            if (this.drawableState != DrawableState.InputState)
+            {
+                return;
+            }
+
+            if (visual == null)
+            {
+                return;
+            }
+
+            visual.Graphics.TextProperties.Text = this.TextBoxEditor.Text;
+            visual.Render();    // 刷新文本信息
+            this.TextBoxEditor.Text = null;
+            this.TextBoxEditor.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// 让一个图形进入编辑状态
+        /// </summary>
+        /// <param name="visual"></param>
+        private void StartVisualInputState(DrawableVisual visual)
+        {
+            if(visual == null)
+            {
+                logger.WarnFormat("要编辑的图形为空");
+                return;
+            }
+
+            Rect bounds = visual.GetTextBounds();
+            this.TextBoxEditor.Width = bounds.Width;
+            this.TextBoxEditor.Height = bounds.Height;
+            Canvas.SetLeft(this.TextBoxEditor, bounds.TopLeft.X);
+            Canvas.SetTop(this.TextBoxEditor, bounds.TopLeft.Y);
+            this.TextBoxEditor.Text = visual.Graphics.TextProperties.Text;
+            this.TextBoxEditor.Visibility = Visibility.Visible;
+            this.TextBoxEditor.Focus();
+        }
+
         #endregion
 
         #region 重写方法
@@ -192,6 +242,8 @@ namespace DrawingPad.Layers
         {
             base.OnMouseLeftButtonDown(e);
 
+            this.previouseSelectedVisual = this.selectedVisual;
+
             Point cursorPosition = e.GetPosition(this);
 
             DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
@@ -199,25 +251,17 @@ namespace DrawingPad.Layers
             {
                 if (this.selectedVisual != null)
                 {
-                    // 重置状态
-                    switch (this.drawableState)
-                    {
-                        case DrawableState.InputState:
-                            {
-                                break;
-                            }
-
-                        default:
-                            break;
-                    }
-
                     this.selectedVisual.IsSelected = false;
                     this.selectedVisual.IsDrawHandle = false;
                     this.selectedVisual.Render();
                     this.selectedVisual = null;
-                    TextBoxEditor.Visibility = Visibility.Collapsed;
                 }
 
+                // 停止编辑状态
+                this.StopVisualInputState(this.previouseSelectedVisual);
+                TextBoxEditor.Visibility = Visibility.Collapsed;
+
+                // 重置到空闲状态
                 this.drawableState = DrawableState.Idle;
 
                 return;
@@ -230,20 +274,13 @@ namespace DrawingPad.Layers
             if (e.ClickCount == 2)
             {
                 // 双击图形，那么进入编辑状态
-                Console.WriteLine("输入状态");
                 this.drawableState = DrawableState.InputState;
-
-                Rect bounds = this.selectedVisual.GetBounds();
-                bounds.Inflate(-10, -10);
-                this.TextBoxEditor.Width = bounds.Width;
-                this.TextBoxEditor.Height = bounds.Height;
-                Canvas.SetLeft(this.TextBoxEditor, bounds.TopLeft.X);
-                Canvas.SetTop(this.TextBoxEditor, bounds.TopLeft.Y);
-                this.TextBoxEditor.Visibility = Visibility.Visible;
+                this.StartVisualInputState(this.selectedVisual);
             }
             else
             {
-                Console.WriteLine("平移状态");
+                this.StopVisualInputState(this.previouseSelectedVisual);
+
                 this.drawableState = DrawableState.Translate;
 
                 #region 判断是否点击了连接点
