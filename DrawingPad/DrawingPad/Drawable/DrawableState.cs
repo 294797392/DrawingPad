@@ -29,6 +29,11 @@ namespace DrawingPad.Drawable
         /// <summary>
         /// 在做调整大小的操作
         /// </summary>
-        Resizing
+        Resizing,
+
+        /// <summary>
+        /// 当前是输入状态（双击图形后触发）
+        /// </summary>
+        InputState,
     }
 }

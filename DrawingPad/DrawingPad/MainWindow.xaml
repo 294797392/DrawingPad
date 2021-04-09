@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:layer="clr-namespace:DrawingPad.Layers"
+        xmlns:visual="clr-namespace:DrawingPad.Drawable"
         xmlns:uc="clr-namespace:DrawingPad.UserControls"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="500">
@@ -17,8 +18,10 @@
         <uc:ToolboxUserControl Grid.Column="0"/>
 
         <Grid Grid.Column="1">
-            <layer:DrawableVisualLayer x:Name="DrawableLayer"/>
-            <!--<layer:ContainerLayer x:Name="DrawableLayer" />-->
+            <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}"/>
+            <Canvas>
+                <TextBox x:Name="TextBoxEditor" Visibility="Collapsed"/>
+            </Canvas>
         </Grid>
     </Grid>
 

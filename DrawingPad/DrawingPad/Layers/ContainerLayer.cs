@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace DrawingPad.Layers
 {
-    public class ContainerLayer : Canvas
+    public class ContainerLayer : DrawingLayer
     {
-        #region 实例变量
+        #region 公开属性
 
-        private UIElementLayer elementLayer;
-        private DrawableVisualLayer visualLayer;
+        public DrawableVisualLayer VisualLayer { get; private set; }
+
+        public UIElementLayer ElementLayer { get; private set; }
 
         #endregion
 
@@ -22,36 +21,13 @@ namespace DrawingPad.Layers
 
         public ContainerLayer()
         {
-            this.elementLayer = new UIElementLayer();
-            this.visualLayer = new DrawableVisualLayer();
+            this.VisualLayer = new DrawableVisualLayer();
+            this.Children.Add(this.VisualLayer);
 
-            this.Children.Add(this.elementLayer);
-            this.Children.Add(this.visualLayer);
-
-            this.Background = Brushes.Transparent;
+            this.ElementLayer = new UIElementLayer();
+            this.Children.Add(this.ElementLayer);
         }
 
         #endregion
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            Console.WriteLine("down1");
-        }
-
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonUp(e);
-
-            Console.WriteLine("up1");
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            Console.WriteLine("move1");
-        }
     }
 }

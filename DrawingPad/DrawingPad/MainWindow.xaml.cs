@@ -34,7 +34,6 @@ namespace DrawingPad
                 Width = 100,
                 Height = 100
             };
-
             DrawableLayer.DrawVisual(graphicsRect);
 
             GraphicsRectangle graphicsRect1 = new GraphicsRectangle()
@@ -44,7 +43,6 @@ namespace DrawingPad
                 Width = 100,
                 Height = 100
             };
-
             DrawableLayer.DrawVisual(graphicsRect1);
         }
     }

@@ -14,7 +14,7 @@ using System.Windows.Media.Animation;
 
 namespace DrawingPad.Layers
 {
-    public class DrawableVisualLayer : Canvas
+    public class DrawableVisualLayer : DrawingLayer
     {
         #region 实例变量
 
@@ -23,13 +23,12 @@ namespace DrawingPad.Layers
         private Point previousPosition;
 
         private DrawableVisual selectedVisual;
-        private DrawableVisual mouseHoveredVisual;
+        private DrawableVisual previouseHoveredVisual;
 
         private Point firstConnector;                       // 第一个连接点
         private DrawableConnectionLine connectionLine;
 
         private GraphicsVertexPosition vertexPos;               // 起始缩放点的位置
-        private DrawableVisual resizeVisual;                    // 当前正在调整大小的图形
         private Point vertexCenter;                             // 调整大小的顶点的中心坐标
 
         private DrawableState drawableState;
@@ -38,12 +37,19 @@ namespace DrawingPad.Layers
 
         #region 属性
 
-        /// <summary>
-        /// 所有图形集合
-        /// </summary>
-        public ObservableCollection<DrawableVisual> VisualList { get; private set; }
+        public TextBox TextBoxEditor
+        {
+            get { return (TextBox)GetValue(TextBoxEditorProperty); }
+            set { SetValue(TextBoxEditorProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TextBoxEditor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextBoxEditorProperty =
+            DependencyProperty.Register("TextBoxEditor", typeof(TextBox), typeof(DrawableVisualLayer), new PropertyMetadata(null));
 
         protected override int VisualChildrenCount => this.VisualList.Count;
+
+        public VisualCollection VisualList { get; private set; }
 
         #endregion
 
@@ -58,19 +64,19 @@ namespace DrawingPad.Layers
             this.drawableState = DrawableState.Idle;
 
             this.visualHits = new List<DependencyObject>();
-            this.VisualList = new ObservableCollection<DrawableVisual>();
+            this.VisualList = new VisualCollection(this);
         }
 
         #endregion
 
-        #region 构造方法
+        #region 公开接口
 
         public DrawableVisual DrawVisual(GraphicsBase graphics)
         {
             DrawableVisual visual = DrawableVisualFactory.Create(graphics);
             this.VisualList.Add(visual);
 
-            this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
+            //this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
 
             visual.Render();
 
@@ -111,6 +117,12 @@ namespace DrawingPad.Layers
             return da;
         }
 
+        /// <summary>
+        /// 当前选中的Visual改变的时候被调用
+        /// 保证previouseSelected和selectedVisual都不为空
+        /// </summary>
+        /// <param name="previouseSelected"></param>
+        /// <param name="selectedVisual"></param>
         private void ProcessSelectedVisualChanged(DrawableVisual previouseSelected, DrawableVisual selectedVisual)
         {
             if (previouseSelected == selectedVisual)
@@ -185,6 +197,29 @@ namespace DrawingPad.Layers
             DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
             if (visualHit == null)
             {
+                if (this.selectedVisual != null)
+                {
+                    // 重置状态
+                    switch (this.drawableState)
+                    {
+                        case DrawableState.InputState:
+                            {
+                                break;
+                            }
+
+                        default:
+                            break;
+                    }
+
+                    this.selectedVisual.IsSelected = false;
+                    this.selectedVisual.IsDrawHandle = false;
+                    this.selectedVisual.Render();
+                    this.selectedVisual = null;
+                    TextBoxEditor.Visibility = Visibility.Collapsed;
+                }
+
+                this.drawableState = DrawableState.Idle;
+
                 return;
             }
 
@@ -192,49 +227,66 @@ namespace DrawingPad.Layers
             this.selectedVisual = visualHit;
             this.previousPosition = cursorPosition;
 
-            this.drawableState = DrawableState.Translate;
-
-            #region 判断是否点击了连接点
-
-            for (int i = 0; i < visualHit.CircleHandles; i++)
+            if (e.ClickCount == 2)
             {
-                Rect bounds = visualHit.GetConnectionHandleBounds(i);
-                if (bounds.Contains(cursorPosition))
-                {
-                    Point center = bounds.GetCenter();
-                    GraphicsVertexPosition position = GraphicsUtility.GetVertex(visualHit, center);
+                // 双击图形，那么进入编辑状态
+                Console.WriteLine("输入状态");
+                this.drawableState = DrawableState.InputState;
 
-                    this.drawableState = DrawableState.DrawConnectionLine;
-                    GraphicsBase graphics = new GraphicsConnectionLine()
+                Rect bounds = this.selectedVisual.GetBounds();
+                bounds.Inflate(-10, -10);
+                this.TextBoxEditor.Width = bounds.Width;
+                this.TextBoxEditor.Height = bounds.Height;
+                Canvas.SetLeft(this.TextBoxEditor, bounds.TopLeft.X);
+                Canvas.SetTop(this.TextBoxEditor, bounds.TopLeft.Y);
+                this.TextBoxEditor.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Console.WriteLine("平移状态");
+                this.drawableState = DrawableState.Translate;
+
+                #region 判断是否点击了连接点
+
+                for (int i = 0; i < visualHit.CircleHandles; i++)
+                {
+                    Rect bounds = visualHit.GetConnectionHandleBounds(i);
+                    if (bounds.Contains(cursorPosition))
                     {
-                        ConnectionPoint = center,
-                        StartPointPosition = position,
-                        StartVisual = visualHit
-                    };
-                    this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
-                    this.firstConnector = center;
-                    return;
+                        Point center = bounds.GetCenter();
+                        GraphicsVertexPosition position = GraphicsUtility.GetVertex(visualHit, center);
+
+                        this.drawableState = DrawableState.DrawConnectionLine;
+                        GraphicsBase graphics = new GraphicsConnectionLine()
+                        {
+                            ConnectionPoint = center,
+                            StartPointPosition = position,
+                            StartVisual = visualHit
+                        };
+                        this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
+                        this.firstConnector = center;
+                        return;
+                    }
                 }
-            }
 
-            #endregion
+                #endregion
 
-            #region 判断是否点击了Reisze点
+                #region 判断是否点击了Reisze点
 
-            for (int i = 0; i < visualHit.RectangleHandles; i++)
-            {
-                Rect bounds = visualHit.GetResizeHandleBounds(i);
-                if (bounds.Contains(cursorPosition))
+                for (int i = 0; i < visualHit.RectangleHandles; i++)
                 {
-                    this.vertexCenter = bounds.GetCenter();
-                    this.vertexPos = GraphicsUtility.GetVertex(visualHit, this.vertexCenter);
-                    this.drawableState = DrawableState.Resizing;
-                    this.resizeVisual = visualHit;
-                    return;
+                    Rect bounds = visualHit.GetResizeHandleBounds(i);
+                    if (bounds.Contains(cursorPosition))
+                    {
+                        this.vertexCenter = bounds.GetCenter();
+                        this.vertexPos = GraphicsUtility.GetVertex(visualHit, this.vertexCenter);
+                        this.drawableState = DrawableState.Resizing;
+                        return;
+                    }
                 }
-            }
 
-            #endregion
+                #endregion
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -252,17 +304,17 @@ namespace DrawingPad.Layers
                         DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
                         if (visualHit != null)
                         {
-                            visualHit.IsMouseHover = true;
-                            visualHit.Render();
-                            this.mouseHoveredVisual = visualHit;
+                            this.previouseHoveredVisual = visualHit;
+                            this.previouseHoveredVisual.IsDrawHandle = true;
+                            this.previouseHoveredVisual.Render();
                         }
                         else
                         {
-                            if (this.mouseHoveredVisual != null)
+                            if (this.previouseHoveredVisual != null)
                             {
-                                this.mouseHoveredVisual.IsMouseHover = false;
-                                this.mouseHoveredVisual.Render();
-                                this.mouseHoveredVisual = null;
+                                this.previouseHoveredVisual.IsDrawHandle = false;
+                                this.previouseHoveredVisual.Render();
+                                this.previouseHoveredVisual = null;
                             }
                         }
 
@@ -306,7 +358,12 @@ namespace DrawingPad.Layers
 
                 case DrawableState.Resizing:
                     {
-                        this.resizeVisual.Resize(this.vertexPos, this.vertexCenter, cursorPosition);
+                        this.selectedVisual.Resize(this.vertexPos, this.vertexCenter, cursorPosition);
+                        break;
+                    }
+
+                case DrawableState.InputState:
+                    {
                         break;
                     }
 
@@ -325,6 +382,7 @@ namespace DrawingPad.Layers
             {
                 case DrawableState.Translate:
                     {
+                        this.drawableState = DrawableState.Idle;
                         break;
                     }
 
@@ -335,10 +393,17 @@ namespace DrawingPad.Layers
 
                 case DrawableState.DrawConnectionLine:
                     {
+                        this.drawableState = DrawableState.Idle;
                         break;
                     }
 
                 case DrawableState.Resizing:
+                    {
+                        this.drawableState = DrawableState.Idle;
+                        break;
+                    }
+
+                case DrawableState.InputState:
                     {
                         break;
                     }
@@ -346,8 +411,6 @@ namespace DrawingPad.Layers
                 default:
                     throw new NotImplementedException();
             }
-
-            this.drawableState = DrawableState.Idle;
         }
 
         #endregion

@@ -17,6 +17,9 @@ namespace DrawingPad.Drawable
 
         #region 属性
 
+        /// <summary>
+        /// 保存图形数据
+        /// </summary>
         public GraphicsBase Graphics { get; private set; }
 
         /// <summary>
@@ -25,9 +28,9 @@ namespace DrawingPad.Drawable
         public string Name { get; set; }
 
         /// <summary>
-        /// 鼠标是否移动上去了
+        /// 是否画句柄
         /// </summary>
-        public bool IsMouseHover { get; set; }
+        public bool IsDrawHandle { get; set; }
 
         /// <summary>
         /// 是否是选中状态
@@ -75,6 +78,10 @@ namespace DrawingPad.Drawable
 
         #endregion
 
+        #region 实例方法
+
+        #endregion
+
         #region 公开接口
 
         public void Render()
@@ -83,7 +90,7 @@ namespace DrawingPad.Drawable
 
             this.RenderCore(dc);
 
-            if (this.IsMouseHover || this.IsSelected)
+            if (this.IsDrawHandle || this.IsSelected)
             {
                 for (int i = 0; i < this.CircleHandles; i++)
                 {
@@ -91,13 +98,7 @@ namespace DrawingPad.Drawable
 
                     dc.DrawEllipse(PadContext.TrackerBackground, PadContext.TrackerPen, center, PadContext.CircleTrackerRadius, PadContext.CircleTrackerRadius);
                 }
-            }
-            else
-            {
-            }
 
-            if (this.IsMouseHover || this.IsSelected)
-            {
                 for (int i = 0; i < this.RectangleHandles; i++)
                 {
                     Rect rect = this.GetResizeHandleBounds(i);
@@ -107,6 +108,7 @@ namespace DrawingPad.Drawable
             }
             else
             {
+                
             }
 
             dc.Close();

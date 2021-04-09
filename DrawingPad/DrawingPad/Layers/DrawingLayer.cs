@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace DrawingPad.Layers
 {
-    public class UIElementLayer : DrawingLayer
+    public abstract class DrawingLayer : Canvas
     {
     }
 }
