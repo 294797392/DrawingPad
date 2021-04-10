@@ -15,6 +15,11 @@ namespace DrawingPad.Drawable
 
         private Typeface typeface;
 
+        /// <summary>
+        /// 文本边距
+        /// </summary>
+        private const int TextMargin = 10;
+
         #endregion
 
         #region 属性
@@ -135,7 +140,7 @@ namespace DrawingPad.Drawable
         public Rect GetTextBounds()
         {
             Rect bounds = this.GetBounds();
-            bounds.Inflate(-10, -10);
+            bounds.Inflate(-TextMargin, -TextMargin);
             return bounds;
         }
 
