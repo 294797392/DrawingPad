@@ -49,13 +49,13 @@ namespace DrawingPad.Layers
 
         #endregion
 
+        #region 实例变量
+
         private Dictionary<GuidelineSize, int> GuidelineSizeMap = new Dictionary<GuidelineSize, int>()
         {
             { GuidelineSize.Small, 10 }, { GuidelineSize.Middle, 15 },
             { GuidelineSize.Large, 20 }, { GuidelineSize.ExtraLarge, 25 }
         };
-
-        #region 实例变量
 
         #endregion
 
