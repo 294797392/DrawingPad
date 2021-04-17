@@ -7,7 +7,7 @@
         xmlns:uc="clr-namespace:DrawingPad.UserControls"
         xmlns:dd="clr-namespace:WPFToolkit.DragDrop;assembly=WPFToolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="500"
+        Title="MainWindow" Height="700" Width="800"
         x:Name="Window">
 
     <Window.Resources>
@@ -28,18 +28,30 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
 
             <uc:VisualListUserControl Grid.Column="0"/>
 
-            <Grid Grid.Column="1">
-                <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"
-                                           dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding ElementName=Window}"/>
-                <Canvas>
-                    <TextBox x:Name="TextBoxEditor" Visibility="Collapsed" TextWrapping="Wrap" />
-                </Canvas>
-            </Grid>
+            <Border Grid.Column="2" Margin="30">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" ShadowDepth="7" Opacity="0.7" BlurRadius="10"/>
+                </Border.Effect>
+
+                <Grid>
+                    <layer:GuidelineLayer/>
+                    <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"
+                                           dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding ElementName=Window}"
+                                           Background="Transparent"/>
+
+                    <Canvas>
+                        <TextBox x:Name="TextBoxEditor" Visibility="Collapsed" TextWrapping="Wrap" />
+                    </Canvas>
+                </Grid>
+
+            </Border>
         </Grid>
 
         <uc:StatusbarUserControl Grid.Row="5" BorderBrush="{StaticResource ResourceKey=BrushToolboxItemBorder}" BorderThickness="0,1,0,0"/>

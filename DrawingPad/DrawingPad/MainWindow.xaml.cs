@@ -25,28 +25,16 @@ namespace DrawingPad
     /// </summary>
     public partial class MainWindow : Window, IDropHandler
     {
+        #region 构造方法
+
         public MainWindow()
         {
             InitializeComponent();
-
-            //GraphicsRectangle graphicsRect = new GraphicsRectangle()
-            //{
-            //    Point1X = 100,
-            //    Point1Y = 100,
-            //    Width = 100,
-            //    Height = 100
-            //};
-            //DrawableLayer.DrawVisual(graphicsRect);
-
-            //GraphicsRectangle graphicsRect1 = new GraphicsRectangle()
-            //{
-            //    Point1X = 300,
-            //    Point1Y = 300,
-            //    Width = 100,
-            //    Height = 100
-            //};
-            //DrawableLayer.DrawVisual(graphicsRect1);
         }
+
+        #endregion
+
+        #region 事件处理器
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -76,6 +64,8 @@ namespace DrawingPad
             Border b = e.Source as Border;
             Console.WriteLine(b.Name);
         }
+
+        #endregion
 
         #region IDropHandler
 

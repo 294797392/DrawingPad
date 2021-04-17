@@ -338,27 +338,34 @@ namespace DrawingPad.Layers
                     {
                         #region 处理鼠标移动到图形上之后，图形显示连接点的逻辑
 
+                        if (this.previouseHoveredVisual != null)
+                        {
+                            this.previouseHoveredVisual.IsDrawHandle = false;
+                            this.previouseHoveredVisual.Render();
+                            this.previouseHoveredVisual = null;
+                        }
+
                         DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
-                        if (visualHit != null)
+                        if (visualHit == null)
+                        {
+                            //if (this.previouseHoveredVisual != null)
+                            //{
+                            //    this.previouseHoveredVisual.IsDrawHandle = false;
+                            //    this.previouseHoveredVisual.Render();
+                            //    this.previouseHoveredVisual = null;
+                            //}
+                        }
+                        else
                         {
                             this.previouseHoveredVisual = visualHit;
                             this.previouseHoveredVisual.IsDrawHandle = true;
                             this.previouseHoveredVisual.Render();
                         }
-                        else
-                        {
-                            if (this.previouseHoveredVisual != null)
-                            {
-                                this.previouseHoveredVisual.IsDrawHandle = false;
-                                this.previouseHoveredVisual.Render();
-                                this.previouseHoveredVisual = null;
-                            }
-                        }
 
                         #endregion
 
-                        // 当存在选中的图形的时候，处理鼠标状态
-                        this.ProcessSelectedVisualCursor(this.selectedVisual, cursorPosition);
+                        // 处理鼠标状态
+                        this.ProcessSelectedVisualCursor(visualHit, cursorPosition);
 
                         break;
                     }

@@ -91,7 +91,7 @@
     <Compile Include="Graphics\TextProperties.cs" />
     <Compile Include="Layers\BackgroundLayer.cs" />
     <Compile Include="Layers\ContainerLayer.cs" />
-    <Compile Include="Layers\CoordinatesLayer.cs" />
+    <Compile Include="Layers\GuidelineLayer.cs" />
     <Compile Include="Layers\CheckerboardLayer.cs" />
     <Compile Include="Layers\DrawableVisualLayer.cs" />
     <Compile Include="Layers\DrawingLayer.cs" />
