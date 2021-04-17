@@ -83,6 +83,7 @@
     <Compile Include="Drawable\DrawableVisualUtility.cs" />
     <Compile Include="Graphics\GraphicsBase.cs" />
     <Compile Include="Graphics\GraphicsConnectionLine.cs" />
+    <Compile Include="Graphics\GraphicsFactory.cs" />
     <Compile Include="Graphics\GraphicsRectangle.cs" />
     <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="Graphics\GraphicsUtility.cs" />
@@ -100,12 +101,19 @@
     <Compile Include="PadExtensions.cs" />
     <Compile Include="PadMessage.cs" />
     <Compile Include="PadUtility.cs" />
-    <Compile Include="UserControls\ToolboxUserControl.xaml.cs">
-      <DependentUpon>ToolboxUserControl.xaml</DependentUpon>
+    <Compile Include="UserControls\StatusbarUserControl.xaml.cs">
+      <DependentUpon>StatusbarUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ToolboxGroupVM.cs" />
-    <Compile Include="ViewModels\ToolboxItemVM.cs" />
+    <Compile Include="UserControls\ToolBoxUserControl.xaml.cs">
+      <DependentUpon>ToolBoxUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\VisualListUserControl.xaml.cs">
+      <DependentUpon>VisualListUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\GraphicsGroupVM.cs" />
+    <Compile Include="ViewModels\GraphicsVM.cs" />
     <Compile Include="Drawable\DrawableVisual.cs" />
+    <Compile Include="ViewModels\ToolboxViewModel.cs" />
     <Page Include="ControlStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -126,7 +134,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\ToolboxUserControl.xaml">
+    <Page Include="UserControls\StatusbarUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ToolBoxUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\VisualListUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

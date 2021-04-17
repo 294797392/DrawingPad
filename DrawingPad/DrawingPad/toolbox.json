@@ -7,8 +7,7 @@
                 "id": "1-1",
                 "name": "矩形",
                 "icon": "pack://application:,,,/DrawingPad;component/Images/rectangle.png",
-                "graphics": "",
-                "drawable": ""
+                "type": 0
             }
         ]
     }

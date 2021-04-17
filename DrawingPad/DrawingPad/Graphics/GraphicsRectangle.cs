@@ -9,6 +9,9 @@ namespace DrawingPad.Graphics
 {
     public class GraphicsRectangle : GraphicsBase
     {
+        public const int DefaultWidth = 100;
+        public const int DefaultHeight = 100;
+
         public override GraphicsType Type { get { return GraphicsType.Rectangle; } }
 
         /// <summary>

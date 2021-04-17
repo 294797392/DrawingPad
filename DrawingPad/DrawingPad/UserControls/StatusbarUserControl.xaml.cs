@@ -12,24 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WPFToolkit.Utility;
 
 namespace DrawingPad.UserControls
 {
     /// <summary>
-    /// ToolBoxUserControl.xaml 的交互逻辑
+    /// StatusbarUserControl.xaml 的交互逻辑
     /// </summary>
-    public partial class ToolBoxUserControl : UserControl
+    public partial class StatusbarUserControl : UserControl
     {
-        public ToolBoxUserControl()
+        public StatusbarUserControl()
         {
             InitializeComponent();
-
-            this.InitializeUserControl();
-        }
-
-        private void InitializeUserControl()
-        {
         }
     }
 }

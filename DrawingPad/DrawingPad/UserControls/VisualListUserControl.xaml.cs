@@ -12,24 +12,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WPFToolkit.Utility;
+using WPFToolkit.DragDrop;
 
 namespace DrawingPad.UserControls
 {
     /// <summary>
-    /// ToolBoxUserControl.xaml 的交互逻辑
+    /// ToolboxUserControl.xaml 的交互逻辑
     /// </summary>
-    public partial class ToolBoxUserControl : UserControl
+    public partial class VisualListUserControl : UserControl, IDragSource
     {
-        public ToolBoxUserControl()
+        public VisualListUserControl()
         {
             InitializeComponent();
-
-            this.InitializeUserControl();
         }
 
-        private void InitializeUserControl()
+        #region IDragSource
+
+        public void StartDrag(DragInfo dragInfo)
         {
         }
+
+        #endregion
     }
 }

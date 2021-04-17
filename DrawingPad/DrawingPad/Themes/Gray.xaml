@@ -6,4 +6,6 @@
     <SolidColorBrush x:Key="BrushToolboxForeground" Color="#333333"/>
     <SolidColorBrush x:Key="BrushToolboxBackground" Color="#f6f6f6"/>
 
+    <SolidColorBrush x:Key="BrushToolboxSplitter" Color="Silver"/>
+
 </ResourceDictionary>

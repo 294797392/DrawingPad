@@ -4,33 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:layer="clr-namespace:DrawingPad.Layers"
-        xmlns:visual="clr-namespace:DrawingPad.Drawable"
         xmlns:uc="clr-namespace:DrawingPad.UserControls"
+        xmlns:dd="clr-namespace:WPFToolkit.DragDrop;assembly=WPFToolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="500">
+        Title="MainWindow" Height="500" Width="500"
+        x:Name="Window">
+
+    <Window.Resources>
+
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
+        <uc:ToolBoxUserControl Grid.Row="0"/>
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <uc:ToolboxUserControl Grid.Column="0"/>
+            <uc:VisualListUserControl Grid.Column="0"/>
 
             <Grid Grid.Column="1">
-                <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"/>
+                <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"
+                                           dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding ElementName=Window}"/>
                 <Canvas>
                     <TextBox x:Name="TextBoxEditor" Visibility="Collapsed" TextWrapping="Wrap" />
                 </Canvas>
             </Grid>
         </Grid>
+
+        <uc:StatusbarUserControl Grid.Row="5" BorderBrush="{StaticResource ResourceKey=BrushToolboxItemBorder}" BorderThickness="0,1,0,0"/>
 
     </Grid>
 

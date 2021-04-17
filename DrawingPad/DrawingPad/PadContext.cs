@@ -71,7 +71,9 @@ namespace DrawingPad
 
         #region 属性
 
-        public ObservableCollection<ToolboxGroupVM> GroupList { get; private set; }
+        public ToolboxViewModel ToolboxVM { get; private set; }
+        
+        public ObservableCollection<GraphicsGroupVM> GroupList { get; private set; }
 
         #endregion
 
@@ -83,7 +85,7 @@ namespace DrawingPad
 
         public void Initialize()
         {
-            this.GroupList = new ObservableCollection<ToolboxGroupVM>();
+            this.GroupList = new ObservableCollection<GraphicsGroupVM>();
 
             List<ToolboxGroup> groups;
             if (!JSONHelper.TryParseFile<List<ToolboxGroup>>(ToolboxJsonPath, out groups))
@@ -94,7 +96,7 @@ namespace DrawingPad
 
             foreach (ToolboxGroup group in groups)
             {
-                ToolboxGroupVM groupVM = new ToolboxGroupVM()
+                GraphicsGroupVM groupVM = new GraphicsGroupVM()
                 {
                     ID = group.ID,
                     Name = group.Name,
@@ -102,18 +104,21 @@ namespace DrawingPad
 
                 foreach (ToolboxItem toolboxItem in group.Items)
                 {
-                    ToolboxItemVM itemVM = new ToolboxItemVM()
+                    GraphicsVM gvm = new GraphicsVM()
                     {
                         ID = toolboxItem.ID,
                         Name = toolboxItem.Name,
-                        IconURI = toolboxItem.Icon
+                        IconURI = toolboxItem.Icon,
+                        Type = toolboxItem.Type
                     };
 
-                    groupVM.Items.Add(itemVM);
+                    groupVM.Items.Add(gvm);
                 }
 
                 this.GroupList.Add(groupVM);
             }
+
+            this.ToolboxVM = new ToolboxViewModel();
         }
 
         #endregion
