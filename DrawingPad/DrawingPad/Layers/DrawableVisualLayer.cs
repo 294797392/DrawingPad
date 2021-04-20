@@ -35,7 +35,7 @@ namespace DrawingPad.Layers
         private Point firstConnector;                       // 第一个连接点
         private DrawableConnectionLine connectionLine;
 
-        private GraphicsVertexPosition vertexPos;               // 起始缩放点的位置
+        private GraphicsVertexLocation vertexPos;               // 起始缩放点的位置
         private Point vertexCenter;                             // 调整大小的顶点的中心坐标
 
         private DrawableState drawableState;
@@ -94,9 +94,15 @@ namespace DrawingPad.Layers
 
         #region 实例方法
 
-        private DrawableVisual HitTestFirstVisual(Point hitTestPos)
+        /// <summary>
+        /// 检测第一个被鼠标命中的元素
+        /// </summary>
+        /// <typeparam name="TExcluded">要排除在外的鼠标命中的元素的类型</typeparam>
+        /// <param name="hitTestPos">鼠标坐标位置</param>
+        /// <returns>第一个被鼠标命中的元素</returns>
+        private DrawableVisual HitTestFirstVisual<TExcluded>(Point hitTestPos) where TExcluded : DrawableVisual
         {
-            VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback, new PointHitTestParameters(hitTestPos));
+            VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback<TExcluded>, new PointHitTestParameters(hitTestPos));
 
             if (this.visualHits.Count == 0)
             {
@@ -213,7 +219,7 @@ namespace DrawingPad.Layers
         /// <param name="visual"></param>
         private void StartVisualInputState(DrawableVisual visual)
         {
-            if(visual == null)
+            if (visual == null)
             {
                 logger.WarnFormat("要编辑的图形为空");
                 return;
@@ -246,7 +252,7 @@ namespace DrawingPad.Layers
 
             Point cursorPosition = e.GetPosition(this);
 
-            DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+            DrawableVisual visualHit = this.HitTestFirstVisual<DrawableNullExcluded>(cursorPosition);
             if (visualHit == null)
             {
                 if (this.selectedVisual != null)
@@ -291,7 +297,7 @@ namespace DrawingPad.Layers
                     if (bounds.Contains(cursorPosition))
                     {
                         Point center = bounds.GetCenter();
-                        GraphicsVertexPosition position = GraphicsUtility.GetVertex(visualHit, center);
+                        GraphicsVertexLocation position = GraphicsUtility.GetVertexLocation(visualHit.Graphics, center);
 
                         this.drawableState = DrawableState.DrawConnectionLine;
                         GraphicsBase graphics = new GraphicsConnectionLine()
@@ -316,7 +322,7 @@ namespace DrawingPad.Layers
                     if (bounds.Contains(cursorPosition))
                     {
                         this.vertexCenter = bounds.GetCenter();
-                        this.vertexPos = GraphicsUtility.GetVertex(visualHit, this.vertexCenter);
+                        this.vertexPos = GraphicsUtility.GetVertexLocation(visualHit.Graphics, this.vertexCenter);
                         this.drawableState = DrawableState.Resizing;
                         return;
                     }
@@ -345,7 +351,7 @@ namespace DrawingPad.Layers
                             this.previouseHoveredVisual = null;
                         }
 
-                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawableNullExcluded>(cursorPosition);
                         if (visualHit == null)
                         {
                             //if (this.previouseHoveredVisual != null)
@@ -384,17 +390,19 @@ namespace DrawingPad.Layers
 
                 case DrawableState.DrawConnectionLine:
                     {
-                        List<Point> pointList = DrawableVisualUtility.GetConnectionPoints(this.selectedVisual, this.firstConnector, cursorPosition);
+                        List<Point> pointList = GraphicsUtility.GetConnectionPoints(this.selectedVisual.Graphics, this.firstConnector, cursorPosition);
                         if (pointList == null)
                         {
                             return;
                         }
                         this.connectionLine.Update(pointList);
 
-                        DrawableVisual visualHit = this.HitTestFirstVisual(cursorPosition);
+                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawableConnectionLine>(cursorPosition);
                         if (visualHit != null)
                         {
-                            Console.WriteLine(visualHit.Name);
+                            if (visualHit != this.selectedVisual)
+                            {
+                            }
                         }
 
                         break;
@@ -462,8 +470,13 @@ namespace DrawingPad.Layers
         #region 事件处理器
 
         // If a child visual object is hit, toggle its opacity to visually indicate a hit.
-        private HitTestResultBehavior HitTestResultCallback(HitTestResult result)
+        private HitTestResultBehavior HitTestResultCallback<TExcluded>(HitTestResult result)
         {
+            if (result.VisualHit is TExcluded)
+            {
+                return HitTestResultBehavior.Continue;
+            }
+
             if (result.VisualHit is DrawableVisual)
             {
                 this.visualHits.Add(result.VisualHit);

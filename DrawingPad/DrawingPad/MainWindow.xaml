@@ -37,7 +37,7 @@
 
             <Border Grid.Column="2" Margin="30">
                 <Border.Effect>
-                    <DropShadowEffect Color="Black" ShadowDepth="7" Opacity="0.7" BlurRadius="10"/>
+                    <DropShadowEffect Color="Black" ShadowDepth="2" Opacity="0.7" BlurRadius="5"/>
                 </Border.Effect>
 
                 <Grid>

@@ -40,11 +40,11 @@ namespace DrawingPad.Graphics
             this.Point1Y += offsetY;
         }
 
-        public override void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        public override void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
         {
             switch (vertex)
             {
-                case GraphicsVertexPosition.LeftTop:
+                case GraphicsVertexLocation.TopLeft:
                     {
                         double targetWidth = this.Width - (newPos.X - this.Point1X);
                         double targetHeight = this.Height - (newPos.Y - this.Point1Y);
@@ -70,7 +70,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexPosition.RightTop:
+                case GraphicsVertexLocation.TopRight:
                     {
                         double targetWidth = newPos.X - this.Point1X;
                         double targetHeight = this.Height - (newPos.Y - this.Point1Y);
@@ -95,7 +95,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexPosition.LeftBottom:
+                case GraphicsVertexLocation.BottomLeft:
                     {
                         double targetWidth = this.Width - (newPos.X - this.Point1X);
                         double targetHeight = newPos.Y - this.Point1Y;
@@ -120,7 +120,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexPosition.RightBottom:
+                case GraphicsVertexLocation.BottomRight:
                     {
                         double targetWidth = newPos.X - this.Point1X;
                         double targetHeight = newPos.Y - this.Point1Y;

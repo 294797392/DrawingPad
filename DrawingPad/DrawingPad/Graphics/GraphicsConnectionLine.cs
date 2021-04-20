@@ -20,7 +20,7 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 起始点的位置
         /// </summary>
-        public GraphicsVertexPosition StartPointPosition { get; set; }
+        public GraphicsVertexLocation StartPointPosition { get; set; }
 
         public DrawableVisual StartVisual { get; set; }
 
@@ -31,7 +31,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        public override void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
         {
             throw new NotImplementedException();
         }

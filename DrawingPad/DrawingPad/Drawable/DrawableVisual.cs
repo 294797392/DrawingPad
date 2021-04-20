@@ -196,7 +196,7 @@ namespace DrawingPad.Drawable
         /// 对图形做缩放操作
         /// </summary>
         /// <param name="vertex">调整大小的顶点位置</param>
-        public virtual void Resize(GraphicsVertexPosition vertex, Point oldPos, Point newPos)
+        public virtual void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
         {
             this.Graphics.Resize(vertex, oldPos, newPos);
             this.Render();
