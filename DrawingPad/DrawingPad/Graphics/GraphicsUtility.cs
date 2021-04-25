@@ -101,8 +101,6 @@ namespace DrawingPad.Graphics
 
             ConnectionLocations firstLocation = firstGraphics.GetConnectionLocation(startPoint);
 
-            Rect startGraphicsBounds = firstGraphics.GetBounds();
-
             List<Point> pointList = new List<Point>();
 
             pointList.Add(startPoint);
@@ -123,6 +121,11 @@ namespace DrawingPad.Graphics
                             // 和另外一个图形连接起来了
                             if (secondGraphics != null)
                             {
+                                ConnectionLocations secondLocation = secondGraphics.HitTestConnectionLocation(cursorPos);
+                                if (secondLocation != ConnectionLocations.Null)
+                                {
+                                    Console.WriteLine("123");
+                                }
                             }
 
                             break;
@@ -402,6 +405,17 @@ namespace DrawingPad.Graphics
                 Height = rightBottom.Y - leftTop.Y
             };
             return rect;
+        }
+
+        /// <summary>
+        /// 生成一个矩形
+        /// </summary>
+        /// <param name="center">矩形的中心坐标</param>
+        /// <param name="radius">矩形的半径</param>
+        /// <returns></returns>
+        public static Rect MakeRect(Point center, int radius)
+        {
+            return MakeRect(new Point(center.X - radius, center.Y - radius), new Point(center.X + radius, center.Y + radius));
         }
     }
 }

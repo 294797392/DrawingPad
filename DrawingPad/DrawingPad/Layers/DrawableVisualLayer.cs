@@ -169,7 +169,7 @@ namespace DrawingPad.Layers
                 return;
             }
 
-            for (int i = 0; i < selectedVisual.CircleHandles; i++)
+            for (int i = 0; i < selectedVisual.ConnectionHandles; i++)
             {
                 Rect boundary = selectedVisual.GetConnectionHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
@@ -179,7 +179,7 @@ namespace DrawingPad.Layers
                 }
             }
 
-            for (int i = 0; i < selectedVisual.RectangleHandles; i++)
+            for (int i = 0; i < selectedVisual.ResizeHandles; i++)
             {
                 Rect boundary = selectedVisual.GetResizeHandleBounds(i);
                 if (boundary.Contains(cursorPosition))
@@ -190,6 +190,40 @@ namespace DrawingPad.Layers
             }
 
             this.Cursor = Cursors.Arrow;
+        }
+
+        /// <summary>
+        /// 当鼠标移动到图形上的时候，画Handle
+        /// </summary>
+        /// <param name="cursorPosition">鼠标坐标的位置</param>
+        /// <returns>返回鼠标移动到的图形</returns>
+        private DrawableVisual DrawHandleWhenMouseOverDrawable<ExcudedDrawable>(Point cursorPosition) where ExcudedDrawable : DrawableVisual
+        {
+            if (this.previouseHoveredVisual != null)
+            {
+                this.previouseHoveredVisual.IsDrawHandle = false;
+                this.previouseHoveredVisual.Render();
+                this.previouseHoveredVisual = null;
+            }
+
+            DrawableVisual visualHit = this.HitTestFirstVisual<ExcudedDrawable>(cursorPosition);
+            if (visualHit == null)
+            {
+                //if (this.previouseHoveredVisual != null)
+                //{
+                //    this.previouseHoveredVisual.IsDrawHandle = false;
+                //    this.previouseHoveredVisual.Render();
+                //    this.previouseHoveredVisual = null;
+                //}
+            }
+            else
+            {
+                this.previouseHoveredVisual = visualHit;
+                this.previouseHoveredVisual.IsDrawHandle = true;
+                this.previouseHoveredVisual.Render();
+            }
+
+            return visualHit;
         }
 
         /// <summary>
@@ -308,7 +342,7 @@ namespace DrawingPad.Layers
 
                 #region 判断是否点击了连接点
 
-                for (int i = 0; i < visualHit.CircleHandles; i++)
+                for (int i = 0; i < visualHit.ConnectionHandles; i++)
                 {
                     Rect bounds = visualHit.GetConnectionHandleBounds(i);
                     if (bounds.Contains(cursorPosition))
@@ -318,7 +352,7 @@ namespace DrawingPad.Layers
                         ConnectionLocations location = visualHit.Graphics.GetConnectionLocation(cursorPosition);
 
                         this.drawableState = DrawableState.Connecting;
-                        GraphicsBase graphics = new GraphicsConnectionLine()
+                        GraphicsBase graphics = new GraphicsPolyline()
                         {
                             ConnectionPoint = center,
                             StartConnectionLocation = location,
@@ -334,7 +368,7 @@ namespace DrawingPad.Layers
 
                 #region 判断是否点击了Reisze点
 
-                for (int i = 0; i < visualHit.RectangleHandles; i++)
+                for (int i = 0; i < visualHit.ResizeHandles; i++)
                 {
                     Rect bounds = visualHit.GetResizeHandleBounds(i);
                     if (bounds.Contains(cursorPosition))
@@ -360,33 +394,7 @@ namespace DrawingPad.Layers
             {
                 case DrawableState.Idle:
                     {
-                        #region 处理鼠标移动到图形上之后，图形显示连接点的逻辑
-
-                        if (this.previouseHoveredVisual != null)
-                        {
-                            this.previouseHoveredVisual.IsDrawHandle = false;
-                            this.previouseHoveredVisual.Render();
-                            this.previouseHoveredVisual = null;
-                        }
-
-                        DrawableVisual visualHit = this.HitTestFirstVisual<ExcludedNullDrawable>(cursorPosition);
-                        if (visualHit == null)
-                        {
-                            //if (this.previouseHoveredVisual != null)
-                            //{
-                            //    this.previouseHoveredVisual.IsDrawHandle = false;
-                            //    this.previouseHoveredVisual.Render();
-                            //    this.previouseHoveredVisual = null;
-                            //}
-                        }
-                        else
-                        {
-                            this.previouseHoveredVisual = visualHit;
-                            this.previouseHoveredVisual.IsDrawHandle = true;
-                            this.previouseHoveredVisual.Render();
-                        }
-
-                        #endregion
+                        DrawableVisual visualHit = this.DrawHandleWhenMouseOverDrawable<DrawablePolyline>(cursorPosition);
 
                         // 处理鼠标状态
                         this.ProcessSelectedVisualCursor(visualHit, cursorPosition);
@@ -410,8 +418,8 @@ namespace DrawingPad.Layers
                     {
                         // 要连接到的元素
                         DrawableVisual targetVisual = null;
-                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawablePolyline>(cursorPosition);
-                        if (visualHit != null && visualHit != this.selectedVisual)
+                        DrawableVisual visualHit = this.DrawHandleWhenMouseOverDrawable<DrawablePolyline>(cursorPosition);
+                        if (visualHit != null && visualHit.Type != GraphicsType.Polyline)
                         {
                             targetVisual = visualHit;
                         }

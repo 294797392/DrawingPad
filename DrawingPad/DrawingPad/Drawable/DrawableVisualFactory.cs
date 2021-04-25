@@ -18,7 +18,7 @@ namespace DrawingPad.Drawable
                         return new DrawableRectangle(graphics);
                     }
 
-                case GraphicsType.ConnectionLine:
+                case GraphicsType.Polyline:
                     {
                         return new DrawablePolyline(graphics);
                     }

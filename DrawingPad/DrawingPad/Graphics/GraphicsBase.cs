@@ -35,11 +35,23 @@ namespace DrawingPad.Graphics
         [JsonProperty("TextProperties")]
         public TextProperties TextProperties { get; set; }
 
+        /// <summary>
+        /// 连接点数量
+        /// </summary>
+        public int ConnectionHandles { get; set; }
+
+        /// <summary>
+        /// 缩放点的数量
+        /// </summary>
+        public int ResizeHandles { get; set; }
+
         #endregion
 
         public GraphicsBase()
         {
             this.TextProperties = new TextProperties();
+            this.ConnectionHandles = 4;
+            this.ResizeHandles = 4;
         }
 
         #region 抽象方法
@@ -61,6 +73,19 @@ namespace DrawingPad.Graphics
 
         public abstract Point GetResizeHandle(int index);
 
+        /// <summary>
+        /// 获取圆形连接点的边界框
+        /// </summary>
+        /// <returns></returns>
+        public abstract Rect GetConnectionHandleBounds(int index);
+
+        /// <summary>
+        /// 获取矩形拖拽点的边界框
+        /// </summary>
+        /// <param name="numHandle"></param>
+        /// <returns></returns>
+        public abstract Rect GetResizeHandleBounds(int index);
+
         public abstract Point GetConnectionHandle(int index);
 
         public abstract Point GetRotationHandle();
@@ -80,6 +105,26 @@ namespace DrawingPad.Graphics
         /// <param name="handlePoint"></param>
         /// <returns></returns>
         public abstract ResizeLocations GetResizeLocation(Point handlePoint);
+
+        /// <summary>
+        /// 测试某个坐标点是否是连接点
+        /// </summary>
+        /// <param name="handlePoint"></param>
+        /// <param name="tolerance">容错值</param>
+        /// <returns></returns>
+        public ConnectionLocations HitTestConnectionLocation(Point hitTestPoint)
+        {
+            for (int i = 0; i < this.ConnectionHandles; i++)
+            {
+                Rect rect = this.GetConnectionHandleBounds(i);
+                if (rect.Contains(hitTestPoint))
+                {
+                    return this.GetConnectionLocation(rect.GetCenter());
+                }
+            }
+
+            return ConnectionLocations.Null;
+        }
 
         #endregion
     }

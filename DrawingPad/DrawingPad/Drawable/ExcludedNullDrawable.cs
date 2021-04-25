@@ -11,8 +11,6 @@ namespace DrawingPad.Drawable
 {
     public class ExcludedNullDrawable : DrawableVisual
     {
-        public override int CircleHandles { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
-        public override int RectangleHandles { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
         public override Geometry Geometry => throw new NotImplementedException();
 
         public ExcludedNullDrawable(GraphicsBase graphics) : 

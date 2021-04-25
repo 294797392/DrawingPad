@@ -238,7 +238,7 @@ namespace DrawingPad.Graphics
                 return ConnectionLocations.Right;
             }
 
-            throw new NotImplementedException();
+            return ConnectionLocations.Null;
         }
 
         public override ResizeLocations GetResizeLocation(Point handlePoint)
@@ -265,6 +265,40 @@ namespace DrawingPad.Graphics
 
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 获取圆形连接点的边界框
+        /// </summary>
+        /// <returns></returns>
+        public override Rect GetConnectionHandleBounds(int index)
+        {
+            Point center = this.GetConnectionHandle(index);
+
+            return new Rect()
+            {
+                Height = PadContext.CircleTrackerRadius * 2,
+                Width = PadContext.CircleTrackerRadius * 2,
+                Location = new Point(center.X - PadContext.CircleTrackerRadius, center.Y - PadContext.CircleTrackerRadius)
+            };
+        }
+
+        /// <summary>
+        /// 获取矩形拖拽点的边界框
+        /// </summary>
+        /// <param name="numHandle"></param>
+        /// <returns></returns>
+        public override Rect GetResizeHandleBounds(int index)
+        {
+            Point center = this.GetResizeHandle(index);
+
+            return new Rect()
+            {
+                Height = PadContext.RectangleTrackerSize,
+                Width = PadContext.RectangleTrackerSize,
+                Location = new Point(center.X - PadContext.RectangleTrackerSize / 2, center.Y - PadContext.RectangleTrackerSize / 2)
+            };
+        }
+
 
         public Rect MakeRect()
         {

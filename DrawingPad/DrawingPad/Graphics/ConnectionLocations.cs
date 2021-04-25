@@ -14,6 +14,11 @@ namespace DrawingPad
     public enum ConnectionLocations
     {
         /// <summary>
+        /// 说明不在连接点上
+        /// </summary>
+        Null,
+
+        /// <summary>
         /// 连接点在上面
         /// </summary>
         Top,

@@ -33,10 +33,6 @@ namespace DrawingPad.Drawable
 
         #region 属性
 
-        public override int CircleHandles { get; protected set; }
-
-        public override int RectangleHandles { get; protected set; }
-
         public override Geometry Geometry { get { return this.geometry; } }
 
         #endregion
@@ -47,8 +43,6 @@ namespace DrawingPad.Drawable
             base(graphics)
         {
             this.graphicsRect = graphics as GraphicsRectangle;
-            this.CircleHandles = 4;
-            this.RectangleHandles = 4;
         }
 
         #endregion

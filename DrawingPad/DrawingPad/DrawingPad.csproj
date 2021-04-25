@@ -82,7 +82,7 @@
     <Compile Include="Drawable\DrawableRectangle.cs" />
     <Compile Include="Drawable\DrawableState.cs" />
     <Compile Include="Graphics\GraphicsBase.cs" />
-    <Compile Include="Graphics\GraphicsConnectionLine.cs" />
+    <Compile Include="Graphics\GraphicsPolyline.cs" />
     <Compile Include="Graphics\GraphicsFactory.cs" />
     <Compile Include="Graphics\GraphicsRectangle.cs" />
     <Compile Include="Graphics\GraphicsType.cs" />

@@ -19,6 +19,6 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 连接线
         /// </summary>
-        ConnectionLine = 1
+        Polyline = 1
     }
 }

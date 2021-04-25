@@ -16,14 +16,12 @@ namespace DrawingPad.Drawable
     {
         #region 实例变量
 
-        private GraphicsConnectionLine graphics;
+        private GraphicsPolyline graphics;
 
         #endregion
 
         #region 属性
 
-        public override int CircleHandles { get; protected set; }
-        public override int RectangleHandles { get; protected set; }
         public override Geometry Geometry { get; }
 
         #endregion
@@ -32,7 +30,7 @@ namespace DrawingPad.Drawable
 
         public DrawablePolyline(GraphicsBase graphics) : base(graphics)
         {
-            this.graphics = graphics as GraphicsConnectionLine;
+            this.graphics = graphics as GraphicsPolyline;
         }
 
         #endregion

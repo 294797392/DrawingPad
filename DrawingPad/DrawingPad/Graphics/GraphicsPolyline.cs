@@ -8,9 +8,9 @@ using System.Windows;
 
 namespace DrawingPad.Graphics
 {
-    public class GraphicsConnectionLine : GraphicsBase
+    public class GraphicsPolyline : GraphicsBase
     {
-        public override GraphicsType Type { get { return GraphicsType.ConnectionLine; } }
+        public override GraphicsType Type { get { return GraphicsType.Polyline; } }
 
         /// <summary>
         /// 连接点
@@ -62,6 +62,16 @@ namespace DrawingPad.Graphics
         }
 
         public override ResizeLocations GetResizeLocation(Point handlePoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Rect GetConnectionHandleBounds(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Rect GetResizeHandleBounds(int index)
         {
             throw new NotImplementedException();
         }
