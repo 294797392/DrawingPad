@@ -24,7 +24,7 @@ namespace DrawingPad.Drawable
         /// <summary>
         /// 在画连接线
         /// </summary>
-        DrawConnectionLine,
+        Connecting,
 
         /// <summary>
         /// 在做调整大小的操作

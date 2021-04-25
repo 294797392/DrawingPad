@@ -20,7 +20,7 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 起始点的位置
         /// </summary>
-        public GraphicsVertexLocation StartPointPosition { get; set; }
+        public ConnectionLocations StartConnectionLocation { get; set; }
 
         public DrawableVisual StartVisual { get; set; }
 
@@ -31,7 +31,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
+        public override void Resize(ResizeLocations location, Point oldPos, Point newPos)
         {
             throw new NotImplementedException();
         }
@@ -52,6 +52,16 @@ namespace DrawingPad.Graphics
         }
 
         public override Rect GetBounds()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override ConnectionLocations GetConnectionLocation(Point handlePoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override ResizeLocations GetResizeLocation(Point handlePoint)
         {
             throw new NotImplementedException();
         }

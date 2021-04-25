@@ -27,6 +27,8 @@ namespace DrawingPad.Drawable
 
         private GraphicsRectangle graphicsRect;
 
+        private RectangleGeometry geometry;
+
         #endregion
 
         #region 属性
@@ -34,6 +36,8 @@ namespace DrawingPad.Drawable
         public override int CircleHandles { get; protected set; }
 
         public override int RectangleHandles { get; protected set; }
+
+        public override Geometry Geometry { get { return this.geometry; } }
 
         #endregion
 
@@ -49,20 +53,23 @@ namespace DrawingPad.Drawable
 
         #endregion
 
+        #region DrawableVisual
+
         protected override void RenderCore(DrawingContext dc)
         {
-            dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
+            if (this.geometry == null)
+            {
+                this.geometry = new RectangleGeometry();
+            }
+
+            this.geometry.Rect = this.graphicsRect.MakeRect();
+
+            dc.DrawGeometry(PadContext.DefaultFillBrush, PadContext.DefaultPen, this.geometry);
+
+            //dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
         }
 
-        public override bool Contains(Point p)
-        {
-            return this.GetBounds().Contains(p);
-        }
-
-        public Cursor GetRectangleHandleCursor(int num)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
         #region 实例方法
 

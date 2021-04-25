@@ -76,8 +76,8 @@
     </ApplicationDefinition>
     <Compile Include="DataModels\ToolboxGroup.cs" />
     <Compile Include="DataModels\ToolboxItem.cs" />
-    <Compile Include="Drawable\DrawableConnectionLine.cs" />
-    <Compile Include="Drawable\DrawableNullExcluded.cs" />
+    <Compile Include="Drawable\DrawablePolyline.cs" />
+    <Compile Include="Drawable\ExcludedNullDrawable.cs" />
     <Compile Include="Drawable\DrawableVisualFactory.cs" />
     <Compile Include="Drawable\DrawableRectangle.cs" />
     <Compile Include="Drawable\DrawableState.cs" />
@@ -87,8 +87,8 @@
     <Compile Include="Graphics\GraphicsRectangle.cs" />
     <Compile Include="Graphics\GraphicsType.cs" />
     <Compile Include="Graphics\GraphicsUtility.cs" />
-    <Compile Include="Graphics\GraphicsVertexLocation.cs" />
     <Compile Include="Graphics\RelativeLocation.cs" />
+    <Compile Include="Graphics\ResizeLocations.cs" />
     <Compile Include="Graphics\TextProperties.cs" />
     <Compile Include="Layers\BackgroundLayer.cs" />
     <Compile Include="Layers\ContainerLayer.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="Layers\DrawableVisualLayer.cs" />
     <Compile Include="Layers\DrawingLayer.cs" />
     <Compile Include="Layers\UIElementLayer.cs" />
+    <Compile Include="Graphics\ConnectionLocations.cs" />
     <Compile Include="PadBrushes.cs" />
     <Compile Include="PadContext.cs" />
     <Compile Include="PadExtensions.cs" />

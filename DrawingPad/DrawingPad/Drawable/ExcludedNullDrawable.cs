@@ -9,12 +9,13 @@ using System.Windows.Media;
 
 namespace DrawingPad.Drawable
 {
-    public class DrawableNullExcluded : DrawableVisual
+    public class ExcludedNullDrawable : DrawableVisual
     {
         public override int CircleHandles { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
         public override int RectangleHandles { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+        public override Geometry Geometry => throw new NotImplementedException();
 
-        public DrawableNullExcluded(GraphicsBase graphics) : 
+        public ExcludedNullDrawable(GraphicsBase graphics) : 
             base(graphics)
         {
         }

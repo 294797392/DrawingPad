@@ -54,9 +54,10 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 对图形进行调整大小的操作
         /// </summary>
-        /// <param name="vertexPos">被调整大小的顶点位置</param>
-        /// <param name="vertexPoint">顶点的新位置</param>
-        public abstract void Resize(GraphicsVertexLocation vertexPos, Point oldPos, Point newPos);
+        /// <param name="location">缩放的点的位置</param>
+        /// <param name="resizePos">缩放的点的坐标</param>
+        /// <param name="newPos">顶点的新位置</param>
+        public abstract void Resize(ResizeLocations location, Point resizePos, Point newPos);
 
         public abstract Point GetResizeHandle(int index);
 
@@ -65,6 +66,20 @@ namespace DrawingPad.Graphics
         public abstract Point GetRotationHandle();
 
         public abstract Rect GetBounds();
+
+        /// <summary>
+        /// 获取某个连接点的位置
+        /// </summary>
+        /// <param name="handlePoint"></param>
+        /// <returns></returns>
+        public abstract ConnectionLocations GetConnectionLocation(Point handlePoint);
+
+        /// <summary>
+        /// 获取某个缩放点的位置
+        /// </summary>
+        /// <param name="handlePoint"></param>
+        /// <returns></returns>
+        public abstract ResizeLocations GetResizeLocation(Point handlePoint);
 
         #endregion
     }

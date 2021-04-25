@@ -54,6 +54,11 @@ namespace DrawingPad.Drawable
         /// </summary>
         public abstract int RectangleHandles { get; protected set; }
 
+        /// <summary>
+        /// 图形
+        /// </summary>
+        public abstract Geometry Geometry { get; }
+
         #endregion
 
         #region 构造方法
@@ -67,13 +72,6 @@ namespace DrawingPad.Drawable
         #endregion
 
         #region 抽象函数
-
-        /// <summary>
-        /// 图形是否包含一点
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public abstract bool Contains(Point p);
 
         protected abstract void RenderCore(DrawingContext dc);
 
@@ -154,6 +152,16 @@ namespace DrawingPad.Drawable
         }
 
         /// <summary>
+        /// 图形是否包含一点
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public virtual bool Contains(Point p)
+        {
+            return this.GetBounds().Contains(p);
+        }
+
+        /// <summary>
         /// 获取圆形连接点的边界框
         /// </summary>
         /// <returns></returns>
@@ -195,10 +203,11 @@ namespace DrawingPad.Drawable
         /// <summary>
         /// 对图形做缩放操作
         /// </summary>
-        /// <param name="vertex">调整大小的顶点位置</param>
-        public virtual void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
+        /// <param name="location">缩放的点的坐标</param>
+        /// <param name="newPos">新的坐标</param>
+        public virtual void Resize(ResizeLocations location, Point resizePos, Point newPos)
         {
-            this.Graphics.Resize(vertex, oldPos, newPos);
+            this.Graphics.Resize(location, resizePos, newPos);
             this.Render();
         }
 

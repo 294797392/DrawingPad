@@ -40,11 +40,11 @@ namespace DrawingPad.Graphics
             this.Point1Y += offsetY;
         }
 
-        public override void Resize(GraphicsVertexLocation vertex, Point oldPos, Point newPos)
+        public override void Resize(ResizeLocations location, Point oldPos, Point newPos)
         {
-            switch (vertex)
+            switch (location)
             {
-                case GraphicsVertexLocation.TopLeft:
+                case ResizeLocations.TopLeft:
                     {
                         double targetWidth = this.Width - (newPos.X - this.Point1X);
                         double targetHeight = this.Height - (newPos.Y - this.Point1Y);
@@ -70,7 +70,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexLocation.TopRight:
+                case ResizeLocations.TopRight:
                     {
                         double targetWidth = newPos.X - this.Point1X;
                         double targetHeight = this.Height - (newPos.Y - this.Point1Y);
@@ -95,7 +95,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexLocation.BottomLeft:
+                case ResizeLocations.BottomLeft:
                     {
                         double targetWidth = this.Width - (newPos.X - this.Point1X);
                         double targetHeight = newPos.Y - this.Point1Y;
@@ -120,7 +120,7 @@ namespace DrawingPad.Graphics
                         break;
                     }
 
-                case GraphicsVertexLocation.BottomRight:
+                case ResizeLocations.BottomRight:
                     {
                         double targetWidth = newPos.X - this.Point1X;
                         double targetHeight = newPos.Y - this.Point1Y;
@@ -214,6 +214,56 @@ namespace DrawingPad.Graphics
                 Width = this.Width,
                 Height = this.Height
             };
+        }
+
+        public override ConnectionLocations GetConnectionLocation(Point handlePoint)
+        {
+            Rect bounds = this.GetBounds();
+            Point leftTop = bounds.TopLeft;
+
+            if (handlePoint.X == leftTop.X && handlePoint.Y == leftTop.Y + bounds.Height / 2)
+            {
+                return ConnectionLocations.Left;
+            }
+            else if (handlePoint.X == leftTop.X + bounds.Width / 2 && handlePoint.Y == leftTop.Y)
+            {
+                return ConnectionLocations.Top;
+            }
+            else if (handlePoint.X == leftTop.X + bounds.Width / 2 && handlePoint.Y == leftTop.Y + bounds.Height)
+            {
+                return ConnectionLocations.Bottom;
+            }
+            else if (handlePoint.X == leftTop.X + bounds.Width && handlePoint.Y == leftTop.Y + bounds.Height / 2)
+            {
+                return ConnectionLocations.Right;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public override ResizeLocations GetResizeLocation(Point handlePoint)
+        {
+            Rect bounds = this.GetBounds();
+            Point leftTop = bounds.TopLeft;
+
+            if (handlePoint.X == leftTop.X && handlePoint.Y == leftTop.Y)
+            {
+                return ResizeLocations.TopLeft;
+            }
+            else if (handlePoint.X == bounds.TopRight.X && handlePoint.Y == bounds.TopRight.Y)
+            {
+                return ResizeLocations.TopRight;
+            }
+            else if (handlePoint.X == bounds.BottomLeft.X && handlePoint.Y == bounds.BottomLeft.Y)
+            {
+                return ResizeLocations.BottomLeft;
+            }
+            else if (handlePoint.X == bounds.BottomRight.X && handlePoint.Y == bounds.BottomRight.Y)
+            {
+                return ResizeLocations.BottomRight;
+            }
+
+            throw new NotImplementedException();
         }
 
         public Rect MakeRect()

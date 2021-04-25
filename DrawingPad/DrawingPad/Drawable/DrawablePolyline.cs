@@ -9,7 +9,10 @@ using System.Windows.Media;
 
 namespace DrawingPad.Drawable
 {
-    public class DrawableConnectionLine : DrawableVisual
+    /// <summary>
+    /// 折现图形
+    /// </summary>
+    public class DrawablePolyline : DrawableVisual
     {
         #region 实例变量
 
@@ -21,12 +24,13 @@ namespace DrawingPad.Drawable
 
         public override int CircleHandles { get; protected set; }
         public override int RectangleHandles { get; protected set; }
+        public override Geometry Geometry { get; }
 
         #endregion
 
         #region 构造方法
 
-        public DrawableConnectionLine(GraphicsBase graphics) : base(graphics)
+        public DrawablePolyline(GraphicsBase graphics) : base(graphics)
         {
             this.graphics = graphics as GraphicsConnectionLine;
         }
@@ -63,7 +67,7 @@ namespace DrawingPad.Drawable
 
             for (int i = 0; i < count - 1; i++)
             {
-                dc.DrawLine(PadContext.LinePen, pointList[i], pointList[i + 1]);
+                dc.DrawLine(PadContext.DefaultPen, pointList[i], pointList[i + 1]);
             }
 
             dc.Close();

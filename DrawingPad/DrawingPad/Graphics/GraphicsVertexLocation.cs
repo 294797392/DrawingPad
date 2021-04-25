@@ -8,6 +8,8 @@ namespace DrawingPad.Graphics
 {
     /// <summary>
     /// 描述一个图形中的顶点的位置
+    /// 
+    /// 所有图形的共同的特征：每个图形都有4个顶点，上下左右分别一个，通过这四个顶点规定连接线该如何画
     /// </summary>
     public enum GraphicsVertexLocation
     {
@@ -31,24 +33,5 @@ namespace DrawingPad.Graphics
         /// </summary>
         BottomCenter,
 
-        /// <summary>
-        /// 左上角顶点
-        /// </summary>
-        TopLeft,
-
-        /// <summary>
-        /// 右上角顶点
-        /// </summary>
-        TopRight,
-
-        /// <summary>
-        /// 左下角顶点
-        /// </summary>
-        BottomLeft,
-
-        /// <summary>
-        /// 右下角顶点
-        /// </summary>
-        BottomRight
     }
 }

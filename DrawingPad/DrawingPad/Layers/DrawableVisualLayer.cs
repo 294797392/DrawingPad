@@ -32,11 +32,11 @@ namespace DrawingPad.Layers
         private DrawableVisual previouseSelectedVisual;         // 上一个选中的图形
         private DrawableVisual previouseHoveredVisual;
 
-        private Point firstConnector;                       // 第一个连接点
-        private DrawableConnectionLine connectionLine;
+        private Point firstConnector;                           // 第一个连接点
+        private DrawablePolyline connectionLine;
 
-        private GraphicsVertexLocation vertexPos;               // 起始缩放点的位置
-        private Point vertexCenter;                             // 调整大小的顶点的中心坐标
+        private ResizeLocations resizeLocation;                 // 起始缩放点的位置
+        private Point resizeCenter;                             // 缩放点的中心坐标
 
         private DrawableState drawableState;
 
@@ -235,6 +235,23 @@ namespace DrawingPad.Layers
             this.TextBoxEditor.Focus();
         }
 
+        /// <summary>
+        /// 更新连接线
+        /// </summary>
+        /// <param name="firstGraphics"></param>
+        /// <param name="firstConnector">图形上的连接点</param>
+        /// <param name="sencondGraphics">连接到的图形</param>
+        /// <param name="cursorPosition">当前鼠标的位置</param>
+        private void UpdatePolyline(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition)
+        {
+            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, this.firstConnector, cursorPosition, secondGraphics);
+            if (pointList == null)
+            {
+                return;
+            }
+            this.connectionLine.Update(pointList);
+        }
+
         #endregion
 
         #region 重写方法
@@ -252,7 +269,7 @@ namespace DrawingPad.Layers
 
             Point cursorPosition = e.GetPosition(this);
 
-            DrawableVisual visualHit = this.HitTestFirstVisual<DrawableNullExcluded>(cursorPosition);
+            DrawableVisual visualHit = this.HitTestFirstVisual<ExcludedNullDrawable>(cursorPosition);
             if (visualHit == null)
             {
                 if (this.selectedVisual != null)
@@ -297,16 +314,17 @@ namespace DrawingPad.Layers
                     if (bounds.Contains(cursorPosition))
                     {
                         Point center = bounds.GetCenter();
-                        GraphicsVertexLocation position = GraphicsUtility.GetVertexLocation(visualHit.Graphics, center);
 
-                        this.drawableState = DrawableState.DrawConnectionLine;
+                        ConnectionLocations location = visualHit.Graphics.GetConnectionLocation(cursorPosition);
+
+                        this.drawableState = DrawableState.Connecting;
                         GraphicsBase graphics = new GraphicsConnectionLine()
                         {
                             ConnectionPoint = center,
-                            StartPointPosition = position,
+                            StartConnectionLocation = location,
                             StartVisual = visualHit
                         };
-                        this.connectionLine = this.DrawVisual(graphics) as DrawableConnectionLine;
+                        this.connectionLine = this.DrawVisual(graphics) as DrawablePolyline;
                         this.firstConnector = center;
                         return;
                     }
@@ -321,8 +339,8 @@ namespace DrawingPad.Layers
                     Rect bounds = visualHit.GetResizeHandleBounds(i);
                     if (bounds.Contains(cursorPosition))
                     {
-                        this.vertexCenter = bounds.GetCenter();
-                        this.vertexPos = GraphicsUtility.GetVertexLocation(visualHit.Graphics, this.vertexCenter);
+                        this.resizeCenter = bounds.GetCenter();
+                        this.resizeLocation = visualHit.Graphics.GetResizeLocation(this.resizeCenter);
                         this.drawableState = DrawableState.Resizing;
                         return;
                     }
@@ -351,7 +369,7 @@ namespace DrawingPad.Layers
                             this.previouseHoveredVisual = null;
                         }
 
-                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawableNullExcluded>(cursorPosition);
+                        DrawableVisual visualHit = this.HitTestFirstVisual<ExcludedNullDrawable>(cursorPosition);
                         if (visualHit == null)
                         {
                             //if (this.previouseHoveredVisual != null)
@@ -388,29 +406,29 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.DrawConnectionLine:
+                case DrawableState.Connecting:
                     {
-                        List<Point> pointList = GraphicsUtility.GetConnectionPoints(this.selectedVisual.Graphics, this.firstConnector, cursorPosition);
-                        if (pointList == null)
+                        // 要连接到的元素
+                        DrawableVisual targetVisual = null;
+                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawablePolyline>(cursorPosition);
+                        if (visualHit != null && visualHit != this.selectedVisual)
                         {
-                            return;
+                            targetVisual = visualHit;
                         }
-                        this.connectionLine.Update(pointList);
+                        else
+                        {
+                            // 如果当前鼠标下的元素和选中的是同一个元素，那么就表示没有要连接的元素
+                        }
 
-                        DrawableVisual visualHit = this.HitTestFirstVisual<DrawableConnectionLine>(cursorPosition);
-                        if (visualHit != null)
-                        {
-                            if (visualHit != this.selectedVisual)
-                            {
-                            }
-                        }
+                        // 当鼠标在另外一个元素上的时候，说明此时两个图形被连接起来了
+                        this.UpdatePolyline(this.selectedVisual.Graphics, this.firstConnector, targetVisual == null ? null : targetVisual.Graphics, cursorPosition);
 
                         break;
                     }
 
                 case DrawableState.Resizing:
                     {
-                        this.selectedVisual.Resize(this.vertexPos, this.vertexCenter, cursorPosition);
+                        this.selectedVisual.Resize(this.resizeLocation, this.resizeCenter, cursorPosition);
                         break;
                     }
 
@@ -443,7 +461,7 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.DrawConnectionLine:
+                case DrawableState.Connecting:
                     {
                         this.drawableState = DrawableState.Idle;
                         break;

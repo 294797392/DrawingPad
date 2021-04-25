@@ -45,7 +45,7 @@ namespace DrawingPad.Layers
 
         private static readonly Brush DefaultBackground = new SolidColorBrush(Color.FromRgb(242, 242, 242));
 
-        private const int DefaultMargin = 30;
+        private const int DefaultMargin = 5;
 
         #endregion
 

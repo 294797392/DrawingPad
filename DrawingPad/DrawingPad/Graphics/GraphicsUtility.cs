@@ -17,55 +17,6 @@ namespace DrawingPad.Graphics
         }
 
         /// <summary>
-        /// 获取点p相对于visual的顶点位置
-        /// 注意，点P一定是一个顶点
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static GraphicsVertexLocation GetVertexLocation(GraphicsBase graphics, Point p)
-        {
-            Rect bounds = graphics.GetBounds();
-
-            Point leftTop = bounds.Location;
-
-            if (p.X == leftTop.X && p.Y == leftTop.Y + bounds.Height / 2)
-            {
-                return GraphicsVertexLocation.LeftCenter;
-            }
-            else if (p.X == leftTop.X + bounds.Width / 2 && p.Y == leftTop.Y)
-            {
-                return GraphicsVertexLocation.TopCenter;
-            }
-            else if (p.X == leftTop.X + bounds.Width / 2 && p.Y == leftTop.Y + bounds.Height)
-            {
-                return GraphicsVertexLocation.BottomCenter;
-            }
-            else if (p.X == leftTop.X + bounds.Width && p.Y == leftTop.Y + bounds.Height / 2)
-            {
-                return GraphicsVertexLocation.RightCenter;
-            }
-            else if (p.X == leftTop.X && p.Y == leftTop.Y)
-            {
-                return GraphicsVertexLocation.TopLeft;
-            }
-            else if (p.X == bounds.TopRight.X && p.Y == bounds.TopRight.Y)
-            {
-                return GraphicsVertexLocation.TopRight;
-            }
-            else if (p.X == bounds.BottomLeft.X && p.Y == bounds.BottomLeft.Y)
-            {
-                return GraphicsVertexLocation.BottomLeft;
-            }
-            else if (p.X == bounds.BottomRight.X && p.Y == bounds.BottomRight.Y)
-            {
-                return GraphicsVertexLocation.BottomRight;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// 获取点P相对于图形的位置
         /// 点P可以是任意一点
         /// </summary>
@@ -124,18 +75,19 @@ namespace DrawingPad.Graphics
                 return RelativeLocation.BottomRight;
             }
 
-            throw new NotImplementedException();
+            return RelativeLocation.Bottom;
+            //throw new NotImplementedException();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="startGraphics">连接线的第一个图形</param>
+        /// <param name="firstGraphics">连接线的第一个图形</param>
         /// <param name="startPoint">第一个图形上的连接点的坐标</param>
         /// <param name="cursorPos">当前的鼠标坐标</param>
-        /// <param name="endGraphics">连接的第二个图形</param>
+        /// <param name="secondGraphics">连接的第二个图形</param>
         /// <returns></returns>
-        public static List<Point> MakeConnectionPoints(GraphicsBase startGraphics, Point startPoint, Point cursorPos, GraphicsBase endGraphics)
+        public static List<Point> MakeConnectionPoints(GraphicsBase firstGraphics, Point startPoint, Point cursorPos, GraphicsBase secondGraphics)
         {
             double cursorX = cursorPos.X;
             double cursorY = cursorPos.Y;
@@ -147,9 +99,9 @@ namespace DrawingPad.Graphics
                 return null;
             }
 
-            GraphicsVertexLocation vertex = GetVertexLocation(startGraphics, startPoint);
+            ConnectionLocations firstLocation = firstGraphics.GetConnectionLocation(startPoint);
 
-            Rect startGraphicsBounds = startGraphics.GetBounds();
+            Rect startGraphicsBounds = firstGraphics.GetBounds();
 
             List<Point> pointList = new List<Point>();
 
@@ -160,25 +112,23 @@ namespace DrawingPad.Graphics
                 // 往右下方拖动
                 Console.WriteLine("往右下方拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             // 左边的点，往右下方拖动
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
 
                             // 和另外一个图形连接起来了
-                            if (endGraphics != null)
+                            if (secondGraphics != null)
                             {
-                                // 计算鼠标处于第二个图形的什么位置
-                                RelativeLocation location = GetRelativeLocation(endGraphics, cursorPos);
                             }
 
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             // 上边的点，往右下方拖动
                             pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
@@ -186,14 +136,14 @@ namespace DrawingPad.Graphics
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             // 右边的点，往右下方拖动
                             pointList.Add(new Point(cursorX, startY));
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             // 下边的点，往右下方拖动
                             pointList.Add(new Point(startX, cursorY));
@@ -206,9 +156,9 @@ namespace DrawingPad.Graphics
                 // 往右上方拖动
                 Console.WriteLine("往右上方拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             // 左边的点，往右上方拖动
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
@@ -216,21 +166,21 @@ namespace DrawingPad.Graphics
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             // 上边的点，往右上方拖动
                             pointList.Add(new Point(startX, cursorY));
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             // 右边的点，往右上方拖动
                             pointList.Add(new Point(cursorX, startY));
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             // 下边的点，往右上方拖动
                             pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
@@ -244,16 +194,16 @@ namespace DrawingPad.Graphics
                 // 往左下方拖动
                 Console.WriteLine("往左下方拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             // 左边的点，往左下方拖动
                             pointList.Add(new Point(cursorX, startPoint.Y));
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             // 上边的点，往左下方拖动
                             pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
@@ -261,7 +211,7 @@ namespace DrawingPad.Graphics
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             // 右边的点，往左下方拖动
                             pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
@@ -269,7 +219,7 @@ namespace DrawingPad.Graphics
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             // 下边的点，往左下方拖动
                             pointList.Add(new Point(startX, cursorY));
@@ -282,23 +232,23 @@ namespace DrawingPad.Graphics
                 // 往左上方拖动
                 Console.WriteLine("往左上方拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             // 左边的点，往左上方拖动
                             pointList.Add(new Point(cursorX, startPoint.Y));
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             // 上边的点，往左上方拖动
                             pointList.Add(new Point(startX, cursorY));
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             // 右边的点，往左上方拖动
                             pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
@@ -306,7 +256,7 @@ namespace DrawingPad.Graphics
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             // 下边的点，往左上方拖动
                             pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
@@ -320,24 +270,24 @@ namespace DrawingPad.Graphics
                 // 往右拖动
                 Console.WriteLine("往右拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             break;
                         }
@@ -348,24 +298,24 @@ namespace DrawingPad.Graphics
                 // 往左拖动
                 Console.WriteLine("往左拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             break;
                         }
@@ -376,24 +326,24 @@ namespace DrawingPad.Graphics
                 // 往下拖动
                 Console.WriteLine("往下拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             break;
                         }
@@ -404,24 +354,24 @@ namespace DrawingPad.Graphics
                 // 往上拖动
                 Console.WriteLine("往上拖动");
 
-                switch (vertex)
+                switch (firstLocation)
                 {
-                    case GraphicsVertexLocation.LeftCenter:
+                    case ConnectionLocations.Left:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.TopCenter:
+                    case ConnectionLocations.Top:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.RightCenter:
+                    case ConnectionLocations.Right:
                         {
                             break;
                         }
 
-                    case GraphicsVertexLocation.BottomCenter:
+                    case ConnectionLocations.Bottom:
                         {
                             break;
                         }

@@ -44,8 +44,8 @@ namespace DrawingPad
 
         public static readonly Brush TrackerBackground = Brushes.White;
 
-        public static readonly Brush LineBrush = Brushes.Black;
-        public static readonly Pen LinePen = new Pen(Brushes.Black, LineWidth);
+        public static readonly Brush DefaultFillBrush = Brushes.White;
+        public static readonly Pen DefaultPen = new Pen(Brushes.Black, 1);
 
         #endregion
 
