@@ -111,17 +111,21 @@ namespace DrawingPad.Graphics
         /// </summary>
         /// <param name="handlePoint"></param>
         /// <param name="tolerance">容错值</param>
+        /// <param name="connector">连接点的坐标</param>
         /// <returns></returns>
-        public ConnectionLocations HitTestConnectionLocation(Point hitTestPoint)
+        public ConnectionLocations HitTestConnectionLocation(Point hitTestPoint, out Point connector)
         {
             for (int i = 0; i < this.ConnectionHandles; i++)
             {
                 Rect rect = this.GetConnectionHandleBounds(i);
                 if (rect.Contains(hitTestPoint))
                 {
+                    connector = rect.GetCenter();
                     return this.GetConnectionLocation(rect.GetCenter());
                 }
             }
+
+            connector = hitTestPoint;
 
             return ConnectionLocations.Null;
         }

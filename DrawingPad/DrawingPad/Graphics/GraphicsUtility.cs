@@ -83,27 +83,29 @@ namespace DrawingPad.Graphics
         /// 
         /// </summary>
         /// <param name="firstGraphics">连接线的第一个图形</param>
-        /// <param name="startPoint">第一个图形上的连接点的坐标</param>
-        /// <param name="cursorPos">当前的鼠标坐标</param>
+        /// <param name="firstConnector">第一个图形上的连接点的坐标</param>
         /// <param name="secondGraphics">连接的第二个图形</param>
+        /// <param name="cursorPos">当前的鼠标坐标</param>
         /// <returns></returns>
-        public static List<Point> MakeConnectionPoints(GraphicsBase firstGraphics, Point startPoint, Point cursorPos, GraphicsBase secondGraphics)
+        public static List<Point> MakeConnectionPoints(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPos)
         {
             double cursorX = cursorPos.X;
             double cursorY = cursorPos.Y;
-            double startX = startPoint.X;
-            double startY = startPoint.Y;
+            double startX = firstConnector.X;
+            double startY = firstConnector.Y;
 
             if (startX == cursorX && startY == cursorY)
             {
                 return null;
             }
 
-            ConnectionLocations firstLocation = firstGraphics.GetConnectionLocation(startPoint);
+            Point lastPoint = cursorPos;
+
+            ConnectionLocations firstLocation = firstGraphics.GetConnectionLocation(firstConnector);
 
             List<Point> pointList = new List<Point>();
 
-            pointList.Add(startPoint);
+            pointList.Add(firstConnector);
 
             if (cursorX > startX && cursorY > startY)
             {
@@ -116,16 +118,53 @@ namespace DrawingPad.Graphics
                         {
                             // 左边的点，往右下方拖动
                             pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
-                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
 
-                            // 和另外一个图形连接起来了
                             if (secondGraphics != null)
                             {
-                                ConnectionLocations secondLocation = secondGraphics.HitTestConnectionLocation(cursorPos);
-                                if (secondLocation != ConnectionLocations.Null)
+                                // 和另外一个图形连接起来了
+                                Point connector;
+
+                                ConnectionLocations secondLocation = secondGraphics.HitTestConnectionLocation(cursorPos, out connector);
+
+                                lastPoint = connector;
+
+                                switch (secondLocation)
                                 {
-                                    Console.WriteLine("123");
+                                    case ConnectionLocations.Bottom:
+                                        {
+                                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY - PadContext.MinimalMargin));
+                                            pointList.Add(new Point(cursorX, cursorY - PadContext.MinimalMargin));
+                                            break;
+                                        }
+
+                                    case ConnectionLocations.Left:
+                                        {
+
+                                            break;
+                                        }
+
+                                    case ConnectionLocations.Right:
+                                        {
+                                            break;
+                                        }
+
+                                    case ConnectionLocations.Top:
+                                        {
+                                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY - PadContext.MinimalMargin));
+                                            pointList.Add(new Point(cursorX, cursorY - PadContext.MinimalMargin));
+                                            break;
+                                        }
+
+                                    case ConnectionLocations.Null:
+                                        {
+                                            // 在第二个图形的中间或者边上
+                                            break;
+                                        }
                                 }
+                            }
+                            else
+                            {
+                                pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
                             }
 
                             break;
@@ -202,7 +241,7 @@ namespace DrawingPad.Graphics
                     case ConnectionLocations.Left:
                         {
                             // 左边的点，往左下方拖动
-                            pointList.Add(new Point(cursorX, startPoint.Y));
+                            pointList.Add(new Point(cursorX, firstConnector.Y));
                             break;
                         }
 
@@ -240,7 +279,7 @@ namespace DrawingPad.Graphics
                     case ConnectionLocations.Left:
                         {
                             // 左边的点，往左上方拖动
-                            pointList.Add(new Point(cursorX, startPoint.Y));
+                            pointList.Add(new Point(cursorX, firstConnector.Y));
                             break;
                         }
 
@@ -385,7 +424,7 @@ namespace DrawingPad.Graphics
                 throw new NotImplementedException();
             }
 
-            pointList.Add(cursorPos);
+            pointList.Add(lastPoint);
 
             return pointList;
         }

@@ -278,7 +278,7 @@ namespace DrawingPad.Layers
         /// <param name="cursorPosition">当前鼠标的位置</param>
         private void UpdatePolyline(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition)
         {
-            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, this.firstConnector, cursorPosition, secondGraphics);
+            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, firstConnector, secondGraphics, cursorPosition);
             if (pointList == null)
             {
                 return;
