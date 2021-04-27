@@ -25,6 +25,11 @@ namespace DrawingPad.Drawable
         #region 属性
 
         /// <summary>
+        /// 图形的ID
+        /// </summary>
+        public string ID { get { return this.Graphics.ID; } }
+
+        /// <summary>
         /// 保存图形数据
         /// </summary>
         public GraphicsBase Graphics { get; private set; }
@@ -153,7 +158,7 @@ namespace DrawingPad.Drawable
         /// <returns></returns>
         public Rect GetBounds()
         {
-            return this.Graphics.GetBounds(); 
+            return this.Graphics.GetBounds();
         }
 
         /// <summary>

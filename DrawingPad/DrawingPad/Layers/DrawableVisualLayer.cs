@@ -26,14 +26,47 @@ namespace DrawingPad.Layers
 
         private List<DependencyObject> visualHits;
 
-        private Point previousPosition;
-
         private DrawableVisual selectedVisual;
         private DrawableVisual previouseSelectedVisual;         // 上一个选中的图形
         private DrawableVisual previouseHoveredVisual;
 
+        #region Connection状态
+
+        /// <summary>
+        /// 连接的第一个图形
+        /// </summary>
+        private DrawableVisual firstVisual;
+
+        /// <summary>
+        /// 连接的第二个图形
+        /// </summary>
+        private DrawableVisual secondVisual;
+
+        /// <summary>
+        /// 第一个连接图形的连接点
+        /// </summary>
         private Point firstConnector;                           // 第一个连接点
-        private DrawablePolyline connectionLine;
+
+        /// <summary>
+        /// 正在连接的折线
+        /// </summary>
+        private DrawablePolyline polyline;                // 正在连接的折线
+
+        #endregion
+
+        #region Translate状态
+
+        /// <summary>
+        /// 记录鼠标上次的位置
+        /// </summary>
+        private Point previousPosition;
+
+        /// <summary>
+        /// 图形在平移的时候所关联的所有图形
+        /// </summary>
+        private List<GraphicsPolyline> associatedPolylines;
+
+        #endregion
 
         private ResizeLocations resizeLocation;                 // 起始缩放点的位置
         private Point resizeCenter;                             // 缩放点的中心坐标
@@ -56,7 +89,7 @@ namespace DrawingPad.Layers
 
         protected override int VisualChildrenCount => this.VisualList.Count;
 
-        public VisualCollection VisualList { get; private set; }
+        public List<DrawableVisual> VisualList { get; private set; }
 
         #endregion
 
@@ -71,7 +104,7 @@ namespace DrawingPad.Layers
             this.drawableState = DrawableState.Idle;
 
             this.visualHits = new List<DependencyObject>();
-            this.VisualList = new VisualCollection(this);
+            this.VisualList = new List<DrawableVisual>();
         }
 
         #endregion
@@ -83,7 +116,7 @@ namespace DrawingPad.Layers
             DrawableVisual visual = DrawableVisualFactory.Create(graphics);
             this.VisualList.Add(visual);
 
-            //this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
+            this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
 
             visual.Render();
 
@@ -272,18 +305,45 @@ namespace DrawingPad.Layers
         /// <summary>
         /// 更新连接线
         /// </summary>
+        /// <param name="polyline">要更新的折线</param>
         /// <param name="firstGraphics"></param>
         /// <param name="firstConnector">图形上的连接点</param>
-        /// <param name="sencondGraphics">连接到的图形</param>
+        /// <param name="secondGraphics">连接到的图形</param>
         /// <param name="cursorPosition">当前鼠标的位置</param>
-        private void UpdatePolyline(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition)
+        /// <param name="connected">是否已连接</param>
+        private void UpdatePolyline(DrawablePolyline polyline, GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition, out bool connected)
         {
-            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, firstConnector, secondGraphics, cursorPosition);
-            if (pointList == null)
+            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, firstConnector, secondGraphics, cursorPosition, out connected);
+            if (pointList != null)
             {
-                return;
+                polyline.Update(pointList);
             }
-            this.connectionLine.Update(pointList);
+        }
+
+        /// <summary>
+        /// 获取某个图形关联的所有的折线
+        /// </summary>
+        /// <param name="graphics">要获取的图形</param>
+        private List<GraphicsPolyline> GetAssociatedPolylines(GraphicsBase graphics)
+        {
+            if (graphics.Type == GraphicsType.Polyline)
+            {
+                return null;
+            }
+
+            List<GraphicsPolyline> result = new List<GraphicsPolyline>();
+
+            IEnumerable<GraphicsPolyline> polylines = this.VisualList.Select(v => v.Graphics).OfType<GraphicsPolyline>();
+
+            foreach (GraphicsPolyline polyline in polylines)
+            {
+                if (polyline.AssociatedGraphics1 == graphics.ID || polyline.AssociatedGraphics2 == graphics.ID)
+                {
+                    result.Add(polyline);
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -338,8 +398,6 @@ namespace DrawingPad.Layers
             {
                 this.StopVisualInputState(this.previouseSelectedVisual);
 
-                this.drawableState = DrawableState.Translate;
-
                 #region 判断是否点击了连接点
 
                 for (int i = 0; i < visualHit.ConnectionHandles; i++)
@@ -352,14 +410,15 @@ namespace DrawingPad.Layers
                         ConnectionLocations location = visualHit.Graphics.GetConnectionLocation(cursorPosition);
 
                         this.drawableState = DrawableState.Connecting;
-                        GraphicsBase graphics = new GraphicsPolyline()
+                        GraphicsPolyline graphics = new GraphicsPolyline()
                         {
-                            ConnectionPoint = center,
-                            StartConnectionLocation = location,
-                            StartVisual = visualHit
+                            //ConnectionPoint = center,
+                            //StartConnectionLocation = location,
+                            //StartVisual = visualHit
                         };
-                        this.connectionLine = this.DrawVisual(graphics) as DrawablePolyline;
+                        this.polyline = this.DrawVisual(graphics) as DrawablePolyline;
                         this.firstConnector = center;
+                        this.firstVisual = visualHit;
                         return;
                     }
                 }
@@ -379,6 +438,21 @@ namespace DrawingPad.Layers
                         return;
                     }
                 }
+
+                #endregion
+
+                #region 是平移状态
+
+                // 获取当前被移动的图形所有的连接点信息
+
+                List<GraphicsPolyline> polylines = this.GetAssociatedPolylines(visualHit.Graphics);
+                if (polylines != null && polylines.Count > 0)
+                {
+                    this.associatedPolylines = polylines;
+                    Console.WriteLine("关联的折线有{0}个", this.associatedPolylines.Count);
+                }
+
+                this.drawableState = DrawableState.Translate;
 
                 #endregion
             }
@@ -409,6 +483,24 @@ namespace DrawingPad.Layers
 
                         this.selectedVisual.Translate(x, y);
 
+                        foreach (GraphicsPolyline polyline in this.associatedPolylines)
+                        {
+                            DrawablePolyline drawable = this.VisualList.OfType<DrawablePolyline>().FirstOrDefault(v => v.ID == polyline.ID);
+
+                            if (!string.IsNullOrEmpty(polyline.AssociatedGraphics1) && string.IsNullOrEmpty(polyline.AssociatedGraphics2))
+                            {
+                                // 两个图形连接到了一起了
+                                DrawableVisual firstVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics1);
+                                DrawableVisual secondVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics2);
+
+                                Point firstConnector = polyline.PointList.FirstOrDefault();
+                                Point secondConnector = polyline.PointList.LastOrDefault();
+
+                                bool connected;
+                                this.UpdatePolyline(drawable, firstVisual.Graphics, firstConnector, secondVisual.Graphics, secondConnector, out connected);
+                            }
+                        }
+
                         this.previousPosition = cursorPosition;
 
                         break;
@@ -416,20 +508,32 @@ namespace DrawingPad.Layers
 
                 case DrawableState.Connecting:
                     {
-                        // 要连接到的元素
-                        DrawableVisual targetVisual = null;
+                        // 检测鼠标是否在某个图形上面
                         DrawableVisual visualHit = this.DrawHandleWhenMouseOverDrawable<DrawablePolyline>(cursorPosition);
                         if (visualHit != null && visualHit.Type != GraphicsType.Polyline)
                         {
-                            targetVisual = visualHit;
+                            this.secondVisual = visualHit;
                         }
                         else
                         {
                             // 如果当前鼠标下的元素和选中的是同一个元素，那么就表示没有要连接的元素
                         }
 
+                        // 当前正在画的折线
+                        GraphicsPolyline polyline = this.polyline.Graphics as GraphicsPolyline;
+
                         // 当鼠标在另外一个元素上的时候，说明此时两个图形被连接起来了
-                        this.UpdatePolyline(this.selectedVisual.Graphics, this.firstConnector, targetVisual == null ? null : targetVisual.Graphics, cursorPosition);
+                        bool connected;
+                        this.UpdatePolyline(this.polyline, this.firstVisual.Graphics, this.firstConnector, this.secondVisual == null ? null : this.secondVisual.Graphics, cursorPosition, out connected);
+                        if (connected)
+                        {
+                            polyline.AssociatedGraphics1 = this.firstVisual.ID;
+                            polyline.AssociatedGraphics2 = this.secondVisual.ID;
+                        }
+                        else
+                        {
+                            polyline.AssociatedGraphics2 = null;
+                        }
 
                         break;
                     }
@@ -472,6 +576,9 @@ namespace DrawingPad.Layers
                 case DrawableState.Connecting:
                     {
                         this.drawableState = DrawableState.Idle;
+                        this.firstVisual = null;
+                        this.secondVisual = null;
+                        this.associatedPolylines = null;
                         break;
                     }
 

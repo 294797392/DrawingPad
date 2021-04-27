@@ -10,21 +10,40 @@ namespace DrawingPad.Graphics
 {
     public class GraphicsPolyline : GraphicsBase
     {
+        #region 公开属性
+        
         public override GraphicsType Type { get { return GraphicsType.Polyline; } }
 
         /// <summary>
-        /// 连接点
+        /// 折线的点列表
         /// </summary>
-        public Point ConnectionPoint { get; set; }
+        public List<Point> PointList { get; set; }
 
         /// <summary>
-        /// 起始点的位置
+        /// 被连接的第一个图形的ID
+        /// 如果为空就说明没有
+        /// 1 -> 2
         /// </summary>
-        public ConnectionLocations StartConnectionLocation { get; set; }
+        public string AssociatedGraphics1 { get; set; }
 
-        public DrawableVisual StartVisual { get; set; }
+        /// <summary>
+        /// 被连接的第二个图形的ID
+        /// 1 -> 2
+        /// </summary>
+        public string AssociatedGraphics2 { get; set; }
 
-        public DrawableVisual TargetVisual { get; set; }
+        #endregion
+
+        #region 构造方法
+
+        public GraphicsPolyline()
+        {
+            this.PointList = new List<Point>();
+        }
+
+        #endregion
+
+        #region GraphicsBase
 
         public override void Translate(double offsetX, double offsetY)
         {
@@ -75,5 +94,7 @@ namespace DrawingPad.Graphics
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

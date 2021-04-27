@@ -47,12 +47,17 @@ namespace DrawingPad.Graphics
 
         #endregion
 
+        #region 构造方法
+
         public GraphicsBase()
         {
+            this.ID = Guid.NewGuid().ToString();
             this.TextProperties = new TextProperties();
             this.ConnectionHandles = 4;
             this.ResizeHandles = 4;
         }
+
+        #endregion
 
         #region 抽象方法
 
@@ -109,9 +114,9 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 测试某个坐标点是否是连接点
         /// </summary>
-        /// <param name="handlePoint"></param>
-        /// <param name="tolerance">容错值</param>
+        /// <param name="hitTestPoint">要测试的点的坐标</param>
         /// <param name="connector">连接点的坐标</param>
+        /// <param name="tolerance">容错值</param>
         /// <returns></returns>
         public ConnectionLocations HitTestConnectionLocation(Point hitTestPoint, out Point connector)
         {

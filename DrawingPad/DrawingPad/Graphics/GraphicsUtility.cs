@@ -86,9 +86,12 @@ namespace DrawingPad.Graphics
         /// <param name="firstConnector">第一个图形上的连接点的坐标</param>
         /// <param name="secondGraphics">连接的第二个图形</param>
         /// <param name="cursorPos">当前的鼠标坐标</param>
+        /// <param name="connected">表示折线是否已连接第二个图形</param>
         /// <returns></returns>
-        public static List<Point> MakeConnectionPoints(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPos)
+        public static List<Point> MakeConnectionPoints(GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPos, out bool connected)
         {
+            connected = false;
+
             double cursorX = cursorPos.X;
             double cursorY = cursorPos.Y;
             double startX = firstConnector.X;
@@ -132,26 +135,33 @@ namespace DrawingPad.Graphics
                                 {
                                     case ConnectionLocations.Bottom:
                                         {
+                                            connected = true;
                                             pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY - PadContext.MinimalMargin));
-                                            pointList.Add(new Point(cursorX, cursorY - PadContext.MinimalMargin));
+                                            pointList.Add(new Point(lastPoint.X, cursorY - PadContext.MinimalMargin));
                                             break;
                                         }
 
                                     case ConnectionLocations.Left:
                                         {
-
+                                            connected = true;
+                                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
+                                            pointList.Add(lastPoint);
                                             break;
                                         }
 
                                     case ConnectionLocations.Right:
                                         {
+                                            connected = true;
+                                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
+                                            pointList.Add(lastPoint);
                                             break;
                                         }
 
                                     case ConnectionLocations.Top:
                                         {
+                                            connected = true;
                                             pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY - PadContext.MinimalMargin));
-                                            pointList.Add(new Point(cursorX, cursorY - PadContext.MinimalMargin));
+                                            pointList.Add(new Point(lastPoint.X, cursorY - PadContext.MinimalMargin));
                                             break;
                                         }
 
@@ -164,6 +174,7 @@ namespace DrawingPad.Graphics
                             }
                             else
                             {
+                                // 没有连接的图形
                                 pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
                             }
 
