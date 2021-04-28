@@ -69,6 +69,8 @@ namespace DrawingPad.Drawable
             }
 
             dc.Close();
+
+            this.graphics.PointList = pointList;
         }
 
         #endregion

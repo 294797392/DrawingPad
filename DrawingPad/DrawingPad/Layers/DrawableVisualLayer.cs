@@ -487,7 +487,7 @@ namespace DrawingPad.Layers
                         {
                             DrawablePolyline drawable = this.VisualList.OfType<DrawablePolyline>().FirstOrDefault(v => v.ID == polyline.ID);
 
-                            if (!string.IsNullOrEmpty(polyline.AssociatedGraphics1) && string.IsNullOrEmpty(polyline.AssociatedGraphics2))
+                            if (!string.IsNullOrEmpty(polyline.AssociatedGraphics1) && !string.IsNullOrEmpty(polyline.AssociatedGraphics2))
                             {
                                 // 两个图形连接到了一起了
                                 DrawableVisual firstVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics1);
