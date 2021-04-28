@@ -24,6 +24,9 @@ namespace DrawingPad.Layers
 
         #region 实例变量
 
+        /// <summary>
+        /// 存储鼠标命中的元素列表
+        /// </summary>
         private List<DependencyObject> visualHits;
 
         private DrawableVisual selectedVisual;
@@ -57,19 +60,33 @@ namespace DrawingPad.Layers
         #region Translate状态
 
         /// <summary>
+        /// 存储某个图形所关联的所有连线
+        /// </summary>
+        private Dictionary<string, List<GraphicsPolyline>> graphicsPolylines;
+
+        /// <summary>
+        /// 正在移动的图形
+        /// </summary>
+        private DrawableVisual translateVisual;
+
+        /// <summary>
         /// 记录鼠标上次的位置
         /// </summary>
         private Point previousPosition;
 
         /// <summary>
-        /// 图形在平移的时候所关联的所有图形
+        /// 图形在平移的时候所关联的所有连接线信息
         /// </summary>
         private List<GraphicsPolyline> associatedPolylines;
 
         #endregion
 
+        #region Resize状态
+
         private ResizeLocations resizeLocation;                 // 起始缩放点的位置
         private Point resizeCenter;                             // 缩放点的中心坐标
+
+        #endregion
 
         private DrawableState drawableState;
 
@@ -105,6 +122,8 @@ namespace DrawingPad.Layers
 
             this.visualHits = new List<DependencyObject>();
             this.VisualList = new List<DrawableVisual>();
+
+            this.graphicsPolylines = new Dictionary<string, List<Connection>>();
         }
 
         #endregion
@@ -331,15 +350,19 @@ namespace DrawingPad.Layers
                 return null;
             }
 
-            List<GraphicsPolyline> result = new List<GraphicsPolyline>();
-
-            IEnumerable<GraphicsPolyline> polylines = this.VisualList.Select(v => v.Graphics).OfType<GraphicsPolyline>();
-
-            foreach (GraphicsPolyline polyline in polylines)
+            List<GraphicsPolyline> result;
+            if (!this.graphicsPolylines.TryGetValue(graphics.ID, out result))
             {
-                if (polyline.AssociatedGraphics1 == graphics.ID || polyline.AssociatedGraphics2 == graphics.ID)
+                // 先找到所有折线图形
+                IEnumerable<GraphicsPolyline> polylines = this.VisualList.Select(v => v.Graphics).OfType<GraphicsPolyline>();
+
+                // 从折线图形里筛选
+                foreach (GraphicsPolyline polyline in polylines)
                 {
-                    result.Add(polyline);
+                    if (polyline.AssociatedGraphics1 == graphics.ID || polyline.AssociatedGraphics2 == graphics.ID)
+                    {
+                        result.Add(polyline);
+                    }
                 }
             }
 
@@ -445,12 +468,13 @@ namespace DrawingPad.Layers
 
                 // 获取当前被移动的图形所有的连接点信息
 
-                List<GraphicsPolyline> polylines = this.GetAssociatedPolylines(visualHit.Graphics);
-                if (polylines != null && polylines.Count > 0)
+                this.associatedPolylines = this.GetAssociatedPolylines(visualHit.Graphics);
+                if (associatedPolylines != null && associatedPolylines.Count > 0)
                 {
-                    this.associatedPolylines = polylines;
                     Console.WriteLine("关联的折线有{0}个", this.associatedPolylines.Count);
                 }
+
+                this.translateVisual = visualHit;
 
                 this.drawableState = DrawableState.Translate;
 
@@ -481,7 +505,7 @@ namespace DrawingPad.Layers
                         double x = cursorPosition.X - this.previousPosition.X;
                         double y = cursorPosition.Y - this.previousPosition.Y;
 
-                        this.selectedVisual.Translate(x, y);
+                        this.translateVisual.Translate(x, y);
 
                         foreach (GraphicsPolyline polyline in this.associatedPolylines)
                         {
@@ -532,6 +556,7 @@ namespace DrawingPad.Layers
                         }
                         else
                         {
+                            polyline.AssociatedGraphics1 = this.firstVisual.ID;
                             polyline.AssociatedGraphics2 = null;
                         }
 
@@ -565,6 +590,8 @@ namespace DrawingPad.Layers
                 case DrawableState.Translate:
                     {
                         this.drawableState = DrawableState.Idle;
+                        this.translateVisual = null;
+                        this.associatedPolylines = null;
                         break;
                     }
 
@@ -578,7 +605,6 @@ namespace DrawingPad.Layers
                         this.drawableState = DrawableState.Idle;
                         this.firstVisual = null;
                         this.secondVisual = null;
-                        this.associatedPolylines = null;
                         break;
                     }
 
