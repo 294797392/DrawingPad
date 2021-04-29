@@ -32,10 +32,20 @@ namespace DrawingPad.Graphics
         public string AssociatedGraphics1 { get; set; }
 
         /// <summary>
+        /// 第一个图形的点的Location
+        /// </summary>
+        public int Graphics1Handle { get; set; }
+
+        /// <summary>
         /// 被连接的第二个图形的ID
         /// 1 -> 2
         /// </summary>
         public string AssociatedGraphics2 { get; set; }
+
+        /// <summary>
+        /// 第二个图形的点的Location
+        /// </summary>
+        public int Graphics2Handle { get; set; }
 
         #endregion
 

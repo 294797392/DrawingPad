@@ -439,6 +439,300 @@ namespace DrawingPad.Graphics
             return pointList;
         }
 
+        public static List<Point> MakeConnectionPoints(Point firstConnector, ConnectionLocations firstLocation, Point fixedPoint)
+        {
+            double cursorX = fixedPoint.X;
+            double cursorY = fixedPoint.Y;
+            double startX = firstConnector.X;
+            double startY = firstConnector.Y;
+
+            if (startX == cursorX && startY == cursorY)
+            {
+                return null;
+            }
+
+            Point lastPoint = fixedPoint;
+
+            //ConnectionLocations firstLocation = firstGraphics.GetConnectionLocation(firstConnector);
+
+            List<Point> pointList = new List<Point>();
+
+            pointList.Add(firstConnector);
+
+            if (cursorX > startX && cursorY > startY)
+            {
+                // 往右下方拖动
+                Console.WriteLine("往右下方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往右下方拖动
+                            pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
+                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往右下方拖动
+                            pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
+                            pointList.Add(new Point(cursorX, startY - PadContext.MinimalMargin));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往右下方拖动
+                            pointList.Add(new Point(cursorX, startY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往右下方拖动
+                            pointList.Add(new Point(startX, cursorY));
+                            break;
+                        }
+                }
+            }
+            else if (cursorX > startX && cursorY < startY)
+            {
+                // 往右上方拖动
+                Console.WriteLine("往右上方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往右上方拖动
+                            pointList.Add(new Point(startX - PadContext.MinimalMargin, startY));
+                            pointList.Add(new Point(startX - PadContext.MinimalMargin, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往右上方拖动
+                            pointList.Add(new Point(startX, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往右上方拖动
+                            pointList.Add(new Point(cursorX, startY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往右上方拖动
+                            pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
+                            pointList.Add(new Point(cursorX, startY + PadContext.MinimalMargin));
+                            break;
+                        }
+                }
+            }
+            else if (cursorX < startX && cursorY > startY)
+            {
+                // 往左下方拖动
+                Console.WriteLine("往左下方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往左下方拖动
+                            pointList.Add(new Point(cursorX, firstConnector.Y));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往左下方拖动
+                            pointList.Add(new Point(startX, startY - PadContext.MinimalMargin));
+                            pointList.Add(new Point(cursorX, startY - PadContext.MinimalMargin));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往左下方拖动
+                            pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
+                            pointList.Add(new Point(startX + PadContext.MinimalMargin, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往左下方拖动
+                            pointList.Add(new Point(startX, cursorY));
+                            break;
+                        }
+                }
+            }
+            else if (cursorX < startX && cursorY < startY)
+            {
+                // 往左上方拖动
+                Console.WriteLine("往左上方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往左上方拖动
+                            pointList.Add(new Point(cursorX, firstConnector.Y));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往左上方拖动
+                            pointList.Add(new Point(startX, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往左上方拖动
+                            pointList.Add(new Point(startX + PadContext.MinimalMargin, startY));
+                            pointList.Add(new Point(startX + PadContext.MinimalMargin, cursorY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往左上方拖动
+                            pointList.Add(new Point(startX, startY + PadContext.MinimalMargin));
+                            pointList.Add(new Point(cursorX, startY + PadContext.MinimalMargin));
+                            break;
+                        }
+                }
+            }
+            else if (cursorX > startX && cursorY == startY)
+            {
+                // 往右拖动
+                Console.WriteLine("往右拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (cursorX < startX && cursorY == startY)
+            {
+                // 往左拖动
+                Console.WriteLine("往左拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (cursorX == startX && cursorY > startY)
+            {
+                // 往下拖动
+                Console.WriteLine("往下拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (cursorX == startX && cursorY < startY)
+            {
+                // 往上拖动
+                Console.WriteLine("往上拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            pointList.Add(lastPoint);
+
+            return pointList;
+        }
+
         /// <summary>
         /// 左上角和右下角组成一个矩形
         /// </summary>

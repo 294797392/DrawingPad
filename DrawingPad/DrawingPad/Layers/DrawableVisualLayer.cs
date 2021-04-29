@@ -16,6 +16,14 @@ namespace DrawingPad.Layers
 {
     public class DrawableVisualLayer : DrawingLayer
     {
+        /// <summary>
+        /// 存储某个图形所关联的所有的连接线信息
+        /// </summary>
+        private class AssociatedConnection
+        {
+
+        }
+
         #region 类变量
 
         private static log4net.ILog logger = log4net.LogManager.GetLogger("DrawableVisualLayer");
@@ -249,7 +257,7 @@ namespace DrawingPad.Layers
         /// </summary>
         /// <param name="cursorPosition">鼠标坐标的位置</param>
         /// <returns>返回鼠标移动到的图形</returns>
-        private VisualGraphics DrawHandleWhenMouseOverDrawable<ExcudedDrawable>(Point cursorPosition) where ExcudedDrawable : VisualGraphics
+        private VisualGraphics DrawHandleWhenMouseOverVisual<ExcludedVisual>(Point cursorPosition) where ExcludedVisual : VisualGraphics
         {
             if (this.previouseHoveredVisual != null)
             {
@@ -258,7 +266,7 @@ namespace DrawingPad.Layers
                 this.previouseHoveredVisual = null;
             }
 
-            VisualGraphics visualHit = this.HitTestFirstVisual<ExcudedDrawable>(cursorPosition);
+            VisualGraphics visualHit = this.HitTestFirstVisual<ExcludedVisual>(cursorPosition);
             if (visualHit == null)
             {
                 //if (this.previouseHoveredVisual != null)
@@ -492,7 +500,7 @@ namespace DrawingPad.Layers
             {
                 case Visuals.VisualState.Idle:
                     {
-                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverDrawable<VisualPolyline>(cursorPosition);
+                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverVisual<VisualPolyline>(cursorPosition);
 
                         // 处理鼠标状态
                         this.ProcessSelectedVisualCursor(visualHit, cursorPosition);
@@ -509,12 +517,14 @@ namespace DrawingPad.Layers
 
                         foreach (GraphicsPolyline polyline in this.associatedPolylines)
                         {
-                            if (this.translateVisual.ID == polyline.AssociatedGraphics1)
+                            if (this.translateVisual.ID == polyline.AssociatedGraphics1 && string.IsNullOrEmpty(polyline.AssociatedGraphics2))
                             {
-                                // 起始点是translateVisual
+                                // 起始点是translateVisual，而且线段的另一个端点没有连接到图形上
                                 VisualPolyline visualPolyline = this.VisualList.OfType<VisualPolyline>().FirstOrDefault(v => v.ID == polyline.ID);
-                                bool connected;
-                                //this.UpdatePolyline(this.translateVisual, this.translateVisual.Graphics, firstConnector, secondVisual.Graphics, secondConnector, out connected);
+
+                                //Point firstConnector = firstVisual
+
+                                //GraphicsUtility.MakeConnectionPoints(
                             }
                             else if (this.translateVisual.ID == polyline.AssociatedGraphics2)
                             {
@@ -530,7 +540,7 @@ namespace DrawingPad.Layers
                 case Visuals.VisualState.Connecting:
                     {
                         // 检测鼠标是否在某个图形上面
-                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverDrawable<VisualPolyline>(cursorPosition);
+                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverVisual<VisualPolyline>(cursorPosition);
                         if (visualHit != null && visualHit.Type != GraphicsType.Polyline)
                         {
                             this.secondVisual = visualHit;
