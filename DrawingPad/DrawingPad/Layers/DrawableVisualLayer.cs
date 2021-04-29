@@ -1,4 +1,4 @@
-﻿using DrawingPad.Drawable;
+﻿using DrawingPad.Visuals;
 using DrawingPad.Graphics;
 using System;
 using System.Collections.Generic;
@@ -29,21 +29,21 @@ namespace DrawingPad.Layers
         /// </summary>
         private List<DependencyObject> visualHits;
 
-        private DrawableVisual selectedVisual;
-        private DrawableVisual previouseSelectedVisual;         // 上一个选中的图形
-        private DrawableVisual previouseHoveredVisual;
+        private VisualGraphics selectedVisual;
+        private VisualGraphics previouseSelectedVisual;         // 上一个选中的图形
+        private VisualGraphics previouseHoveredVisual;
 
         #region Connection状态
 
         /// <summary>
         /// 连接的第一个图形
         /// </summary>
-        private DrawableVisual firstVisual;
+        private VisualGraphics firstVisual;
 
         /// <summary>
         /// 连接的第二个图形
         /// </summary>
-        private DrawableVisual secondVisual;
+        private VisualGraphics secondVisual;
 
         /// <summary>
         /// 第一个连接图形的连接点
@@ -53,7 +53,7 @@ namespace DrawingPad.Layers
         /// <summary>
         /// 正在连接的折线
         /// </summary>
-        private DrawablePolyline polyline;                // 正在连接的折线
+        private VisualPolyline polyline;                // 正在连接的折线
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace DrawingPad.Layers
         /// <summary>
         /// 正在移动的图形
         /// </summary>
-        private DrawableVisual translateVisual;
+        private VisualGraphics translateVisual;
 
         /// <summary>
         /// 记录鼠标上次的位置
@@ -88,7 +88,7 @@ namespace DrawingPad.Layers
 
         #endregion
 
-        private DrawableState drawableState;
+        private Visuals.VisualState drawableState;
 
         #endregion
 
@@ -106,7 +106,7 @@ namespace DrawingPad.Layers
 
         protected override int VisualChildrenCount => this.VisualList.Count;
 
-        public List<DrawableVisual> VisualList { get; private set; }
+        public List<VisualGraphics> VisualList { get; private set; }
 
         #endregion
 
@@ -118,21 +118,21 @@ namespace DrawingPad.Layers
             this.SnapsToDevicePixels = true;
             this.Background = Brushes.White;
 
-            this.drawableState = DrawableState.Idle;
+            this.drawableState = Visuals.VisualState.Idle;
 
             this.visualHits = new List<DependencyObject>();
-            this.VisualList = new List<DrawableVisual>();
+            this.VisualList = new List<VisualGraphics>();
 
-            this.graphicsPolylines = new Dictionary<string, List<Connection>>();
+            this.graphicsPolylines = new Dictionary<string, List<GraphicsPolyline>>();
         }
 
         #endregion
 
         #region 公开接口
 
-        public DrawableVisual DrawVisual(GraphicsBase graphics)
+        public VisualGraphics DrawVisual(GraphicsBase graphics)
         {
-            DrawableVisual visual = DrawableVisualFactory.Create(graphics);
+            VisualGraphics visual = VisualFactory.Create(graphics);
             this.VisualList.Add(visual);
 
             this.AddVisualChild(visual);    // 该函数只会把DrawableVisual和DrawableVisualLayer关联起来，在渲染的时候并不会真正渲染。关联的目的是为了做命中测试（HitTest）。
@@ -152,7 +152,7 @@ namespace DrawingPad.Layers
         /// <typeparam name="TExcluded">要排除在外的鼠标命中的元素的类型</typeparam>
         /// <param name="hitTestPos">鼠标坐标位置</param>
         /// <returns>第一个被鼠标命中的元素</returns>
-        private DrawableVisual HitTestFirstVisual<TExcluded>(Point hitTestPos) where TExcluded : DrawableVisual
+        private VisualGraphics HitTestFirstVisual<TExcluded>(Point hitTestPos) where TExcluded : VisualGraphics
         {
             VisualTreeHelper.HitTest(this, null, this.HitTestResultCallback<TExcluded>, new PointHitTestParameters(hitTestPos));
 
@@ -162,7 +162,7 @@ namespace DrawingPad.Layers
             }
 
             // 被点击到的元素
-            DrawableVisual visualHit = this.visualHits[0] as DrawableVisual;
+            VisualGraphics visualHit = this.visualHits[0] as VisualGraphics;
 
             this.visualHits.Clear();
 
@@ -188,7 +188,7 @@ namespace DrawingPad.Layers
         /// </summary>
         /// <param name="previouseSelected"></param>
         /// <param name="selectedVisual"></param>
-        private void ProcessSelectedVisualChanged(DrawableVisual previouseSelected, DrawableVisual selectedVisual)
+        private void ProcessSelectedVisualChanged(VisualGraphics previouseSelected, VisualGraphics selectedVisual)
         {
             if (previouseSelected == selectedVisual)
             {
@@ -213,7 +213,7 @@ namespace DrawingPad.Layers
             }
         }
 
-        private void ProcessSelectedVisualCursor(DrawableVisual selectedVisual, Point cursorPosition)
+        private void ProcessSelectedVisualCursor(VisualGraphics selectedVisual, Point cursorPosition)
         {
             if (selectedVisual == null)
             {
@@ -249,7 +249,7 @@ namespace DrawingPad.Layers
         /// </summary>
         /// <param name="cursorPosition">鼠标坐标的位置</param>
         /// <returns>返回鼠标移动到的图形</returns>
-        private DrawableVisual DrawHandleWhenMouseOverDrawable<ExcudedDrawable>(Point cursorPosition) where ExcudedDrawable : DrawableVisual
+        private VisualGraphics DrawHandleWhenMouseOverDrawable<ExcudedDrawable>(Point cursorPosition) where ExcudedDrawable : VisualGraphics
         {
             if (this.previouseHoveredVisual != null)
             {
@@ -258,7 +258,7 @@ namespace DrawingPad.Layers
                 this.previouseHoveredVisual = null;
             }
 
-            DrawableVisual visualHit = this.HitTestFirstVisual<ExcudedDrawable>(cursorPosition);
+            VisualGraphics visualHit = this.HitTestFirstVisual<ExcudedDrawable>(cursorPosition);
             if (visualHit == null)
             {
                 //if (this.previouseHoveredVisual != null)
@@ -281,9 +281,9 @@ namespace DrawingPad.Layers
         /// <summary>
         /// 保存图形里输入的文本
         /// </summary>
-        private void StopVisualInputState(DrawableVisual visual)
+        private void StopVisualInputState(VisualGraphics visual)
         {
-            if (this.drawableState != DrawableState.InputState)
+            if (this.drawableState != Visuals.VisualState.InputState)
             {
                 return;
             }
@@ -303,7 +303,7 @@ namespace DrawingPad.Layers
         /// 让一个图形进入编辑状态
         /// </summary>
         /// <param name="visual"></param>
-        private void StartVisualInputState(DrawableVisual visual)
+        private void StartVisualInputState(VisualGraphics visual)
         {
             if (visual == null)
             {
@@ -330,7 +330,7 @@ namespace DrawingPad.Layers
         /// <param name="secondGraphics">连接到的图形</param>
         /// <param name="cursorPosition">当前鼠标的位置</param>
         /// <param name="connected">是否已连接</param>
-        private void UpdatePolyline(DrawablePolyline polyline, GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition, out bool connected)
+        private void UpdatePolyline(VisualPolyline polyline, GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition, out bool connected)
         {
             List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, firstConnector, secondGraphics, cursorPosition, out connected);
             if (pointList != null)
@@ -386,7 +386,7 @@ namespace DrawingPad.Layers
 
             Point cursorPosition = e.GetPosition(this);
 
-            DrawableVisual visualHit = this.HitTestFirstVisual<ExcludedNullDrawable>(cursorPosition);
+            VisualGraphics visualHit = this.HitTestFirstVisual<ExcludedNullVisual>(cursorPosition);
             if (visualHit == null)
             {
                 if (this.selectedVisual != null)
@@ -402,7 +402,7 @@ namespace DrawingPad.Layers
                 TextBoxEditor.Visibility = Visibility.Collapsed;
 
                 // 重置到空闲状态
-                this.drawableState = DrawableState.Idle;
+                this.drawableState = Visuals.VisualState.Idle;
 
                 return;
             }
@@ -414,7 +414,7 @@ namespace DrawingPad.Layers
             if (e.ClickCount == 2)
             {
                 // 双击图形，那么进入编辑状态
-                this.drawableState = DrawableState.InputState;
+                this.drawableState = Visuals.VisualState.InputState;
                 this.StartVisualInputState(this.selectedVisual);
             }
             else
@@ -432,14 +432,14 @@ namespace DrawingPad.Layers
 
                         ConnectionLocations location = visualHit.Graphics.GetConnectionLocation(cursorPosition);
 
-                        this.drawableState = DrawableState.Connecting;
+                        this.drawableState = Visuals.VisualState.Connecting;
                         GraphicsPolyline graphics = new GraphicsPolyline()
                         {
                             //ConnectionPoint = center,
                             //StartConnectionLocation = location,
                             //StartVisual = visualHit
                         };
-                        this.polyline = this.DrawVisual(graphics) as DrawablePolyline;
+                        this.polyline = this.DrawVisual(graphics) as VisualPolyline;
                         this.firstConnector = center;
                         this.firstVisual = visualHit;
                         return;
@@ -457,7 +457,7 @@ namespace DrawingPad.Layers
                     {
                         this.resizeCenter = bounds.GetCenter();
                         this.resizeLocation = visualHit.Graphics.GetResizeLocation(this.resizeCenter);
-                        this.drawableState = DrawableState.Resizing;
+                        this.drawableState = Visuals.VisualState.Resizing;
                         return;
                     }
                 }
@@ -476,7 +476,7 @@ namespace DrawingPad.Layers
 
                 this.translateVisual = visualHit;
 
-                this.drawableState = DrawableState.Translate;
+                this.drawableState = Visuals.VisualState.Translate;
 
                 #endregion
             }
@@ -490,9 +490,9 @@ namespace DrawingPad.Layers
 
             switch (this.drawableState)
             {
-                case DrawableState.Idle:
+                case Visuals.VisualState.Idle:
                     {
-                        DrawableVisual visualHit = this.DrawHandleWhenMouseOverDrawable<DrawablePolyline>(cursorPosition);
+                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverDrawable<VisualPolyline>(cursorPosition);
 
                         // 处理鼠标状态
                         this.ProcessSelectedVisualCursor(visualHit, cursorPosition);
@@ -500,7 +500,7 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Translate:
+                case Visuals.VisualState.Translate:
                     {
                         double x = cursorPosition.X - this.previousPosition.X;
                         double y = cursorPosition.Y - this.previousPosition.Y;
@@ -509,19 +509,16 @@ namespace DrawingPad.Layers
 
                         foreach (GraphicsPolyline polyline in this.associatedPolylines)
                         {
-                            DrawablePolyline drawable = this.VisualList.OfType<DrawablePolyline>().FirstOrDefault(v => v.ID == polyline.ID);
-
-                            if (!string.IsNullOrEmpty(polyline.AssociatedGraphics1) && !string.IsNullOrEmpty(polyline.AssociatedGraphics2))
+                            if (this.translateVisual.ID == polyline.AssociatedGraphics1)
                             {
-                                // 两个图形连接到了一起了
-                                DrawableVisual firstVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics1);
-                                DrawableVisual secondVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics2);
-
-                                Point firstConnector = polyline.PointList.FirstOrDefault();
-                                Point secondConnector = polyline.PointList.LastOrDefault();
-
+                                // 起始点是translateVisual
+                                VisualPolyline visualPolyline = this.VisualList.OfType<VisualPolyline>().FirstOrDefault(v => v.ID == polyline.ID);
                                 bool connected;
-                                this.UpdatePolyline(drawable, firstVisual.Graphics, firstConnector, secondVisual.Graphics, secondConnector, out connected);
+                                //this.UpdatePolyline(this.translateVisual, this.translateVisual.Graphics, firstConnector, secondVisual.Graphics, secondConnector, out connected);
+                            }
+                            else if (this.translateVisual.ID == polyline.AssociatedGraphics2)
+                            {
+                                // 终结点是translateVisual
                             }
                         }
 
@@ -530,10 +527,10 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Connecting:
+                case Visuals.VisualState.Connecting:
                     {
                         // 检测鼠标是否在某个图形上面
-                        DrawableVisual visualHit = this.DrawHandleWhenMouseOverDrawable<DrawablePolyline>(cursorPosition);
+                        VisualGraphics visualHit = this.DrawHandleWhenMouseOverDrawable<VisualPolyline>(cursorPosition);
                         if (visualHit != null && visualHit.Type != GraphicsType.Polyline)
                         {
                             this.secondVisual = visualHit;
@@ -563,13 +560,13 @@ namespace DrawingPad.Layers
                         break;
                     }
 
-                case DrawableState.Resizing:
+                case Visuals.VisualState.Resizing:
                     {
                         this.selectedVisual.Resize(this.resizeLocation, this.resizeCenter, cursorPosition);
                         break;
                     }
 
-                case DrawableState.InputState:
+                case Visuals.VisualState.InputState:
                     {
                         break;
                     }
@@ -587,34 +584,34 @@ namespace DrawingPad.Layers
 
             switch (this.drawableState)
             {
-                case DrawableState.Translate:
+                case Visuals.VisualState.Translate:
                     {
-                        this.drawableState = DrawableState.Idle;
+                        this.drawableState = Visuals.VisualState.Idle;
                         this.translateVisual = null;
                         this.associatedPolylines = null;
                         break;
                     }
 
-                case DrawableState.Idle:
+                case Visuals.VisualState.Idle:
                     {
                         break;
                     }
 
-                case DrawableState.Connecting:
+                case Visuals.VisualState.Connecting:
                     {
-                        this.drawableState = DrawableState.Idle;
+                        this.drawableState = Visuals.VisualState.Idle;
                         this.firstVisual = null;
                         this.secondVisual = null;
                         break;
                     }
 
-                case DrawableState.Resizing:
+                case Visuals.VisualState.Resizing:
                     {
-                        this.drawableState = DrawableState.Idle;
+                        this.drawableState = Visuals.VisualState.Idle;
                         break;
                     }
 
-                case DrawableState.InputState:
+                case Visuals.VisualState.InputState:
                     {
                         break;
                     }
@@ -636,7 +633,7 @@ namespace DrawingPad.Layers
                 return HitTestResultBehavior.Continue;
             }
 
-            if (result.VisualHit is DrawableVisual)
+            if (result.VisualHit is VisualGraphics)
             {
                 this.visualHits.Add(result.VisualHit);
 

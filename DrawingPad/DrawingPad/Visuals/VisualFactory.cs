@@ -5,22 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
-    public static class DrawableVisualFactory
+    public static class VisualFactory
     {
-        public static DrawableVisual Create(GraphicsBase graphics)
+        public static VisualGraphics Create(GraphicsBase graphics)
         {
             switch (graphics.Type)
             {
                 case GraphicsType.Rectangle:
                     {
-                        return new DrawableRectangle(graphics);
+                        return new VisualRectangle(graphics);
                     }
 
                 case GraphicsType.Polyline:
                     {
-                        return new DrawablePolyline(graphics);
+                        return new VisualPolyline(graphics);
                     }
 
                 default:

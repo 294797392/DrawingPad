@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
-    public class DrawableRectangle : DrawableVisual
+    public class VisualRectangle : VisualGraphics
     {
         #region 常量
 
@@ -39,7 +39,7 @@ namespace DrawingPad.Drawable
 
         #region 构造方法
 
-        public DrawableRectangle(GraphicsBase graphics) :
+        public VisualRectangle(GraphicsBase graphics) :
             base(graphics)
         {
             this.graphicsRect = graphics as GraphicsRectangle;

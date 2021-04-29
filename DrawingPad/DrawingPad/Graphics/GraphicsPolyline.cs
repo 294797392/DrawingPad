@@ -1,5 +1,4 @@
-﻿using DrawingPad.Drawable;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +17,12 @@ namespace DrawingPad.Graphics
         /// 折线的点列表
         /// </summary>
         public List<Point> PointList { get; set; }
+
+        /// <summary>
+        /// 该折线的终点坐标
+        /// 箭头就要画在这个方向
+        /// </summary>
+        public Point Termination { get; set; }
 
         /// <summary>
         /// 被连接的第一个图形的ID

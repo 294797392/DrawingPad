@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
     /// <summary>
     /// 标识当前画板的状态
     /// </summary>
-    public enum DrawableState
+    public enum VisualState
     {
         /// <summary>
         /// 空闲

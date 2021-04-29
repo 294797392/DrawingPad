@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
     /// <summary>
     /// 折现图形
     /// </summary>
-    public class DrawablePolyline : DrawableVisual
+    public class VisualPolyline : VisualGraphics
     {
         #region 实例变量
 
@@ -28,7 +28,7 @@ namespace DrawingPad.Drawable
 
         #region 构造方法
 
-        public DrawablePolyline(GraphicsBase graphics) : base(graphics)
+        public VisualPolyline(GraphicsBase graphics) : base(graphics)
         {
             this.graphics = graphics as GraphicsPolyline;
         }

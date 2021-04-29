@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
-    public abstract class DrawableVisual : DrawingVisual
+    public abstract class VisualGraphics : DrawingVisual
     {
         #region 实例变量
 
@@ -73,7 +73,7 @@ namespace DrawingPad.Drawable
 
         #region 构造方法
 
-        public DrawableVisual(GraphicsBase graphics)
+        public VisualGraphics(GraphicsBase graphics)
         {
             this.Name = Guid.NewGuid().ToString();
             this.Graphics = graphics;

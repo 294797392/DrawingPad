@@ -76,11 +76,11 @@
     </ApplicationDefinition>
     <Compile Include="DataModels\ToolboxGroup.cs" />
     <Compile Include="DataModels\ToolboxItem.cs" />
-    <Compile Include="Drawable\DrawablePolyline.cs" />
-    <Compile Include="Drawable\ExcludedNullDrawable.cs" />
-    <Compile Include="Drawable\DrawableVisualFactory.cs" />
-    <Compile Include="Drawable\DrawableRectangle.cs" />
-    <Compile Include="Drawable\DrawableState.cs" />
+    <Compile Include="Visuals\VisualPolyline.cs" />
+    <Compile Include="Visuals\ExcludedNullVisual.cs" />
+    <Compile Include="Visuals\VisualFactory.cs" />
+    <Compile Include="Visuals\VisualRectangle.cs" />
+    <Compile Include="Visuals\VisualState.cs" />
     <Compile Include="Graphics\GraphicsBase.cs" />
     <Compile Include="Graphics\GraphicsPolyline.cs" />
     <Compile Include="Graphics\GraphicsFactory.cs" />
@@ -114,7 +114,7 @@
     </Compile>
     <Compile Include="ViewModels\GraphicsGroupVM.cs" />
     <Compile Include="ViewModels\GraphicsVM.cs" />
-    <Compile Include="Drawable\DrawableVisual.cs" />
+    <Compile Include="Visuals\VisualGraphics.cs" />
     <Compile Include="ViewModels\ToolboxViewModel.cs" />
     <Page Include="ControlStyle.xaml">
       <SubType>Designer</SubType>

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace DrawingPad.Drawable
+namespace DrawingPad.Visuals
 {
-    public class ExcludedNullDrawable : DrawableVisual
+    public class ExcludedNullVisual : VisualGraphics
     {
         public override Geometry Geometry => throw new NotImplementedException();
 
-        public ExcludedNullDrawable(GraphicsBase graphics) : 
+        public ExcludedNullVisual(GraphicsBase graphics) : 
             base(graphics)
         {
         }

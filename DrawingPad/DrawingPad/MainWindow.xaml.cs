@@ -1,4 +1,4 @@
-﻿using DrawingPad.Drawable;
+﻿using DrawingPad.Visuals;
 using DrawingPad.Graphics;
 using DrawingPad.ViewModels;
 using System;
