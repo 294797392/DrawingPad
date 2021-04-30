@@ -59,6 +59,11 @@ namespace DrawingPad.Layers
         private Point firstConnector;                           // 第一个连接点
 
         /// <summary>
+        /// 第一个连接点的位置
+        /// </summary>
+        private ConnectionLocations firstConnectorLocation;     // 第一个连接点的位置
+
+        /// <summary>
         /// 正在连接的折线
         /// </summary>
         private VisualPolyline polyline;                // 正在连接的折线
@@ -96,7 +101,7 @@ namespace DrawingPad.Layers
 
         #endregion
 
-        private Visuals.VisualState drawableState;
+        private Visuals.VisualState visualState;
 
         #endregion
 
@@ -126,7 +131,7 @@ namespace DrawingPad.Layers
             this.SnapsToDevicePixels = true;
             this.Background = Brushes.White;
 
-            this.drawableState = Visuals.VisualState.Idle;
+            this.visualState = Visuals.VisualState.Idle;
 
             this.visualHits = new List<DependencyObject>();
             this.VisualList = new List<VisualGraphics>();
@@ -291,7 +296,7 @@ namespace DrawingPad.Layers
         /// </summary>
         private void StopVisualInputState(VisualGraphics visual)
         {
-            if (this.drawableState != Visuals.VisualState.InputState)
+            if (this.visualState != Visuals.VisualState.InputState)
             {
                 return;
             }
@@ -330,24 +335,6 @@ namespace DrawingPad.Layers
         }
 
         /// <summary>
-        /// 更新连接线
-        /// </summary>
-        /// <param name="polyline">要更新的折线</param>
-        /// <param name="firstGraphics"></param>
-        /// <param name="firstConnector">图形上的连接点</param>
-        /// <param name="secondGraphics">连接到的图形</param>
-        /// <param name="cursorPosition">当前鼠标的位置</param>
-        /// <param name="connected">是否已连接</param>
-        private void UpdatePolyline(VisualPolyline polyline, GraphicsBase firstGraphics, Point firstConnector, GraphicsBase secondGraphics, Point cursorPosition, out bool connected)
-        {
-            List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstGraphics, firstConnector, secondGraphics, cursorPosition, out connected);
-            if (pointList != null)
-            {
-                polyline.Update(pointList);
-            }
-        }
-
-        /// <summary>
         /// 获取某个图形关联的所有的折线
         /// </summary>
         /// <param name="graphics">要获取的图形</param>
@@ -361,6 +348,8 @@ namespace DrawingPad.Layers
             List<GraphicsPolyline> result;
             if (!this.graphicsPolylines.TryGetValue(graphics.ID, out result))
             {
+                result = new List<GraphicsPolyline>();
+
                 // 先找到所有折线图形
                 IEnumerable<GraphicsPolyline> polylines = this.VisualList.Select(v => v.Graphics).OfType<GraphicsPolyline>();
 
@@ -410,7 +399,7 @@ namespace DrawingPad.Layers
                 TextBoxEditor.Visibility = Visibility.Collapsed;
 
                 // 重置到空闲状态
-                this.drawableState = Visuals.VisualState.Idle;
+                this.visualState = Visuals.VisualState.Idle;
 
                 return;
             }
@@ -422,7 +411,7 @@ namespace DrawingPad.Layers
             if (e.ClickCount == 2)
             {
                 // 双击图形，那么进入编辑状态
-                this.drawableState = Visuals.VisualState.InputState;
+                this.visualState = Visuals.VisualState.InputState;
                 this.StartVisualInputState(this.selectedVisual);
             }
             else
@@ -438,17 +427,17 @@ namespace DrawingPad.Layers
                     {
                         Point center = bounds.GetCenter();
 
-                        ConnectionLocations location = visualHit.Graphics.GetConnectionLocation(cursorPosition);
+                        ConnectionLocations location = visualHit.GetConnectionLocation(i);
 
-                        this.drawableState = Visuals.VisualState.Connecting;
+                        this.visualState = Visuals.VisualState.Connecting;
                         GraphicsPolyline graphics = new GraphicsPolyline()
                         {
-                            //ConnectionPoint = center,
-                            //StartConnectionLocation = location,
-                            //StartVisual = visualHit
+                            AssociatedGraphics1 = visualHit.ID,
+                            Graphics1Handle = i
                         };
                         this.polyline = this.DrawVisual(graphics) as VisualPolyline;
                         this.firstConnector = center;
+                        this.firstConnectorLocation = location;
                         this.firstVisual = visualHit;
                         return;
                     }
@@ -465,7 +454,7 @@ namespace DrawingPad.Layers
                     {
                         this.resizeCenter = bounds.GetCenter();
                         this.resizeLocation = visualHit.Graphics.GetResizeLocation(this.resizeCenter);
-                        this.drawableState = Visuals.VisualState.Resizing;
+                        this.visualState = Visuals.VisualState.Resizing;
                         return;
                     }
                 }
@@ -477,14 +466,9 @@ namespace DrawingPad.Layers
                 // 获取当前被移动的图形所有的连接点信息
 
                 this.associatedPolylines = this.GetAssociatedPolylines(visualHit.Graphics);
-                if (associatedPolylines != null && associatedPolylines.Count > 0)
-                {
-                    Console.WriteLine("关联的折线有{0}个", this.associatedPolylines.Count);
-                }
-
+                Console.WriteLine("关联的折线有{0}个", this.associatedPolylines.Count);
                 this.translateVisual = visualHit;
-
-                this.drawableState = Visuals.VisualState.Translate;
+                this.visualState = Visuals.VisualState.Translate;
 
                 #endregion
             }
@@ -496,7 +480,7 @@ namespace DrawingPad.Layers
 
             Point cursorPosition = e.GetPosition(this);
 
-            switch (this.drawableState)
+            switch (this.visualState)
             {
                 case Visuals.VisualState.Idle:
                     {
@@ -520,11 +504,10 @@ namespace DrawingPad.Layers
                             if (this.translateVisual.ID == polyline.AssociatedGraphics1 && string.IsNullOrEmpty(polyline.AssociatedGraphics2))
                             {
                                 // 起始点是translateVisual，而且线段的另一个端点没有连接到图形上
+                                Point firstConnector = this.translateVisual.GetConnectionHandle(polyline.Graphics1Handle);
+                                List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, this.firstConnectorLocation, polyline.PointList.LastOrDefault());
                                 VisualPolyline visualPolyline = this.VisualList.OfType<VisualPolyline>().FirstOrDefault(v => v.ID == polyline.ID);
-
-                                //Point firstConnector = firstVisual
-
-                                //GraphicsUtility.MakeConnectionPoints(
+                                visualPolyline.Update(pointList);
                             }
                             else if (this.translateVisual.ID == polyline.AssociatedGraphics2)
                             {
@@ -539,33 +522,26 @@ namespace DrawingPad.Layers
 
                 case Visuals.VisualState.Connecting:
                     {
+                        GraphicsPolyline graphicsPolyline = this.polyline.Graphics as GraphicsPolyline;
+
                         // 检测鼠标是否在某个图形上面
                         VisualGraphics visualHit = this.DrawHandleWhenMouseOverVisual<VisualPolyline>(cursorPosition);
-                        if (visualHit != null && visualHit.Type != GraphicsType.Polyline)
+                        if (visualHit == null)
                         {
+                            this.secondVisual = null;
+                            graphicsPolyline.AssociatedGraphics2 = null;
+                        }
+                        else
+                        {
+                            // 如果当前鼠标下的元素和选中的是不同一个元素，那么就表示有连接的元素了
+                            // 运行到此处说明两个图形被连接起来了
                             this.secondVisual = visualHit;
-                        }
-                        else
-                        {
-                            // 如果当前鼠标下的元素和选中的是同一个元素，那么就表示没有要连接的元素
+                            graphicsPolyline.AssociatedGraphics2 = this.secondVisual.ID;
                         }
 
-                        // 当前正在画的折线
-                        GraphicsPolyline polyline = this.polyline.Graphics as GraphicsPolyline;
-
-                        // 当鼠标在另外一个元素上的时候，说明此时两个图形被连接起来了
-                        bool connected;
-                        this.UpdatePolyline(this.polyline, this.firstVisual.Graphics, this.firstConnector, this.secondVisual == null ? null : this.secondVisual.Graphics, cursorPosition, out connected);
-                        if (connected)
-                        {
-                            polyline.AssociatedGraphics1 = this.firstVisual.ID;
-                            polyline.AssociatedGraphics2 = this.secondVisual.ID;
-                        }
-                        else
-                        {
-                            polyline.AssociatedGraphics1 = this.firstVisual.ID;
-                            polyline.AssociatedGraphics2 = null;
-                        }
+                        // 更新连接线
+                        List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, cursorPosition);
+                        this.polyline.Update(points);
 
                         break;
                     }
@@ -592,11 +568,11 @@ namespace DrawingPad.Layers
 
             Point cursorPosition = e.GetPosition(this);
 
-            switch (this.drawableState)
+            switch (this.visualState)
             {
                 case Visuals.VisualState.Translate:
                     {
-                        this.drawableState = Visuals.VisualState.Idle;
+                        this.visualState = Visuals.VisualState.Idle;
                         this.translateVisual = null;
                         this.associatedPolylines = null;
                         break;
@@ -609,7 +585,7 @@ namespace DrawingPad.Layers
 
                 case Visuals.VisualState.Connecting:
                     {
-                        this.drawableState = Visuals.VisualState.Idle;
+                        this.visualState = Visuals.VisualState.Idle;
                         this.firstVisual = null;
                         this.secondVisual = null;
                         break;
@@ -617,7 +593,7 @@ namespace DrawingPad.Layers
 
                 case Visuals.VisualState.Resizing:
                     {
-                        this.drawableState = Visuals.VisualState.Idle;
+                        this.visualState = Visuals.VisualState.Idle;
                         break;
                     }
 

@@ -90,7 +90,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override ConnectionLocations GetConnectionLocation(Point handlePoint)
+        public override ConnectionLocations GetConnectionLocation(int handleIndex)
         {
             throw new NotImplementedException();
         }

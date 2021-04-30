@@ -100,9 +100,9 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 获取某个连接点的位置
         /// </summary>
-        /// <param name="handlePoint"></param>
+        /// <param name="handleIndex">句柄索引</param>
         /// <returns></returns>
-        public abstract ConnectionLocations GetConnectionLocation(Point handlePoint);
+        public abstract ConnectionLocations GetConnectionLocation(int handleIndex);
 
         /// <summary>
         /// 获取某个缩放点的位置
@@ -126,7 +126,7 @@ namespace DrawingPad.Graphics
                 if (rect.Contains(hitTestPoint))
                 {
                     connector = rect.GetCenter();
-                    return this.GetConnectionLocation(rect.GetCenter());
+                    return this.GetConnectionLocation(i);
                 }
             }
 

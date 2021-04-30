@@ -216,26 +216,23 @@ namespace DrawingPad.Graphics
             };
         }
 
-        public override ConnectionLocations GetConnectionLocation(Point handlePoint)
+        public override ConnectionLocations GetConnectionLocation(int handleIndex)
         {
-            Rect bounds = this.GetBounds();
-            Point leftTop = bounds.TopLeft;
-
-            if (handlePoint.X == leftTop.X && handlePoint.Y == leftTop.Y + bounds.Height / 2)
+            if (handleIndex == 0)
             {
                 return ConnectionLocations.Left;
             }
-            else if (handlePoint.X == leftTop.X + bounds.Width / 2 && handlePoint.Y == leftTop.Y)
+            else if (handleIndex == 1)
             {
                 return ConnectionLocations.Top;
             }
-            else if (handlePoint.X == leftTop.X + bounds.Width / 2 && handlePoint.Y == leftTop.Y + bounds.Height)
-            {
-                return ConnectionLocations.Bottom;
-            }
-            else if (handlePoint.X == leftTop.X + bounds.Width && handlePoint.Y == leftTop.Y + bounds.Height / 2)
+            else if (handleIndex == 2)
             {
                 return ConnectionLocations.Right;
+            }
+            else if (handleIndex == 3)
+            {
+                return ConnectionLocations.Bottom;
             }
 
             return ConnectionLocations.Null;
@@ -298,7 +295,6 @@ namespace DrawingPad.Graphics
                 Location = new Point(center.X - PadContext.RectangleTrackerSize / 2, center.Y - PadContext.RectangleTrackerSize / 2)
             };
         }
-
 
         public Rect MakeRect()
         {

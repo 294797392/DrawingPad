@@ -202,6 +202,11 @@ namespace DrawingPad.Visuals
             return this.Graphics.GetConnectionHandle(index);
         }
 
+        public virtual ConnectionLocations GetConnectionLocation(int handleIndex)
+        {
+            return this.Graphics.GetConnectionLocation(handleIndex);
+        }
+
         public virtual Point GetResizeHandle(int index)
         {
             return this.Graphics.GetResizeHandle(index);
