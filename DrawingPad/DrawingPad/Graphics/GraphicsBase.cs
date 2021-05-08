@@ -87,7 +87,7 @@ namespace DrawingPad.Graphics
         /// <summary>
         /// 获取矩形拖拽点的边界框
         /// </summary>
-        /// <param name="numHandle"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
         public abstract Rect GetResizeHandleBounds(int index);
 

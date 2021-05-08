@@ -12,18 +12,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace DrawingPad.Layers
+namespace DrawingPad.Canvases
 {
-    public class DrawableVisualLayer : DrawingLayer
+    /// <summary>
+    /// 画普通的图表用的Canvas
+    /// </summary>
+    public class DiagramCanvas : DrawingCanvas
     {
-        /// <summary>
-        /// 存储某个图形所关联的所有的连接线信息
-        /// </summary>
-        private class AssociatedConnection
-        {
-
-        }
-
         #region 类变量
 
         private static log4net.ILog logger = log4net.LogManager.GetLogger("DrawableVisualLayer");
@@ -115,7 +110,7 @@ namespace DrawingPad.Layers
 
         // Using a DependencyProperty as the backing store for TextBoxEditor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextBoxEditorProperty =
-            DependencyProperty.Register("TextBoxEditor", typeof(TextBox), typeof(DrawableVisualLayer), new PropertyMetadata(null));
+            DependencyProperty.Register("TextBoxEditor", typeof(TextBox), typeof(DiagramCanvas), new PropertyMetadata(null));
 
         protected override int VisualChildrenCount => this.VisualList.Count;
 
@@ -125,7 +120,7 @@ namespace DrawingPad.Layers
 
         #region 构造方法
 
-        public DrawableVisualLayer()
+        public DiagramCanvas()
         {
             this.UseLayoutRounding = true;
             this.SnapsToDevicePixels = true;

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:layer="clr-namespace:DrawingPad.Layers"
+        xmlns:canvas="clr-namespace:DrawingPad.Canvases"
         xmlns:uc="clr-namespace:DrawingPad.UserControls"
         xmlns:dd="clr-namespace:WPFToolkit.DragDrop;assembly=WPFToolkit"
         mc:Ignorable="d"
@@ -37,12 +37,12 @@
 
             <Border Grid.Column="2" Margin="30">
                 <Border.Effect>
-                    <DropShadowEffect Color="Black" ShadowDepth="2" Opacity="0.7" BlurRadius="5"/>
+                    <DropShadowEffect Color="Black" ShadowDepth="1" Opacity="0.7" BlurRadius="5"/>
                 </Border.Effect>
 
                 <Grid>
-                    <layer:GuidelineLayer/>
-                    <layer:DrawableVisualLayer x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"
+                    <canvas:GuidelineCanvas/>
+                    <canvas:DiagramCanvas x:Name="DrawableLayer" TextBoxEditor="{Binding ElementName=TextBoxEditor}" ClipToBounds="True"
                                            dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding ElementName=Window}"
                                            Background="Transparent"/>
 

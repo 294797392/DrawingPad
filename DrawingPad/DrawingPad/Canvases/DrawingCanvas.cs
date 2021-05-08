@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace DrawingPad.Layers
+namespace DrawingPad.Canvases
 {
-    public abstract class DrawingLayer : Canvas
+    public abstract class DrawingCanvas : Canvas
     {
     }
 }

@@ -13,7 +13,7 @@
     <UserControl.Resources>
 
         <Style x:Key="StyleExpanderToolboxGroup" TargetType="{x:Type Expander}">
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="White" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -29,7 +29,7 @@
                             <Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
                                 <Setter Property="Background" Value="{StaticResource ResourceKey=BrushToolboxItemBackground}"/>
                                 <Setter Property="BorderBrush" Value="{StaticResource ResourceKey=BrushToolboxItemBorder}"/>
-                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                 <Setter Property="Height" Value="30"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -213,6 +213,7 @@
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
             <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+            <Setter Property="Padding" Value="0,1,1,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBox}">
@@ -220,7 +221,7 @@
                             <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" 
                                     Background="{TemplateBinding Background}"
                                     BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-                            <ScrollViewer Focusable="false" Background="{x:Null}">
+                            <ScrollViewer Focusable="false" Background="{x:Null}" Margin="{TemplateBinding Padding}">
                                 <StackPanel IsItemsHost="true" />
                             </ScrollViewer>
                         </Grid>

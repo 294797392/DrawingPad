@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace DrawingPad.Layers
+namespace DrawingPad.Canvases
 {
     public enum GuidelineSize
     {
@@ -36,7 +36,7 @@ namespace DrawingPad.Layers
     /// 导航线图层
     /// 画一个导航线背景
     /// </summary>
-    public class GuidelineLayer : UserControl
+    public class GuidelineCanvas : UserControl
     {
         #region 常量
 
@@ -69,7 +69,7 @@ namespace DrawingPad.Layers
 
         // Using a DependencyProperty as the backing store for GuidelineMargin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GuidelineMarginProperty =
-            DependencyProperty.Register("GuidelineMargin", typeof(int), typeof(GuidelineLayer), new PropertyMetadata(DefaultMargin));
+            DependencyProperty.Register("GuidelineMargin", typeof(int), typeof(GuidelineCanvas), new PropertyMetadata(DefaultMargin));
 
 
 
@@ -81,13 +81,13 @@ namespace DrawingPad.Layers
 
         // Using a DependencyProperty as the backing store for GuidelineSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GuidelineSizeProperty =
-            DependencyProperty.Register("GuidelineSize", typeof(GuidelineSize), typeof(GuidelineLayer), new PropertyMetadata(GuidelineSize.Middle));
+            DependencyProperty.Register("GuidelineSize", typeof(GuidelineSize), typeof(GuidelineCanvas), new PropertyMetadata(GuidelineSize.Middle));
 
         #endregion
 
         #region 构造方法
 
-        public GuidelineLayer()
+        public GuidelineCanvas()
         {
         }
 
@@ -124,6 +124,11 @@ namespace DrawingPad.Layers
                 int offset = index * size;
                 offset += this.GuidelineMargin;
 
+                if (index == 0)
+                {
+                    continue;
+                }
+
                 Point startYPoint = new Point(offset, this.GuidelineMargin);
                 Point endYPoint = new Point(offset, height + this.GuidelineMargin);
                 dc.DrawLine(pen, startYPoint, endYPoint);
@@ -135,6 +140,11 @@ namespace DrawingPad.Layers
             {
                 int offset = index * size;
                 offset += this.GuidelineMargin;
+
+                if (index == 0)
+                {
+                    continue;
+                }
 
                 Point startXPoint = new Point(this.GuidelineMargin, offset);
                 Point endXPoint = new Point(width + this.GuidelineMargin, offset);
