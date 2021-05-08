@@ -236,7 +236,7 @@ namespace DrawingPad.Layers
 
             for (int i = 0; i < selectedVisual.ConnectionHandles; i++)
             {
-                Rect boundary = selectedVisual.GetConnectionHandleBounds(i);
+                Rect boundary = selectedVisual.GetConnectorBounds(i);
                 if (boundary.Contains(cursorPosition))
                 {
                     this.Cursor = Cursors.Cross;
@@ -335,9 +335,10 @@ namespace DrawingPad.Layers
         }
 
         /// <summary>
-        /// 获取某个图形关联的所有的折线
+        /// 获取某个图形关联的所有的连接线
         /// </summary>
         /// <param name="graphics">要获取的图形</param>
+        /// <returns>该图形所关联的所有的连接线</returns>
         private List<GraphicsPolyline> GetAssociatedPolylines(GraphicsBase graphics)
         {
             if (graphics.Type == GraphicsType.Polyline)
@@ -422,12 +423,12 @@ namespace DrawingPad.Layers
 
                 for (int i = 0; i < visualHit.ConnectionHandles; i++)
                 {
-                    Rect bounds = visualHit.GetConnectionHandleBounds(i);
+                    Rect bounds = visualHit.GetConnectorBounds(i);
                     if (bounds.Contains(cursorPosition))
                     {
                         Point center = bounds.GetCenter();
 
-                        ConnectionLocations location = visualHit.GetConnectionLocation(i);
+                        ConnectionLocations location = visualHit.GetConnectorLocation(i);
 
                         this.visualState = Visuals.VisualState.Connecting;
                         GraphicsPolyline graphics = new GraphicsPolyline()
@@ -501,18 +502,56 @@ namespace DrawingPad.Layers
 
                         foreach (GraphicsPolyline polyline in this.associatedPolylines)
                         {
-                            if (this.translateVisual.ID == polyline.AssociatedGraphics1 && string.IsNullOrEmpty(polyline.AssociatedGraphics2))
+                            List<Point> pointList = null;
+
+                            if (this.translateVisual.ID == polyline.AssociatedGraphics1)
                             {
-                                // 起始点是translateVisual，而且线段的另一个端点没有连接到图形上
-                                Point firstConnector = this.translateVisual.GetConnectionHandle(polyline.Graphics1Handle);
-                                List<Point> pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, this.firstConnectorLocation, polyline.PointList.LastOrDefault());
-                                VisualPolyline visualPolyline = this.VisualList.OfType<VisualPolyline>().FirstOrDefault(v => v.ID == polyline.ID);
-                                visualPolyline.Update(pointList);
+                                // 移动的图形是第一个图形
+                                Point firstConnector = this.translateVisual.GetConnectorPoint(polyline.Graphics1Handle);
+                                ConnectionLocations firstConnectorLocation = this.translateVisual.GetConnectorLocation(polyline.Graphics1Handle);
+                                Point secondConnector = polyline.PointList.LastOrDefault();
+
+                                if (string.IsNullOrEmpty(polyline.AssociatedGraphics2))
+                                {
+                                    // 连接点的另一端不在图形上
+                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector);
+                                }
+                                else
+                                {
+                                    // 连接点的另一端在图形上
+                                    VisualGraphics secondVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics2);
+                                    ConnectionLocations secondConnectorLocation = secondVisual.Graphics.GetConnectorLocation(polyline.Graphics2Handle);
+                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                }
                             }
                             else if (this.translateVisual.ID == polyline.AssociatedGraphics2)
                             {
-                                // 终结点是translateVisual
+                                // 移动的图形是第二个图形
+                                Point secondConnector = this.translateVisual.GetConnectorPoint(polyline.Graphics2Handle);
+                                ConnectionLocations secondConnectorLocation = this.translateVisual.GetConnectorLocation(polyline.Graphics2Handle);
+                                Point firstConnector = polyline.PointList.FirstOrDefault();
+
+                                if (string.IsNullOrEmpty(polyline.AssociatedGraphics1))
+                                {
+                                    // 连接点的另一端不在图形上
+                                    // 规定必须在图形上，不允许只有第二个点在图形上，而第一个点不在。但是允许第一个点在图形上，第二个点不在
+                                    throw new NotImplementedException();
+                                }
+                                else
+                                {
+                                    // 连接点的另一端在图形上
+                                    VisualGraphics firstVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics1);
+                                    ConnectionLocations firstConnectorLocation = firstVisual.Graphics.GetConnectorLocation(polyline.Graphics1Handle);
+                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                }
                             }
+                            else
+                            {
+                                throw new NotImplementedException();
+                            }
+
+                            VisualPolyline visualPolyline = this.VisualList.OfType<VisualPolyline>().FirstOrDefault(v => v.ID == polyline.ID);
+                            visualPolyline.Update(pointList);
                         }
 
                         this.previousPosition = cursorPosition;
@@ -524,9 +563,11 @@ namespace DrawingPad.Layers
                     {
                         GraphicsPolyline graphicsPolyline = this.polyline.Graphics as GraphicsPolyline;
 
+                        Point secondConnector = cursorPosition;
+
                         // 检测鼠标是否在某个图形上面
                         VisualGraphics visualHit = this.DrawHandleWhenMouseOverVisual<VisualPolyline>(cursorPosition);
-                        if (visualHit == null)
+                        if (visualHit == null || visualHit == this.firstVisual)
                         {
                             this.secondVisual = null;
                             graphicsPolyline.AssociatedGraphics2 = null;
@@ -536,11 +577,20 @@ namespace DrawingPad.Layers
                             // 如果当前鼠标下的元素和选中的是不同一个元素，那么就表示有连接的元素了
                             // 运行到此处说明两个图形被连接起来了
                             this.secondVisual = visualHit;
-                            graphicsPolyline.AssociatedGraphics2 = this.secondVisual.ID;
+
+                            // 运行到这里说明折线的另一端已经在图形的连接点范围内了
+                            int handle;
+                            Point handlePoint;
+                            if (this.secondVisual.Graphics.GetNearestConnectorHandle(cursorPosition, out handle, out handlePoint))
+                            {
+                                secondConnector = handlePoint;
+                                graphicsPolyline.AssociatedGraphics2 = this.secondVisual.ID;
+                                graphicsPolyline.Graphics2Handle = handle;
+                            }
                         }
 
                         // 更新连接线
-                        List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, cursorPosition);
+                        List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
                         this.polyline.Update(points);
 
                         break;

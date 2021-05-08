@@ -47,7 +47,7 @@ namespace DrawingPad
         public static readonly Brush DefaultFillBrush = Brushes.White;
         public static readonly Pen DefaultPen = new Pen(Brushes.Black, 1);
 
-        public const int ConnectionLocationTolerance = 10;
+        public const int ConnectionLocationTolerance = 20;
 
         #endregion
 

@@ -84,13 +84,314 @@ namespace DrawingPad.Graphics
         }
 
         /// <summary>
-        /// 计算两个点之间的折线的点
+        /// 计算两个点之间的折线点
         /// </summary>
         /// <param name="firstConnector">第一个连接点</param>
         /// <param name="firstLocation">第一个连接点的位置</param>
         /// <param name="secondConnector">第二个连接点</param>
         /// <returns></returns>
         public static List<Point> MakeConnectionPoints(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector)
+        {
+            List<Point> pointList = new List<Point>();
+
+            double secondX = secondConnector.X;
+            double secondY = secondConnector.Y;
+            double firstX = firstConnector.X;
+            double firstY = firstConnector.Y;
+
+            if (firstX == secondX && firstY == secondY)
+            {
+                return pointList;
+            }
+
+            Point lastPoint = secondConnector;
+
+            pointList.Add(firstConnector);
+
+            if (secondX > firstX && secondY > firstY)
+            {
+                // 往右下方拖动
+                Console.WriteLine("往右下方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往右下方拖动
+                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往右下方拖动
+                            pointList.Add(new Point(firstX, firstY - PadContext.MinimalMargin));
+                            pointList.Add(new Point(secondX, firstY - PadContext.MinimalMargin));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往右下方拖动
+                            pointList.Add(new Point(secondX, firstY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往右下方拖动
+                            pointList.Add(new Point(firstX, secondY));
+                            break;
+                        }
+                }
+            }
+            else if (secondX > firstX && secondY < firstY)
+            {
+                // 往右上方拖动
+                Console.WriteLine("往右上方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往右上方拖动
+                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往右上方拖动
+                            pointList.Add(new Point(firstX, secondY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往右上方拖动
+                            pointList.Add(new Point(secondX, firstY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往右上方拖动
+                            pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
+                            pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+                            break;
+                        }
+                }
+            }
+            else if (secondX < firstX && secondY > firstY)
+            {
+                // 往左下方拖动
+                Console.WriteLine("往左下方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往左下方拖动
+                            pointList.Add(new Point(secondX, firstConnector.Y));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往左下方拖动
+                            pointList.Add(new Point(firstX, firstY - PadContext.MinimalMargin));
+                            pointList.Add(new Point(secondX, firstY - PadContext.MinimalMargin));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往左下方拖动
+                            pointList.Add(new Point(firstX + PadContext.MinimalMargin, firstY));
+                            pointList.Add(new Point(firstX + PadContext.MinimalMargin, secondY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往左下方拖动
+                            pointList.Add(new Point(firstX, secondY));
+                            break;
+                        }
+                }
+            }
+            else if (secondX < firstX && secondY < firstY)
+            {
+                // 往左上方拖动
+                Console.WriteLine("往左上方拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            // 左边的点，往左上方拖动
+                            pointList.Add(new Point(secondX, firstConnector.Y));
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            // 上边的点，往左上方拖动
+                            pointList.Add(new Point(firstX, secondY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            // 右边的点，往左上方拖动
+                            pointList.Add(new Point(firstX + PadContext.MinimalMargin, firstY));
+                            pointList.Add(new Point(firstX + PadContext.MinimalMargin, secondY));
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            // 下边的点，往左上方拖动
+                            pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
+                            pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+                            break;
+                        }
+                }
+            }
+            else if (secondX > firstX && secondY == firstY)
+            {
+                // 往右拖动
+                Console.WriteLine("往右拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (secondX < firstX && secondY == firstY)
+            {
+                // 往左拖动
+                Console.WriteLine("往左拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (secondX == firstX && secondY > firstY)
+            {
+                // 往下拖动
+                Console.WriteLine("往下拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else if (secondX == firstX && secondY < firstY)
+            {
+                // 往上拖动
+                Console.WriteLine("往上拖动");
+
+                switch (firstLocation)
+                {
+                    case ConnectionLocations.Left:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Top:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Right:
+                        {
+                            break;
+                        }
+
+                    case ConnectionLocations.Bottom:
+                        {
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            pointList.Add(lastPoint);
+
+            return pointList;
+        }
+
+        /// <summary>
+        /// 计算两个已经连接起来的图形之间的折线点
+        /// </summary>
+        /// <param name="firstConnector"></param>
+        /// <param name="firstLocation"></param>
+        /// <param name="secondConnector"></param>
+        /// <param name="secondLocation"></param>
+        /// <returns></returns>
+        public static List<Point> MakeConnectionPoints(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector, ConnectionLocations secondLocation)
         {
             List<Point> pointList = new List<Point>();
 

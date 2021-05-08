@@ -149,7 +149,7 @@ namespace DrawingPad.Graphics
             }
         }
 
-        public override Point GetConnectionHandle(int index)
+        public override Point GetConnectionPoint(int index)
         {
             if (index == 0)
             {
@@ -216,7 +216,7 @@ namespace DrawingPad.Graphics
             };
         }
 
-        public override ConnectionLocations GetConnectionLocation(int handleIndex)
+        public override ConnectionLocations GetConnectorLocation(int handleIndex)
         {
             if (handleIndex == 0)
             {
@@ -267,9 +267,9 @@ namespace DrawingPad.Graphics
         /// 获取圆形连接点的边界框
         /// </summary>
         /// <returns></returns>
-        public override Rect GetConnectionHandleBounds(int index)
+        public override Rect GetConnectorBounds(int index)
         {
-            Point center = this.GetConnectionHandle(index);
+            Point center = this.GetConnectionPoint(index);
 
             return new Rect()
             {

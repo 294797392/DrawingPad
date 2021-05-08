@@ -82,7 +82,7 @@ namespace DrawingPad.Graphics
         /// 获取圆形连接点的边界框
         /// </summary>
         /// <returns></returns>
-        public abstract Rect GetConnectionHandleBounds(int index);
+        public abstract Rect GetConnectorBounds(int index);
 
         /// <summary>
         /// 获取矩形拖拽点的边界框
@@ -91,7 +91,7 @@ namespace DrawingPad.Graphics
         /// <returns></returns>
         public abstract Rect GetResizeHandleBounds(int index);
 
-        public abstract Point GetConnectionHandle(int index);
+        public abstract Point GetConnectionPoint(int index);
 
         public abstract Point GetRotationHandle();
 
@@ -102,7 +102,7 @@ namespace DrawingPad.Graphics
         /// </summary>
         /// <param name="handleIndex">句柄索引</param>
         /// <returns></returns>
-        public abstract ConnectionLocations GetConnectionLocation(int handleIndex);
+        public abstract ConnectionLocations GetConnectorLocation(int handleIndex);
 
         /// <summary>
         /// 获取某个缩放点的位置
@@ -118,21 +118,46 @@ namespace DrawingPad.Graphics
         /// <param name="connector">连接点的坐标</param>
         /// <param name="tolerance">容错值</param>
         /// <returns></returns>
-        public ConnectionLocations HitTestConnectionLocation(Point hitTestPoint, out Point connector)
+        public ConnectionLocations HitTestConnectorLocation(Point hitTestPoint, out Point connector)
         {
             for (int i = 0; i < this.ConnectionHandles; i++)
             {
-                Rect rect = this.GetConnectionHandleBounds(i);
+                Rect rect = this.GetConnectorBounds(i);
                 if (rect.Contains(hitTestPoint))
                 {
                     connector = rect.GetCenter();
-                    return this.GetConnectionLocation(i);
+                    return this.GetConnectorLocation(i);
                 }
             }
 
             connector = hitTestPoint;
 
             return ConnectionLocations.Null;
+        }
+
+        /// <summary>
+        /// 根据一个坐标点确定离这个坐标点最近的连接点索引
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public bool GetNearestConnectorHandle(Point point, out int handle, out Point handlePoint)
+        {
+            handle = -1;
+            handlePoint = new Point();
+
+            for (int i = 0; i < this.ConnectionHandles; i++)
+            {
+                handle = i;
+                handlePoint = this.GetConnectionPoint(i);
+
+                Rect rect = GraphicsUtility.MakeRect(handlePoint, PadContext.ConnectionLocationTolerance);
+                if (rect.Contains(point))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion

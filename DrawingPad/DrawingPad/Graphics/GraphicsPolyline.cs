@@ -75,7 +75,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override Point GetConnectionHandle(int index)
+        public override Point GetConnectionPoint(int index)
         {
             throw new NotImplementedException();
         }
@@ -90,7 +90,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override ConnectionLocations GetConnectionLocation(int handleIndex)
+        public override ConnectionLocations GetConnectorLocation(int handleIndex)
         {
             throw new NotImplementedException();
         }
@@ -100,7 +100,7 @@ namespace DrawingPad.Graphics
             throw new NotImplementedException();
         }
 
-        public override Rect GetConnectionHandleBounds(int index)
+        public override Rect GetConnectorBounds(int index)
         {
             throw new NotImplementedException();
         }

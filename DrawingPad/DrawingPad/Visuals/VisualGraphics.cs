@@ -103,7 +103,7 @@ namespace DrawingPad.Visuals
             {
                 for (int i = 0; i < this.ConnectionHandles; i++)
                 {
-                    Point center = this.GetConnectionHandle(i);
+                    Point center = this.GetConnectorPoint(i);
 
                     dc.DrawEllipse(PadContext.TrackerBackground, PadContext.TrackerPen, center, PadContext.CircleTrackerRadius, PadContext.CircleTrackerRadius);
                 }
@@ -171,6 +171,11 @@ namespace DrawingPad.Visuals
             return this.GetBounds().Contains(p);
         }
 
+        /// <summary>
+        /// 对图形进行平移
+        /// </summary>
+        /// <param name="offsetX">平移的X偏移量</param>
+        /// <param name="offsetY">平移的Y偏移量</param>
         public void Translate(double offsetX, double offsetY)
         {
             this.Graphics.Translate(offsetX, offsetY);
@@ -197,14 +202,14 @@ namespace DrawingPad.Visuals
             return this.Graphics.GetRotationHandle();
         }
 
-        public virtual Point GetConnectionHandle(int index)
+        public virtual Point GetConnectorPoint(int index)
         {
-            return this.Graphics.GetConnectionHandle(index);
+            return this.Graphics.GetConnectionPoint(index);
         }
 
-        public virtual ConnectionLocations GetConnectionLocation(int handleIndex)
+        public virtual ConnectionLocations GetConnectorLocation(int handleIndex)
         {
-            return this.Graphics.GetConnectionLocation(handleIndex);
+            return this.Graphics.GetConnectorLocation(handleIndex);
         }
 
         public virtual Point GetResizeHandle(int index)
@@ -212,9 +217,9 @@ namespace DrawingPad.Visuals
             return this.Graphics.GetResizeHandle(index);
         }
 
-        public Rect GetConnectionHandleBounds(int index)
+        public Rect GetConnectorBounds(int index)
         {
-            return this.Graphics.GetConnectionHandleBounds(index);
+            return this.Graphics.GetConnectorBounds(index);
         }
 
         public Rect GetResizeHandleBounds(int index)
