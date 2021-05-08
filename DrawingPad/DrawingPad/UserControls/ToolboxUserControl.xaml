@@ -16,10 +16,9 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <Style x:Key="StyleComboBoxLocal" TargetType="{x:Type ComboBox}">
-            <Setter Property="Width" Value="100"/>
+        <Style x:Key="StyleComboBoxLocal" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ResourceKey=StyleComboBox}">
             <Setter Property="Height" Value="25"/>
-            <Setter Property="Margin" Value="0,0,20,0"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
             <Setter Property="ItemsSource" Value="{Binding Path=Items}"/>
             <Setter Property="SelectedItem" Value="{Binding Path=SelectedItem}"/>
             <Setter Property="SelectedIndex" Value="0"/>
@@ -31,7 +30,7 @@
             <Setter Property="Height" Value="30"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,20,0"/>
-            <Setter Property="Background" Value="{StaticResource ResourceKey=BrushToolboxSplitter}"/>
+            <Setter Property="Background" Value="{StaticResource ResourceKey=BrushToolboxBackground}"/>
         </Style>
 
         <Style x:Key="StyleToggleButtonLocal" TargetType="{x:Type ToggleButton}">
@@ -40,7 +39,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,20,0"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
         </Style>
 
     </UserControl.Resources>
@@ -50,7 +49,7 @@
 
             <TabItem Header="编辑">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <ComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}"
+                    <ComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" Width="100"
                               Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -59,7 +58,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <ComboBox x:Name="ComboBoxFontSize" DataContext="{Binding Path=FontSizes}" Width="60"
+                    <ComboBox DataContext="{Binding Path=FontSizes}" Width="60"
                               Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -80,7 +79,7 @@
 
                     <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <ComboBox DataContext="{Binding Path=FontSizes}" Width="50"
+                    <ComboBox DataContext="{Binding Path=FontSizes}" Width="60"
                               Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

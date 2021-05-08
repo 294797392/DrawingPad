@@ -45,7 +45,7 @@ namespace DrawingPad.Canvases
 
         private static readonly Brush DefaultBackground = new SolidColorBrush(Color.FromRgb(242, 242, 242));
 
-        private const int DefaultMargin = 5;
+        private const int DefaultMargin = 0;
 
         #endregion
 
@@ -101,10 +101,10 @@ namespace DrawingPad.Canvases
 
             // 画背景颜色
             Rect rect = new Rect(this.RenderSize);
-            dc.DrawRectangle(DefaultBackground, null, rect);
+            //dc.DrawRectangle(DefaultBackground, null, rect);
 
             // 画导航线的白色背景
-            rect.Inflate(-this.GuidelineMargin, -this.GuidelineMargin);
+            //rect.Inflate(-this.GuidelineMargin, -this.GuidelineMargin);
             dc.DrawRectangle(Brushes.White, null, rect);
 
             // 画导航线

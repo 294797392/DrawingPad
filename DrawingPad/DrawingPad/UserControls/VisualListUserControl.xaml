@@ -21,14 +21,15 @@
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="ExpandDirection" Value="Down"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource ResourceKey=BrushForeground}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Expander}">
 
                         <ControlTemplate.Resources>
                             <Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
-                                <Setter Property="Background" Value="{StaticResource ResourceKey=BrushToolboxItemBackground}"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource ResourceKey=BrushToolboxItemBorder}"/>
+                                <Setter Property="Background" Value="{DynamicResource ResourceKey=BrushToolboxBackground}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource ResourceKey=BrushToolboxBorder}"/>
                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                 <Setter Property="Height" Value="30"/>
                                 <Setter Property="Template">
@@ -84,7 +85,7 @@
                                                     <Rectangle x:Name="HoverShineRectangle" StrokeThickness="1" RadiusX="1" RadiusY="1" Opacity="0" />
                                                     <Rectangle x:Name="PressedRectangle" StrokeThickness="1" RadiusX="1" RadiusY="1" Opacity="0" />
                                                     <Path x:Name="Up_Arrow" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                                          Data="M 0 0 L 5 5 L 10 0 Z" Fill="{StaticResource ResourceKey=BrushToolboxForeground}">
+                                                          Data="M 0 0 L 5 5 L 10 0 Z" Fill="{DynamicResource ResourceKey=BrushForeground}">
                                                         <Path.LayoutTransform>
                                                             <RotateTransform x:Name="RotateTransform" Angle="-90"/>
                                                         </Path.LayoutTransform>
@@ -103,7 +104,7 @@
                                                     <Trigger.ExitActions>
                                                         <BeginStoryboard Storyboard="{StaticResource StoryboardCollapsed}"/>
                                                     </Trigger.ExitActions>
-                                                    <Setter Property="Fill" TargetName="Up_Arrow" Value="{StaticResource ResourceKey=BrushToolboxForeground}"/>
+                                                    <Setter Property="Fill" TargetName="Up_Arrow" Value="{DynamicResource ResourceKey=BrushForeground}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="true">
                                                     <Trigger.ExitActions>
@@ -112,7 +113,7 @@
                                                     <Trigger.EnterActions>
                                                         <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
                                                     </Trigger.EnterActions>
-                                                    <Setter Property="Fill" TargetName="Up_Arrow" Value="{StaticResource ResourceKey=BrushToolboxForeground}"/>
+                                                    <Setter Property="Fill" TargetName="Up_Arrow" Value="{DynamicResource ResourceKey=BrushForeground}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsPressed" Value="true">
                                                     <Trigger.ExitActions>
@@ -174,8 +175,8 @@
                 <Expander Header="{Binding Path=Name}" Style="{StaticResource ResourceKey=StyleExpanderToolboxGroup}">
                     <ListBox Grid.Row="1" ItemsSource="{Binding Path=Items}" Background="Transparent"
                              ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxItem}"
-                             Margin="1,0,1,0" BorderThickness="0,0,0,1" BorderBrush="{StaticResource ResourceKey=BrushToolboxItemBorder}"
-                             dd:DragDrop.IsDragSource="True"
+                             Margin="1,0,1,0" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ResourceKey=BrushToolboxBorder}"
+                             dd:DragDrop.IsDragSource="True" Foreground="{DynamicResource ResourceKey=BrushForeground}"
                              Style="{StaticResource ResourceKey=StyleListBox}">
 
                         <ListBox.ItemContainerStyle>
@@ -343,7 +344,7 @@
         <ListBox ItemsSource="{Binding Source={x:Static pad:PadContext.Context}, Path=GroupList}"
                  ItemTemplate="{StaticResource ResourceKey=DataTemplateToolboxGroup}"
                  ItemContainerStyle="{StaticResource ResourceKey=StyleListBoxToolboxItem}"
-                 BorderThickness="0,1,1,1" BorderBrush="{StaticResource ResourceKey=BrushToolboxItemBorder}"
+                 BorderThickness="0,0,1,0" BorderBrush="{StaticResource ResourceKey=BrushToolboxBorder}"
                  Background="{StaticResource ResourceKey=BrushToolboxBackground}"
                  Style="{StaticResource ResourceKey=StyleListBoxToolboxGroupList}">
         </ListBox>

@@ -25,7 +25,7 @@ namespace DrawingPad.ViewModels
     {
         public FontSizeVM(int value)
         {
-            this.Name = value.ToString();
+            this.Name = string.Format("{0}px", value.ToString());
         }
     }
 
@@ -59,7 +59,7 @@ namespace DrawingPad.ViewModels
         {
             this.FontSizes = new ItemsViewModel<FontSizeVM>();
 
-            for (int i = 8; i < 30; i++)
+            for (int i = 12; i < 30; i++)
             {
                 FontSizeVM vm = new FontSizeVM(i);
                 this.FontSizes.Items.Add(vm);
