@@ -509,14 +509,14 @@ namespace DrawingPad.Canvases
                                 if (string.IsNullOrEmpty(polyline.AssociatedGraphics2))
                                 {
                                     // 连接点的另一端不在图形上
-                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector);
+                                    pointList = GraphicsUtility.MakeConnectionPath(firstConnector, firstConnectorLocation, secondConnector);
                                 }
                                 else
                                 {
                                     // 连接点的另一端在图形上
                                     VisualGraphics secondVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics2);
                                     ConnectionLocations secondConnectorLocation = secondVisual.Graphics.GetConnectorLocation(polyline.Graphics2Handle);
-                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                    pointList = GraphicsUtility.MakeConnectionPath(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
                                 }
                             }
                             else if (this.translateVisual.ID == polyline.AssociatedGraphics2)
@@ -530,7 +530,7 @@ namespace DrawingPad.Canvases
                                 {
                                     // 连接点的另一端不在图形上
                                     // 规定必须在图形上，不允许只有第二个点在图形上，而第一个点不在。但是允许第一个点在图形上，第二个点不在
-                                    pointList = GraphicsUtility.MakeConnectionPoints(secondConnector, secondConnectorLocation, firstConnector);
+                                    pointList = GraphicsUtility.MakeConnectionPath(secondConnector, secondConnectorLocation, firstConnector);
                                     pointList.Reverse();
                                 }
                                 else
@@ -538,7 +538,7 @@ namespace DrawingPad.Canvases
                                     // 连接点的另一端在图形上
                                     VisualGraphics firstVisual = this.VisualList.FirstOrDefault(v => v.ID == polyline.AssociatedGraphics1);
                                     ConnectionLocations firstConnectorLocation = firstVisual.Graphics.GetConnectorLocation(polyline.Graphics1Handle);
-                                    pointList = GraphicsUtility.MakeConnectionPoints(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                    pointList = GraphicsUtility.MakeConnectionPath(firstConnector, firstConnectorLocation, secondConnector, secondConnectorLocation);
                                 }
                             }
                             else
@@ -569,7 +569,7 @@ namespace DrawingPad.Canvases
                             graphicsPolyline.AssociatedGraphics2 = null;
 
                             // 更新连接线
-                            List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
+                            List<Point> points = GraphicsUtility.MakeConnectionPath(this.firstConnector, this.firstConnectorLocation, secondConnector);
                             this.polyline.Update(points);
                         }
                         else
@@ -589,13 +589,13 @@ namespace DrawingPad.Canvases
                                 graphicsPolyline.Graphics2Handle = handle;
 
                                 // 更新连接线
-                                List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                List<Point> points = GraphicsUtility.MakeConnectionPath(this.firstConnector, this.firstConnectorLocation, secondConnector, secondConnectorLocation);
                                 this.polyline.Update(points);
                             }
                             else
                             {
                                 // 鼠标已经在第二个图形上了，但是没有放在连接点附近
-                                List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
+                                List<Point> points = GraphicsUtility.MakeConnectionPath(this.firstConnector, this.firstConnectorLocation, secondConnector);
                                 this.polyline.Update(points);
                             }
                         }

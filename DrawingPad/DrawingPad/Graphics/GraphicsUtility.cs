@@ -84,7 +84,7 @@ namespace DrawingPad.Graphics
         }
 
         /// <summary>
-        /// 计算两个点之间的折线点
+        /// 计算两个点之间的连接路径
         /// 
         /// 规律：
         /// 上下左右四个连接点，每个连接点都可以往8个方向连接，一共是4 * 8种连接方式
@@ -100,7 +100,7 @@ namespace DrawingPad.Graphics
         /// <param name="firstLocation">第一个连接点的位置</param>
         /// <param name="secondConnector">第二个连接点</param>
         /// <returns></returns>
-        public static List<Point> MakeConnectionPoints(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector)
+        public static List<Point> MakeConnectionPath(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector)
         {
             List<Point> pointList = new List<Point>();
 
@@ -394,11 +394,14 @@ namespace DrawingPad.Graphics
         }
 
         /// <summary>
-        /// 计算两个已经连接起来的图形之间的折线点
+        /// 计算两个已经连接起来的图形之间的连接路径
         /// 
         /// 规律：
         /// 上下左右四个连接点，每个连接点都可以往8个方向连接（左上右下，左上，右上，左下，右下）
         /// 8个方向里，每个方向都可以与第二个图形的4个连接点（上下左右）连接，一共是4 * 8 * 4种连接方式
+        /// 
+        /// 先判断第二个点在第一个点的哪个方向（一共可以位于8个方向，上下左右，左上，右上，左下，右下）
+        /// 再判断第一个点位于图形的哪个位置和第二个点位于图形的哪个位置，这样就确定下来了连接路径
         /// 
         /// 有了这个规律，只要把所有可能的连接方向枚举出来，再一个个实现连接方式就好了
         /// </summary>
@@ -407,7 +410,7 @@ namespace DrawingPad.Graphics
         /// <param name="secondConnector"></param>
         /// <param name="secondLocation"></param>
         /// <returns></returns>
-        public static List<Point> MakeConnectionPoints(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector, ConnectionLocations secondLocation)
+        public static List<Point> MakeConnectionPath(Point firstConnector, ConnectionLocations firstLocation, Point secondConnector, ConnectionLocations secondLocation)
         {
             List<Point> pointList = new List<Point>();
 
@@ -425,64 +428,174 @@ namespace DrawingPad.Graphics
 
             if (secondX > firstX && secondY > firstY)
             {
-                // 往右下方拖动
-                Console.WriteLine("往右下方拖动");
+                // 第二个点在第一个点的右下方
+                Console.WriteLine("第二个点在第一个点的右下方");
 
                 switch (firstLocation)
                 {
                     case ConnectionLocations.Left:
                         {
-                            // 左边的点，往右下方拖动
-                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
-                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+                            // 第一个点在图形的左边
+                            // 路径算法：Documents/连接路径规划/连接路径在右下方_连接点在左边.png
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                                        double y = firstY + Math.Ceiling((secondY - firstY) / 2);
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, y));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, y));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
 
                             break;
                         }
 
                     case ConnectionLocations.Top:
                         {
-                            // 上边的点，往右下方拖动
+                            // 第一个点在图形的上边
+                            // 路径算法：Documents/连接路径规划/连接路径在右下方_连接点在上边.png
+
                             pointList.Add(new Point(firstX, firstY - PadContext.MinimalMargin));
-                            pointList.Add(new Point(secondX, firstY - PadContext.MinimalMargin));
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        double x = firstX + Math.Ceiling((secondX - firstX) / 2);
+                                        pointList.Add(new Point(x, firstY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(x, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, firstY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        pointList.Add(new Point(secondX, firstY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
 
                     case ConnectionLocations.Right:
                         {
-                            // 右边的点，往右下方拖动
-                            pointList.Add(new Point(secondX, firstY));
+                            // 第一个点在图形的右边
+                            // 路径算法：Documents/连接路径规划/连接路径在右下方_连接点在右边.png
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(firstX + PadContext.MinimalMargin, firstY));
+                                        pointList.Add(new Point(firstX + PadContext.MinimalMargin, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        double x = firstX + Math.Ceiling((secondX - firstX) / 2);
+                                        pointList.Add(new Point(x, firstY));
+                                        pointList.Add(new Point(x, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        pointList.Add(new Point(secondX, firstY));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
 
                     case ConnectionLocations.Bottom:
                         {
-                            // 下边的点，往右下方拖动
-                            pointList.Add(new Point(firstX, secondY));
+                            // 第一个点在图形的下面
+                            // 路径算法：Documents/连接路径规划/连接路径在右下方_连接点在下面.png
 
                             switch (secondLocation)
                             {
                                 case ConnectionLocations.Top:
                                     {
-                                        // 第二个图形的连接点是上面
-                                        Console.WriteLine("123");
+                                        // 第二个点在图形的上面
+                                        double y = firstY + Math.Ceiling((secondY - firstY) / 2);
+                                        pointList.Add(new Point(firstX, y));
+                                        pointList.Add(new Point(secondX, y));
                                         break;
                                     }
 
                                 case ConnectionLocations.Left:
                                     {
                                         // 第二个图形的连接点在左边
+                                        pointList.Add(new Point(firstX, secondY));
                                         break;
                                     }
 
                                 case ConnectionLocations.Right:
                                     {
                                         // 第二个图形的连接点在右边
+                                        pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
                                         break;
                                     }
 
                                 case ConnectionLocations.Bottom:
                                     {
                                         // 第二个图形的连接点在下面
+                                        pointList.Add(new Point(firstX, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
                                         break;
                                     }
                             }
@@ -493,38 +606,139 @@ namespace DrawingPad.Graphics
             }
             else if (secondX > firstX && secondY < firstY)
             {
-                // 往右上方拖动
+                // 第二个点在第一个点的右上方
                 Console.WriteLine("往右上方拖动");
 
                 switch (firstLocation)
                 {
                     case ConnectionLocations.Left:
                         {
-                            // 左边的点，往右上方拖动
+                            // 第一个点在图形的左边
+                            // 路径算法：Documents/连接路径规划/1-7.png
+
                             pointList.Add(new Point(firstX - PadContext.MinimalMargin, firstY));
-                            pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        double y = secondY + Math.Ceiling((firstY - secondY) / 2);
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, y));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, y));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        pointList.Add(new Point(firstX - PadContext.MinimalMargin, secondY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
 
                     case ConnectionLocations.Top:
                         {
-                            // 上边的点，往右上方拖动
-                            pointList.Add(new Point(firstX, secondY));
+                            // 第一个点在图形的上面
+                            // 路径算法：Documents/连接路径规划/1-8.png
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        double y = secondY + Math.Ceiling((firstY - secondY) / 2);
+                                        pointList.Add(new Point(firstX, y));
+                                        pointList.Add(new Point(secondX, y));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(firstX, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(firstX, firstY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        pointList.Add(new Point(firstX, secondY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
 
                     case ConnectionLocations.Right:
                         {
-                            // 右边的点，往右上方拖动
+                            // 第一个点在图形的右边
                             pointList.Add(new Point(secondX, firstY));
                             break;
                         }
 
                     case ConnectionLocations.Bottom:
                         {
-                            // 下边的点，往右上方拖动
+                            // 第一个点在图形的下面
+                            // 路径算法：Documents/连接路径规划/1-4.png
+
                             pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
-                            pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        double x = firstX + Math.Ceiling((secondX - firstX) / 2);
+                                        pointList.Add(new Point(x, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(x, secondY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
                 }
@@ -561,15 +775,48 @@ namespace DrawingPad.Graphics
 
                     case ConnectionLocations.Bottom:
                         {
-                            // 下边的点，往左下方拖动
-                            pointList.Add(new Point(firstX, secondY));
+                            // 第一个点在图形的下面
+                            // 路径算法：Documents/连接路径规划/1-6.png
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(firstX, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(firstX, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        double y = firstY + Math.Ceiling((secondY - firstY) / 2);
+                                        pointList.Add(new Point(firstX, y));
+                                        pointList.Add(new Point(secondX, y));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
                 }
             }
             else if (secondX < firstX && secondY < firstY)
             {
-                // 往左上方拖动
+                // 第二个点在第一个点的左上方
                 Console.WriteLine("往左上方拖动");
 
                 switch (firstLocation)
@@ -598,9 +845,43 @@ namespace DrawingPad.Graphics
 
                     case ConnectionLocations.Bottom:
                         {
-                            // 下边的点，往左上方拖动
+                            // 第一个点在图形的下边
+                            // 路径算法：Documents/连接路径规划/1-5.png
+
                             pointList.Add(new Point(firstX, firstY + PadContext.MinimalMargin));
-                            pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        pointList.Add(new Point(secondX, firstY + PadContext.MinimalMargin));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX - PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX + PadContext.MinimalMargin, secondY));
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Top:
+                                    {
+                                        double x = secondX + Math.Ceiling((firstX - secondX) / 2);
+                                        pointList.Add(new Point(x, firstY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(x, secondY - PadContext.MinimalMargin));
+                                        pointList.Add(new Point(secondX, secondY - PadContext.MinimalMargin));
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
                 }
@@ -721,6 +1002,8 @@ namespace DrawingPad.Graphics
             {
                 throw new NotImplementedException();
             }
+
+            pointList.Add(secondConnector);
 
             return pointList;
         }
