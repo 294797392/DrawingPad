@@ -530,7 +530,8 @@ namespace DrawingPad.Canvases
                                 {
                                     // 连接点的另一端不在图形上
                                     // 规定必须在图形上，不允许只有第二个点在图形上，而第一个点不在。但是允许第一个点在图形上，第二个点不在
-                                    throw new NotImplementedException();
+                                    pointList = GraphicsUtility.MakeConnectionPoints(secondConnector, secondConnectorLocation, firstConnector);
+                                    pointList.Reverse();
                                 }
                                 else
                                 {
@@ -566,6 +567,10 @@ namespace DrawingPad.Canvases
                         {
                             this.secondVisual = null;
                             graphicsPolyline.AssociatedGraphics2 = null;
+
+                            // 更新连接线
+                            List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
+                            this.polyline.Update(points);
                         }
                         else
                         {
@@ -576,17 +581,24 @@ namespace DrawingPad.Canvases
                             // 运行到这里说明折线的另一端已经在图形的连接点范围内了
                             int handle;
                             Point handlePoint;
-                            if (this.secondVisual.Graphics.GetNearestConnectorHandle(cursorPosition, out handle, out handlePoint))
+                            ConnectionLocations secondConnectorLocation;
+                            if (this.secondVisual.Graphics.GetNearestConnectorHandle(cursorPosition, out handle, out handlePoint, out secondConnectorLocation))
                             {
                                 secondConnector = handlePoint;
                                 graphicsPolyline.AssociatedGraphics2 = this.secondVisual.ID;
                                 graphicsPolyline.Graphics2Handle = handle;
+
+                                // 更新连接线
+                                List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector, secondConnectorLocation);
+                                this.polyline.Update(points);
+                            }
+                            else
+                            {
+                                // 鼠标已经在第二个图形上了，但是没有放在连接点附近
+                                List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
+                                this.polyline.Update(points);
                             }
                         }
-
-                        // 更新连接线
-                        List<Point> points = GraphicsUtility.MakeConnectionPoints(this.firstConnector, this.firstConnectorLocation, secondConnector);
-                        this.polyline.Update(points);
 
                         break;
                     }

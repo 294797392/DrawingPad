@@ -23,6 +23,18 @@ namespace DrawingPad.ViewModels
 
     public class FontSizeVM : ItemViewModel
     {
+        private int value;
+
+        public int Value
+        {
+            get { return this.value; }
+            set
+            {
+                this.value = value;
+                this.NotifyPropertyChanged("Value");
+            }
+        }
+
         public FontSizeVM(int value)
         {
             this.Name = string.Format("{0}px", value.ToString());
@@ -31,9 +43,64 @@ namespace DrawingPad.ViewModels
 
     public class ToolboxViewModel : ViewModelBase
     {
+        #region 实例变量
+
+        private bool italic;
+
+        private bool bold;
+
+        private bool underline;
+
+        #endregion
+
+        #region 属性
+
+        /// <summary>
+        /// 斜体是否选中
+        /// </summary>
+        public bool Italic
+        {
+            get { return this.italic; }
+            set 
+            {
+                this.italic = value;
+                this.NotifyPropertyChanged("Italic");
+            }
+        }
+
+        /// <summary>
+        /// 粗体是否选中
+        /// </summary>
+        public bool Bold
+        {
+            get { return this.bold; }
+            set
+            {
+                this.bold = value;
+                this.NotifyPropertyChanged("Bold");
+            }
+        }
+
+        /// <summary>
+        /// 下划线是否选中
+        /// </summary>
+        public bool Underline
+        {
+            get { return this.underline; }
+            set
+            {
+                this.underline = value;
+                this.NotifyPropertyChanged("Underline");
+            }
+        }
+
         public ItemsViewModel<FontVM> FontList { get; private set; }
 
         public ItemsViewModel<FontSizeVM> FontSizes { get; private set; }
+
+        #endregion
+
+        #region 构造方法
 
         public ToolboxViewModel()
         {
@@ -41,6 +108,10 @@ namespace DrawingPad.ViewModels
 
             this.InitializeFontSize();
         }
+
+        #endregion
+
+        #region 实例方法
 
         private void InitializeFonts()
         {
@@ -65,5 +136,7 @@ namespace DrawingPad.ViewModels
                 this.FontSizes.Items.Add(vm);
             }
         }
+
+        #endregion
     }
 }

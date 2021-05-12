@@ -12,4 +12,6 @@
     <SolidColorBrush x:Key="BrushComboBoxMouseOverBackground" Color="#f1f1f1"/>
     <SolidColorBrush x:Key="BrushComboBoxMousePressedBackground" Color="#e4e4e4"/>
 
+    <SolidColorBrush x:Key="BrushSplitter" Color="#e4e4e4"/>
+
 </ResourceDictionary>

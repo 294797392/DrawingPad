@@ -85,6 +85,16 @@ namespace DrawingPad.Graphics
 
         /// <summary>
         /// 计算两个点之间的折线点
+        /// 
+        /// 规律：
+        /// 上下左右四个连接点，每个连接点都可以往8个方向连接，一共是4 * 8种连接方式
+        /// 
+        /// 有了这个规律，只要把所有可能的连接方向枚举出来，再一个个实现连接方式就好了
+        /// 
+        /// 旋转后的连接点连线方式：
+        /// 先计算没旋转的连接点列表，然后：
+        /// 以图形的边界框的中点为中心，把某个连接点旋转X度，就是新的连接点的位置。
+        /// 用矩阵可以实现把某个点旋转X度
         /// </summary>
         /// <param name="firstConnector">第一个连接点</param>
         /// <param name="firstLocation">第一个连接点的位置</param>
@@ -385,6 +395,12 @@ namespace DrawingPad.Graphics
 
         /// <summary>
         /// 计算两个已经连接起来的图形之间的折线点
+        /// 
+        /// 规律：
+        /// 上下左右四个连接点，每个连接点都可以往8个方向连接（左上右下，左上，右上，左下，右下）
+        /// 8个方向里，每个方向都可以与第二个图形的4个连接点（上下左右）连接，一共是4 * 8 * 4种连接方式
+        /// 
+        /// 有了这个规律，只要把所有可能的连接方向枚举出来，再一个个实现连接方式就好了
         /// </summary>
         /// <param name="firstConnector"></param>
         /// <param name="firstLocation"></param>
@@ -404,8 +420,6 @@ namespace DrawingPad.Graphics
             {
                 return pointList;
             }
-
-            Point lastPoint = secondConnector;
 
             pointList.Add(firstConnector);
 
@@ -444,6 +458,35 @@ namespace DrawingPad.Graphics
                         {
                             // 下边的点，往右下方拖动
                             pointList.Add(new Point(firstX, secondY));
+
+                            switch (secondLocation)
+                            {
+                                case ConnectionLocations.Top:
+                                    {
+                                        // 第二个图形的连接点是上面
+                                        Console.WriteLine("123");
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Left:
+                                    {
+                                        // 第二个图形的连接点在左边
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Right:
+                                    {
+                                        // 第二个图形的连接点在右边
+                                        break;
+                                    }
+
+                                case ConnectionLocations.Bottom:
+                                    {
+                                        // 第二个图形的连接点在下面
+                                        break;
+                                    }
+                            }
+
                             break;
                         }
                 }
@@ -678,8 +721,6 @@ namespace DrawingPad.Graphics
             {
                 throw new NotImplementedException();
             }
-
-            pointList.Add(lastPoint);
 
             return pointList;
         }

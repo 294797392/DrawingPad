@@ -140,15 +140,17 @@ namespace DrawingPad.Graphics
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public bool GetNearestConnectorHandle(Point point, out int handle, out Point handlePoint)
+        public bool GetNearestConnectorHandle(Point point, out int handle, out Point handlePoint, out ConnectionLocations location)
         {
             handle = -1;
             handlePoint = new Point();
+            location = ConnectionLocations.Null;
 
             for (int i = 0; i < this.ConnectionHandles; i++)
             {
                 handle = i;
                 handlePoint = this.GetConnectionPoint(i);
+                location = GetConnectorLocation(i);
 
                 Rect rect = GraphicsUtility.MakeRect(handlePoint, PadContext.ConnectionLocationTolerance);
                 if (rect.Contains(point))

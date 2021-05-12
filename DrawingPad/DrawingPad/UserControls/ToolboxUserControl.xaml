@@ -18,7 +18,7 @@
 
         <Style x:Key="StyleComboBoxLocal" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ResourceKey=StyleComboBox}">
             <Setter Property="Height" Value="25"/>
-            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Margin" Value="0,0,7,0"/>
             <Setter Property="ItemsSource" Value="{Binding Path=Items}"/>
             <Setter Property="SelectedItem" Value="{Binding Path=SelectedItem}"/>
             <Setter Property="SelectedIndex" Value="0"/>
@@ -27,19 +27,19 @@
 
         <Style x:Key="StyleBorderSplitter" TargetType="{x:Type Border}">
             <Setter Property="Width" Value="1"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Height" Value="25"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,20,0"/>
-            <Setter Property="Background" Value="{StaticResource ResourceKey=BrushToolboxBackground}"/>
+            <Setter Property="Margin" Value="10,0,10,0"/>
+            <Setter Property="Background" Value="{StaticResource ResourceKey=BrushSplitter}"/>
         </Style>
 
-        <Style x:Key="StyleToggleButtonLocal" TargetType="{x:Type ToggleButton}">
+        <Style x:Key="StyleToggleButtonLocal" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ResourceKey=StyleToggleButton}">
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="25"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Margin" Value="0,0,7,0"/>
         </Style>
 
     </UserControl.Resources>
