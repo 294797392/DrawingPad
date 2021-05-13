@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DrawingPad.UserControls"
+             xmlns:kcontrol="clr-namespace:WPFToolkit.Controls;assembly=WPFToolkit"
              xmlns:pad="clr-namespace:DrawingPad"
              mc:Ignorable="d" 
              d:DesignHeight="70" d:DesignWidth="800"
@@ -49,44 +50,41 @@
 
             <TabItem Header="编辑">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <ComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" Width="100"
-                              Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
+                    <kcontrol:KComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" Width="100">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    </kcontrol:KComboBox>
 
-                    <ComboBox DataContext="{Binding Path=FontSizes}" Width="60"
-                              Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
+                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" Width="60">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    </kcontrol:KComboBox>
 
                     <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <ToggleButton Content="B" FontWeight="Bold" Style="{StaticResource ResourceKey=StyleToggleButtonLocal}"/>
+                    <kcontrol:KButton Content="B" FontWeight="Bold" CanChecked="True"/>
 
-                    <ToggleButton Content="I" FontStyle="Italic" Style="{StaticResource ResourceKey=StyleToggleButtonLocal}"/>
+                    <kcontrol:KButton Content="I" FontStyle="Italic" CanChecked="True"/>
 
-                    <ToggleButton Style="{StaticResource ResourceKey=StyleToggleButtonLocal}">
+                    <kcontrol:KButton CanChecked="True">
                         <TextBlock Text="U" TextDecorations="Underline"/>
-                    </ToggleButton>
+                    </kcontrol:KButton>
 
                     <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <ComboBox DataContext="{Binding Path=FontSizes}" Width="60"
-                              Style="{StaticResource ResourceKey=StyleComboBoxLocal}">
+                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" Width="60">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    </kcontrol:KComboBox>
 
                     <!--<Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
