@@ -50,7 +50,8 @@
 
             <TabItem Header="编辑">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <kcontrol:KComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" Width="100">
+                    <kcontrol:KComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" 
+                                        ItemsSource="{Binding Path=Items}" Width="100">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
@@ -58,7 +59,8 @@
                         </ComboBox.ItemTemplate>
                     </kcontrol:KComboBox>
 
-                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" Width="60">
+                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}"
+                                        ItemsSource="{Binding Path=Items}" Width="80">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
@@ -68,17 +70,18 @@
 
                     <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <kcontrol:KButton Content="B" FontWeight="Bold" CanChecked="True"/>
+                    <kcontrol:KButton Content="B" FontWeight="Bold" CanChecked="True" Height="30"/>
 
-                    <kcontrol:KButton Content="I" FontStyle="Italic" CanChecked="True"/>
+                    <kcontrol:KButton Content="I" FontStyle="Italic" CanChecked="True" Height="30"/>
 
-                    <kcontrol:KButton CanChecked="True">
+                    <kcontrol:KButton CanChecked="True" Height="30">
                         <TextBlock Text="U" TextDecorations="Underline"/>
                     </kcontrol:KButton>
 
                     <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" Width="60">
+                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" 
+                                        ItemsSource="{Binding Path=Items}" Width="80">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
@@ -86,9 +89,9 @@
                         </ComboBox.ItemTemplate>
                     </kcontrol:KComboBox>
 
-                    <!--<Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
+                    <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
 
-                    <ToggleButton Style="{StaticResource ResourceKey=StyleToggleButtonLocal}"/>-->
+                    <kcontrol:KColorPicker Width="40" Height="40"/>
 
                 </StackPanel>
             </TabItem>

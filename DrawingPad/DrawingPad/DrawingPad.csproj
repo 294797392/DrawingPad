@@ -77,6 +77,8 @@
     <Compile Include="Canvases\MindCanvas.cs" />
     <Compile Include="DataModels\ToolboxGroup.cs" />
     <Compile Include="DataModels\ToolboxItem.cs" />
+    <Compile Include="Graphics\GraphicsEllipse.cs" />
+    <Compile Include="Visuals\VisualEllipse.cs" />
     <Compile Include="Visuals\VisualPolyline.cs" />
     <Compile Include="Visuals\ExcludedNullVisual.cs" />
     <Compile Include="Visuals\VisualFactory.cs" />
@@ -185,6 +187,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\rectangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\circle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

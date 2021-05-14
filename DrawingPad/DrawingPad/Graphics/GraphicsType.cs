@@ -17,8 +17,13 @@ namespace DrawingPad.Graphics
         Rectangle = 0,
 
         /// <summary>
+        /// 椭圆
+        /// </summary>
+        Ellipse,
+
+        /// <summary>
         /// 连接线
         /// </summary>
-        Polyline = 1
+        Polyline
     }
 }

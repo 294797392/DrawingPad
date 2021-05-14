@@ -8,6 +8,13 @@
                 "name": "矩形",
                 "icon": "pack://application:,,,/DrawingPad;component/Images/rectangle.png",
                 "type": 0
+            },
+
+            {
+                "id": "1-2",
+                "name": "椭圆",
+                "icon": "pack://application:,,,/DrawingPad;component/Images/circle.png",
+                "type": 1
             }
         ]
     }

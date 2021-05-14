@@ -25,9 +25,8 @@ namespace DrawingPad.Visuals
         private Brush brush = PadBrushes.Background;
         private Pen borderPen = Pens.Black;
 
-        private GraphicsRectangle graphicsRect;
-
         private RectangleGeometry geometry;
+        private GraphicsRectangle graphicsRect;
 
         #endregion
 
@@ -58,7 +57,7 @@ namespace DrawingPad.Visuals
 
             this.geometry.Rect = this.graphicsRect.MakeRect();
 
-            dc.DrawGeometry(PadContext.DefaultFillBrush, PadContext.DefaultPen, this.geometry);
+            dc.DrawGeometry(PadContext.DefaultFillBrush, PadContext.DefaultPen, this.Geometry);
 
             //dc.DrawRectangle(this.brush, this.borderPen, this.graphicsRect.MakeRect());
         }

@@ -19,14 +19,28 @@ namespace DrawingPad.Graphics
         {
             switch (type)
             {
-                case GraphicsType.Rectangle:
-                    return new GraphicsRectangle()
+                case GraphicsType.Ellipse:
                     {
-                        Width = GraphicsRectangle.DefaultWidth,
-                        Height = GraphicsRectangle.DefaultHeight,
-                        Point1X = center.X - GraphicsRectangle.DefaultWidth / 2,
-                        Point1Y = center.Y - GraphicsRectangle.DefaultHeight / 2
-                    };
+                        return new GraphicsEllipse() 
+                        {
+                            Width = GraphicsRectangle.DefaultWidth,
+                            Height = GraphicsRectangle.DefaultHeight,
+                            Point1X = center.X - GraphicsRectangle.DefaultWidth / 2,
+                            Point1Y = center.Y - GraphicsRectangle.DefaultHeight / 2
+                        };
+                    }
+
+                case GraphicsType.Rectangle:
+                    {
+                        return new GraphicsRectangle()
+                        {
+                            Width = GraphicsRectangle.DefaultWidth,
+                            Height = GraphicsRectangle.DefaultHeight,
+                            Point1X = center.X - GraphicsRectangle.DefaultWidth / 2,
+                            Point1Y = center.Y - GraphicsRectangle.DefaultHeight / 2
+                        };
+                    }
+
 
                 default:
                     throw new NotImplementedException();

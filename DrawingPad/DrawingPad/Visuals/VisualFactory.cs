@@ -18,6 +18,11 @@ namespace DrawingPad.Visuals
                         return new VisualRectangle(graphics);
                     }
 
+                case GraphicsType.Ellipse:
+                    {
+                        return new VisualEllipse(graphics);
+                    }
+
                 case GraphicsType.Polyline:
                     {
                         return new VisualPolyline(graphics);
