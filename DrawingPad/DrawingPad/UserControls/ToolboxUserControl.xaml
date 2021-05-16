@@ -93,6 +93,8 @@
 
                     <kcontrol:KColorPicker Width="40" Height="40"/>
 
+                    <kcontrol:KComboBox></kcontrol:KComboBox>
+
                 </StackPanel>
             </TabItem>
 

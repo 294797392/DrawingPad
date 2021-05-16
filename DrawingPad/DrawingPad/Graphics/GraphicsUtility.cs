@@ -876,7 +876,7 @@ namespace DrawingPad.Graphics
                             {
                                 case ConnectionLocations.Bottom:
                                     {
-                                        pointList.Add(new Point(firstY + PadContext.MinimalMargin, secondY + PadContext.MinimalMargin));
+                                        pointList.Add(new Point(firstX + PadContext.MinimalMargin, secondY + PadContext.MinimalMargin));
                                         pointList.Add(new Point(secondX, secondY + PadContext.MinimalMargin));
                                         break;
                                     }
