@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DrawingPad.UserControls"
              xmlns:kcontrol="clr-namespace:WPFToolkit.Controls;assembly=WPFToolkit"
+             xmlns:me="clr-namespace:WPFToolkit.MarkupExtensions;assembly=WPFToolkit"
              xmlns:pad="clr-namespace:DrawingPad"
              mc:Ignorable="d" 
              d:DesignHeight="70" d:DesignWidth="800"
@@ -12,35 +13,41 @@
 
     <UserControl.Resources>
 
-        <Style x:Key="StyleComboBoxItemLocal" TargetType="{x:Type ComboBoxItem}">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Style x:Key="StyleKDividerLocal" TargetType="{x:Type kcontrol:KDivider}">
+            <Setter Property="Color" Value="Silver"/>
+            <Setter Property="Orientation" Value="Vertical"/>
+            <Setter Property="Margin" Value="15,23,15,23"/>
         </Style>
 
-        <Style x:Key="StyleComboBoxLocal" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ResourceKey=StyleComboBox}">
-            <Setter Property="Height" Value="25"/>
-            <Setter Property="Margin" Value="0,0,7,0"/>
-            <Setter Property="ItemsSource" Value="{Binding Path=Items}"/>
-            <Setter Property="SelectedItem" Value="{Binding Path=SelectedItem}"/>
-            <Setter Property="SelectedIndex" Value="0"/>
-            <Setter Property="ItemContainerStyle" Value="{StaticResource ResourceKey=StyleComboBoxItemLocal}"/>
-        </Style>
-
-        <Style x:Key="StyleBorderSplitter" TargetType="{x:Type Border}">
-            <Setter Property="Width" Value="1"/>
-            <Setter Property="Height" Value="25"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="10,0,10,0"/>
-            <Setter Property="Background" Value="{StaticResource ResourceKey=BrushSplitter}"/>
-        </Style>
-
-        <Style x:Key="StyleToggleButtonLocal" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ResourceKey=StyleToggleButton}">
+        <Style x:Key="StyleToggleButtonLocal" TargetType="{x:Type ToggleButton}">
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="25"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,7,0"/>
+        </Style>
+
+        <Style x:Key="StyleKButtonLocal" TargetType="{x:Type kcontrol:KButton}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+        </Style>
+
+        <Style x:Key="StyleKColorPickerLocal" TargetType="{x:Type kcontrol:KColorPicker}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+        </Style>
+
+        <Style x:Key="StyleImageLocal" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="18"/>
+            <Setter Property="Height" Value="18"/>
+        </Style>
+
+        <Style x:Key="StyleKComboBoxLocal" TargetType="{x:Type kcontrol:KComboBox}">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Margin" Value="10,0,10,0"/>
         </Style>
 
     </UserControl.Resources>
@@ -50,8 +57,10 @@
 
             <TabItem Header="编辑">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <kcontrol:KComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" 
-                                        ItemsSource="{Binding Path=Items}" Width="100">
+
+                    <!-- 字体 -->
+                    <kcontrol:KComboBox x:Name="ComboBoxFontList" DataContext="{Binding Path=FontList}" Width="100"
+                                        ItemsSource="{Binding Path=Items}" Style="{StaticResource ResourceKey=StyleKComboBoxLocal}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
@@ -59,8 +68,9 @@
                         </ComboBox.ItemTemplate>
                     </kcontrol:KComboBox>
 
-                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}"
-                                        ItemsSource="{Binding Path=Items}" Width="80">
+                    <!-- 字体大小 -->
+                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" ItemsSource="{Binding Path=Items}" 
+                                        Width="80" Style="{StaticResource ResourceKey=StyleKComboBoxLocal}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name}"/>
@@ -68,32 +78,54 @@
                         </ComboBox.ItemTemplate>
                     </kcontrol:KComboBox>
 
-                    <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
+                    <kcontrol:KDivider Style="{StaticResource ResourceKey=StyleKDividerLocal}"/>
 
-                    <kcontrol:KButton Content="B" FontWeight="Bold" CanChecked="True" Height="30"/>
+                    <!-- 粗体 -->
+                    <kcontrol:KButton Content="B" FontWeight="Bold" CanChecked="True" Style="{StaticResource ResourceKey=StyleKButtonLocal}"/>
 
-                    <kcontrol:KButton Content="I" FontStyle="Italic" CanChecked="True" Height="30"/>
+                    <!-- 斜体 -->
+                    <kcontrol:KButton Content="I" FontStyle="Italic" CanChecked="True" Style="{StaticResource ResourceKey=StyleKButtonLocal}"/>
 
-                    <kcontrol:KButton CanChecked="True" Height="30">
+                    <!-- 下划线 -->
+                    <kcontrol:KButton CanChecked="True" Style="{StaticResource ResourceKey=StyleKButtonLocal}">
                         <TextBlock Text="U" TextDecorations="Underline"/>
                     </kcontrol:KButton>
 
-                    <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
+                    <!-- 字体颜色 -->
+                    <kcontrol:KColorPicker x:Name="KColorPickerFontColor" Style="{StaticResource ResourceKey=StyleKColorPickerLocal}">
+                        <StackPanel Orientation="Vertical">
+                            <Image Source="{me:Images Name=FontColor}" Style="{StaticResource ResourceKey=StyleImageLocal}"/>
+                            <Border Width="20" Height="2" Background="{Binding ElementName=KColorPickerFontColor, Path=SelectedBrush}"/>
+                        </StackPanel>
+                    </kcontrol:KColorPicker>
 
-                    <kcontrol:KComboBox DataContext="{Binding Path=FontSizes}" 
-                                        ItemsSource="{Binding Path=Items}" Width="80">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
+                    <kcontrol:KDivider Style="{StaticResource ResourceKey=StyleKDividerLocal}"/>
+
+                    <!-- 填充颜色 -->
+                    <kcontrol:KColorPicker x:Name="KColorPickerFillColor" Style="{StaticResource ResourceKey=StyleKColorPickerLocal}">
+                        <StackPanel Orientation="Vertical">
+                            <Image Source="{me:Images Name=FillColor}" Style="{StaticResource ResourceKey=StyleImageLocal}"/>
+                            <Border Width="20" Height="2" Background="{Binding ElementName=KColorPickerFillColor, Path=SelectedBrush}"/>
+                        </StackPanel>
+                    </kcontrol:KColorPicker>
+
+                    <!-- 线条颜色 -->
+                    <kcontrol:KColorPicker x:Name="KColorPickerLineColor" Style="{StaticResource ResourceKey=StyleKColorPickerLocal}">
+                        <StackPanel Orientation="Vertical">
+                            <Image Source="{me:Images Name=LineColor}" Style="{StaticResource ResourceKey=StyleImageLocal}"/>
+                            <Border Width="20" Height="2" Background="{Binding ElementName=KColorPickerLineColor, Path=SelectedBrush}"/>
+                        </StackPanel>
+                    </kcontrol:KColorPicker>
+
+                    <!-- 线条宽度 -->
+                    <kcontrol:KComboBox x:Name="KComboBoxLineWidth" Style="{StaticResource ResourceKey=StyleKComboBoxLocal}">
+                        
                     </kcontrol:KComboBox>
 
-                    <Border Style="{StaticResource ResourceKey=StyleBorderSplitter}"/>
+                    <!-- 线条样式 -->
+                    <kcontrol:KComboBox x:Name="KComboBoxLineStyle" Style="{StaticResource ResourceKey=StyleKComboBoxLocal}">
 
-                    <kcontrol:KColorPicker Width="40" Height="40"/>
-
-                    <kcontrol:KComboBox></kcontrol:KComboBox>
+                    </kcontrol:KComboBox>
 
                 </StackPanel>
             </TabItem>

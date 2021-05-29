@@ -9,6 +9,9 @@ using System.Windows.Media;
 
 namespace DrawingPad.Visuals
 {
+    /// <summary>
+    /// 所有图形的基类
+    /// </summary>
     public abstract class VisualGraphics : DrawingVisual
     {
         #region 实例变量

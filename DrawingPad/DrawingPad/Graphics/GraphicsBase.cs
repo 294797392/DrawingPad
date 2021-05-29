@@ -8,6 +8,9 @@ using System.Windows;
 
 namespace DrawingPad.Graphics
 {
+    /// <summary>
+    /// 表示一个抽象的图形
+    /// </summary>
     public abstract class GraphicsBase
     {
         #region 公开属性
@@ -44,6 +47,11 @@ namespace DrawingPad.Graphics
         /// 缩放点的数量
         /// </summary>
         public int ResizeHandles { get; set; }
+
+        /// <summary>
+        /// 图形的样式
+        /// </summary>
+        public GraphicsStyle Style { get; set; }
 
         #endregion
 
