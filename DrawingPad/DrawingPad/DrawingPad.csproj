@@ -78,6 +78,7 @@
     <Compile Include="DataModels\ToolboxGroup.cs" />
     <Compile Include="DataModels\ToolboxItem.cs" />
     <Compile Include="Graphics\GraphicsEllipse.cs" />
+    <Compile Include="Graphics\GraphicsStyle.cs" />
     <Compile Include="Visuals\VisualEllipse.cs" />
     <Compile Include="Visuals\VisualPolyline.cs" />
     <Compile Include="Visuals\ExcludedNullVisual.cs" />
